@@ -26,8 +26,6 @@ SECRET_KEY = 'vsrjw0@gdhp14l&mzg-=yv$3u0l&f_my^o7bn_5_*v4q_mhl^('
 DEBUG = True
 
 ALLOWED_HOSTS = ['moonboardsearchengine.herokuapp.com']
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
