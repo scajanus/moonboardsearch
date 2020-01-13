@@ -6,6 +6,10 @@ from .models import Problem, ProblemMove
 from django.template.loader import render_to_string
 
 
+def helloView(request):
+    return HttpResponse('Hello World!')
+
+
 def homePageView(request):
 
     holds = request.GET.getlist('hold[]')

@@ -25,7 +25,7 @@ SECRET_KEY = 'vsrjw0@gdhp14l&mzg-=yv$3u0l&f_my^o7bn_5_*v4q_mhl^('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', False)
 
-ALLOWED_HOSTS = ['moonboardsearchengine.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'moonboardsearchengine.herokuapp.com']
 
 # Application definition
 
@@ -114,20 +114,17 @@ USE_L10N = True
 USE_TZ = True
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-            os.path.join(BASE_DIR, "static")
-            ]
-
-STATICFILES_STORAGE = 'whitenoise.django.CompressedManifestStaticFilesStorage'
+#STATICFILES_DIRS = [
+#            os.path.join(BASE_DIR, "static")
+#            ]
+#
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 import dj_database_url 
 prod_db  =  dj_database_url.config(conn_max_age=500)
