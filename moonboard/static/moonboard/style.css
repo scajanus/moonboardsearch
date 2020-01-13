@@ -1,0 +1,193 @@
+/* Custom fonts */
+@font-face {
+	font-family: Avenir;
+	src: url("fonts/AvenirLTStd-Light.otf") format("opentype");
+}
+
+@font-face {
+	font-family: Avenir;
+	font-weight: bold;
+	src: url("fonts/AvenirLTStd-Black.otf") format("opentype");
+}
+
+@font-face {
+	font-family: Produkt;
+	src: url("fonts/Produkt-Light.otf") format("opentype");
+}
+
+body {
+	margin: 0;
+	height: 100%;
+	font-family: "Avenir", sans-serif;
+	text-align: center;
+}
+
+h1 {
+	font-family: "Produkt", sans-serif;
+	font-weight: normal;
+}
+
+h2 {
+	font-weight: normal;
+}
+
+table {
+	border: 0px solid black;
+	table-layout: fixed;
+	width: 27vw;
+	z-index: 1;
+}
+
+table {
+	background: url(mbsetup-2016-min.jpg) no-repeat scroll center center;
+	background-size: contain;
+	background-repeat: no-repeat;
+
+}
+
+th {
+	font-size: 40%;
+	height: 2.1vw;
+	padding: 0px;
+}
+
+tr {
+	height: 1vw;
+	line-height: 0em;
+	padding: 0px;
+}
+td {padding: 0px;}
+
+/* th, tr {
+	color: transparent;
+} */
+
+.clear-button {
+	width: 200px;
+	margin: 2em;
+	height: 50px;
+	border: 2px solid #888;
+	font-size: 15px;
+	font-family: "Avenir";
+	padding: 8px 12px;
+	border-radius: 6px;
+	box-shadow: none;
+}
+
+.top-banner {
+	position: fixed;
+	height: 90px;
+	width: 100%;
+	background-color: #696969;
+	font-size: 150%;
+	color: white;
+}
+
+.main {
+	text-align: center;
+	padding-top: 150px;
+}
+
+table.center {
+	margin-left:auto; 
+	margin-right:auto;
+}
+
+.led-button {
+	height: 2vw;
+	width: 2vw;
+	border-radius: 1vw;
+	box-shadow: none;
+	border: 0px;
+	/* background: #55a05b21; */
+	background: transparent;
+}
+
+.red-button {
+	border: 2px solid #ff0000;
+}
+
+.green-button {
+	border: 2px solid #20c997;
+}
+
+.blue-button {
+	border: 2px solid #0000ff;
+}
+
+.background {
+	position: fixed;
+	padding: 150px 100px 100px 100px;
+}
+
+/* Begin Modal CSS */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 45vh; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	width: 80%;
+}
+
+.red-border {
+	border: 5px solid #f00;
+	border-radius: 25px;
+}
+
+.grey-border {
+	border: 5px solid #888;
+	border-radius: 25px;
+}
+
+.green-border {
+	border: 5px solid #20c997;
+	border-radius: 25px;
+}
+
+/* The Close Button */
+.close {
+	color: #aaaaaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+	table {
+		border: 0px solid black;
+		table-layout: fixed;
+		width: 90vw;
+		z-index: 1;
+	}
+	th {
+		font-size: 40%;
+		height: 6vw;
+		padding: 0px;
+	}
+	tr {
+		height: 3vw;
+		line-height: 0em;
+		padding: 0px;
+	}
+}

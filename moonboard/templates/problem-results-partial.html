@@ -1,0 +1,24 @@
+{% if problems %}
+<div class="slidecontainer">
+  Overlap: <input type="range" min="1" max={{max_holds}} value={{max_holds}} class="slider" id="foo" onchange="filterRoutes(this.value)">
+</div>
+  {% for problem in problems %}
+  <div class="match-{{problem.hold_count}}">
+    <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
+    " id="{{problem.problem_id}}" onclick="toggleProblem('{{ problem.problem_id }}')">{{ problem.problem__name}} ({{problem.hold_count}}/{{problem.total_holds}})
+      <span class="badge badge-primary badge-pill
+      {% if problem.problem__grade|first == '6' %}
+  badge-success
+{% elif problem.problem__grade|first == '7' %}
+  badge-warning
+{% elif problem.problem__grade|first == '8' %}
+  badge-danger
+{% endif %} 
+      ">{{problem.problem__grade}}</span></button>
+  </div>
+    <!-- <a id="problem.problem_id" title="Click to show {{ problem.problem__name }}"
+    href="PleaseEnableJavascript.html" onclick="toggleRoute('{{ problem.problem_id }}');return false;">{{ problem.problem__name}} {{problem.problem__grade}}</a> -->
+  {% endfor %}
+{% else %}
+  <p>No problems found.</p>
+{% endif %}

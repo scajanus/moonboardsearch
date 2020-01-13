@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+    <h4>Clickable moonboard</h4>
+
+        {% include 'searchboard.html' %}
+
+    <!-- <div class="background">
+        <img src="mbsetup-2016-min.jpg" alt="Moonboard" />
+    </div> -->
+
+    <!-- <div id="messageModal" class="modal">
+        <div class="modal-content grey-border" id="messageDiv">
+            <p id="message"></p>
+            <div id="connect-buttons" style="display: none;">
+                <button type="button" onclick="init();">Try Again</button>
+            </div>
+            <div id="confirm-buttons" style="display: none;">
+                <button type="button" onclick="clearMoonboard();">Yes, clear!</button>
+                <button type="button" onclick="closeModal();">No, cancel.</button>
+            </div>
+        </div>
+    </div> -->
+</div>
+<div class="col-md-4">
+    <h4>Search results</h4>
+    {# problem-list section #}
+    <div id="replaceable-content" class="list-group-flush" style="height: 45vw; overflow-y: scroll; text-align: left;">
+      {% include 'problem-results-partial.html' %}
+    </div>
+</div>
+<div class="col-md-4">
+    <h4><div id="replaceable-name">Selected route</div></h4>
+
+    {% include 'resultboard.html' %}
+
+</div>
+</div>
+{% endblock %}

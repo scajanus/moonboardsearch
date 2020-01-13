@@ -1,0 +1,9 @@
+{% if problems %}
+  <ul>
+  {% for problem in problems %}
+    <li>{{ problem.problem__name }}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>No problems found.</p>
+{% endif %}
