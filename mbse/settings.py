@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'vsrjw0@gdhp14l&mzg-=yv$3u0l&f_my^o7bn_5_*v4q_mhl^('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', False)
 
 ALLOWED_HOSTS = ['moonboardsearchengine.herokuapp.com']
 
