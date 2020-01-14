@@ -16,12 +16,12 @@ def homePageView(request):
     print(holds)
 
     if holds:
-        problems = ProblemMove.objects.prefetch_related('problem_set')\
-        .filter(position__in=holds).distinct()\
-        .values('problem_id', 'problem__name', 'problem__grade').annotate(move_count=Count('*'))\
-        .filter(move_count__gte=len(holds))
+        # problems = ProblemMove.objects.prefetch_related('problem_set')\
+        # .filter(position__in=holds).distinct()\
+        # .values('problem_id', 'problem__name', 'problem__grade').annotate(move_count=Count('*'))\
+        # .filter(move_count__gte=len(holds))
         problems = ProblemMove.objects.prefetch_related('problem_set').distinct().values('problem_id', 'problem__name', 'problem__grade').annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .filter(hold_count__gte=1)
+            .filter(hold_count__gte=len(holds))
     else:
         problems = None
 
@@ -39,17 +39,24 @@ def problemListView(request):
     holds = request.GET.getlist('hold[]')
     min_grade = request.GET.get('minGrade', '6A+')
     max_grade = request.GET.get('maxGrade', '8C+')
+    min_overlap = max(int(request.GET.get('minOverlap', len(holds))), len(holds)-3)
+    min_holds = 3
+    max_holds = 20
     print(holds)
 
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
-        .filter(position__in=holds).distinct()\
-        .values('problem_id', 'problem__name', 'problem__grade').annotate(move_count=Count('*'))\
-        .filter(move_count__gte=len(holds))
-        problems = ProblemMove.objects.prefetch_related('problem_set').distinct().values('problem_id', 'problem__name', 'problem__grade').annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .filter(hold_count__gte=1)
+            .distinct()\
+            .values('problem_id', 'problem__name', 'problem__grade')\
+            .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
+            .filter(hold_count__gte=min_overlap)
     else:
         problems = None
+
+    html = render_to_string(template_name="problemlist.html",
+            context={"problems": problems, "max_holds": len(holds)}
+        )
+    return HttpResponse(html)
 
 def problemView(request):
     # parameters: holds, grade, overlap, # of holds used
