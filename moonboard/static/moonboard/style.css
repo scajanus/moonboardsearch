@@ -52,15 +52,15 @@ th {
 }
 
 tr {
-	height: 1vw;
+	/* height: 1vw; */
 	line-height: 0em;
 	padding: 0px;
 }
 td {padding: 0px;}
 
-/* th, tr {
+th, tr {
 	color: transparent;
-} */
+}
 
 .clear-button {
 	width: 200px;
@@ -99,7 +99,10 @@ table.center {
 	border-radius: 1vw;
 	box-shadow: none;
 	border: 0px;
-	/* background: #55a05b21; */
+	background: #55a05b21;
+}
+
+.nonclickable-led-button {
 	background: transparent;
 }
 
@@ -173,6 +176,19 @@ table.center {
 	cursor: pointer;
 }
 
+.mb-top-space {
+	height: 2.4vw;
+}
+.mb-bottom-space {
+	height: 1.36vw;
+}
+.mb-left-space {
+	width: 2.85vw;
+}
+.mb-right-space {
+	width: 1.25vw;
+}
+
 @media screen and (max-width: 768px) {
 	table {
 		border: 0px solid black;
@@ -190,4 +206,41 @@ table.center {
 		line-height: 0em;
 		padding: 0px;
 	}
+	.mb-top-space {
+		height: 7.1vw;
+	}
+	.mb-bottom-space {
+		height: 4.4vw;
+	}
+	.mb-left-space {
+		width: 14.4vw;
+	}
+	.mb-right-space {
+		width: 9.9vw;
+	}
+
+	.led-button {
+		height: 5.5vw;
+		width: 5.5vw;
+		border-radius: 3vw;
+		box-shadow: none;
+		border: 0px;
+		background: #55a05b21;
+	}
+	.nonclickable-led-button {
+		background: transparent;
+	}
+	
+	.red-button {
+		border: 2px solid #ff0000;
+	}
+	
+	.green-button {
+		border: 2px solid #20c997;
+	}
+	
+	.blue-button {
+		border: 2px solid #0000ff;
+	}
+
 }
