@@ -88,7 +88,8 @@ function toggleButton(buttonId) {
     sessionStorage.setItem('hold', JSON.stringify(current_holds))
 
     const request_parameters = {
-      hold: current_holds
+      hold: current_holds,
+      nocache: new Date().getTime()
     }
 
     	// if scheduled_function is NOT false, cancel the execution of the function
@@ -104,7 +105,8 @@ function toggleProblem(problemId) {
   console.log('toggle' + problemId)
 
   const request_parameters = {
-    problemId: problemId
+    problemId: problemId,
+    nocache: new Date().getTime()
   }
 
   if (scheduled_function) {
