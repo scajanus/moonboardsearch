@@ -76,6 +76,12 @@ let problem_ajax_call = function (endpoint, request_parameters) {
 }
 
 function toggleButton(buttonId) {
+  
+    // if scheduled_function is NOT false, cancel the execution of the function
+    if (scheduled_function) {
+      clearTimeout(scheduled_function)
+    }
+
     // console.log(buttonId);
     var classes = document.getElementById(buttonId).classList;
   
@@ -111,11 +117,6 @@ function toggleButton(buttonId) {
       'no-cache': new Date().getTime(),
       setYear: setYear
     }
-
-    	// if scheduled_function is NOT false, cancel the execution of the function
-	if (scheduled_function) {
-		clearTimeout(scheduled_function)
-	}
 
 	// setTimeout returns the ID of the function to be executed
 	scheduled_function = setTimeout(ajax_call, delay_by_in_ms, endpoint, request_parameters)
