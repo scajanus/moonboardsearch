@@ -1,7 +1,7 @@
 const results_div = $('#replaceable-content')
 const selected_problem_name = $('#replaceable-name')
 var hold_overlap_slider = document.getElementById("hold-overlap");
-const endpoint = '/'
+const endpoint = '/problems'
 const delay_by_in_ms = 1000
 let scheduled_function = false
 sessionStorage.removeItem('hold')
@@ -16,6 +16,23 @@ function filterRoutes(overlap){
   } 
   
 }
+
+function changeSetYear() {
+  // Get the checkbox
+  var checkBox = document.getElementById("setYearCheckbox");
+
+  // If the checkbox is checked, display the output text
+  if (checkBox.checked == true){
+    sessionStorage.setItem('setYear', 2017)
+    document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
+    document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
+  } else {
+    sessionStorage.setItem('setYear', 2016)
+    document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
+    document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
+
+  }
+} 
 
 let ajax_call = function (endpoint, request_parameters) {
 	$.getJSON(endpoint, request_parameters)
@@ -67,6 +84,8 @@ function toggleButton(buttonId) {
       };
 
     holdsjson = sessionStorage.getItem('hold')
+    var setYear = sessionStorage.getItem('setYear') || '2016';
+
     if (holdsjson) {
       current_holds = JSON.parse(holdsjson)
     } else {
@@ -89,7 +108,8 @@ function toggleButton(buttonId) {
 
     const request_parameters = {
       hold: current_holds,
-      nocache: new Date().getTime()
+      'no-cache': new Date().getTime(),
+      setYear: setYear
     }
 
     	// if scheduled_function is NOT false, cancel the execution of the function

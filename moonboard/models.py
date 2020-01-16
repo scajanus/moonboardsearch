@@ -58,6 +58,7 @@ class Problem(models.Model):
     method = models.TextField(blank=True, null=True)  # Field name made lowercase.
     firstname = models.TextField(blank=True, null=True)  # Field name made lowercase.
     lastname = models.TextField(blank=True, null=True)  # Field name made lowercase.
+    setyear = models.IntegerField(blank=False, null=False)
 
     class Meta:
         managed = True
