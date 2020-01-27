@@ -65,7 +65,7 @@ let problem_ajax_call = function (endpoint, request_parameters) {
       else {
         classToAdd = 'blue-button'
       }
-      document.getElementById('result-' + hold[0]).classList = "led-button " + classToAdd;
+      document.getElementById('result-' + hold[0]).classList = "nonclickable-led-button " + classToAdd;
 
     });
     $('.result-board button').fadeTo('slow', 1)
