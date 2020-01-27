@@ -105,6 +105,11 @@ table.center {
 }
 
 .nonclickable-led-button {
+	height: 2vw;
+	width: 2vw;
+	border-radius: 1vw;
+	box-shadow: none;
+	border: 0px;
 	background: transparent;
 }
 
