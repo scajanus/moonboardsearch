@@ -127,7 +127,7 @@ function toggleProblem(problemId) {
 
   const request_parameters = {
     problemId: problemId,
-    nocache: new Date().getTime()
+    'no-cache': new Date().getTime()
   }
 
   if (scheduled_function) {
