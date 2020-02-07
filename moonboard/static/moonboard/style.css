@@ -114,15 +114,15 @@ table.center {
 }
 
 .red-button {
-	border: 2px solid #ff0000;
+	border: 3px solid #ff0000;
 }
 
 .green-button {
-	border: 2px solid #20c997;
+	border: 3px solid #20c997;
 }
 
 .blue-button {
-	border: 2px solid #0000ff;
+	border: 3px solid #0000ff;
 }
 
 .background {
@@ -235,18 +235,23 @@ table.center {
 		background: #55a05b21;
 	}
 	.nonclickable-led-button {
+		height: 5.5vw;
+		width: 5.5vw;
+		border-radius: 3vw;
+		box-shadow: none;
+		border: 0px;
 		background: transparent;
 	}
 	
 	.red-button {
-		border: 2px solid #ff0000;
+		border: 3px solid #ff0000;
 	}
 	
 	.green-button {
-		border: 2px solid #20c997;
+		border: 3px solid #20c997;
 	}
 	
 	.blue-button {
-		border: 2px solid #0000ff;
+		border: 3px solid #0000ff;
 	}
 }
