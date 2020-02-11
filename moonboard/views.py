@@ -37,25 +37,26 @@ def homePageView(request):
 
 def problemListView(request):
     holds = request.GET.getlist('hold[]')
-    min_grade = request.GET.get('minGrade', '6A+')
-    max_grade = request.GET.get('maxGrade', '8C+')
-    min_overlap = max(int(request.GET.get('minOverlap', len(holds))), len(holds)-3)
-    setyear = request.GET.get('setYear', 2016)
+    min_grade = request.GET.get('min_grade', '6A+')
+    max_grade = request.GET.get('max_grade', '8C+')
+    min_overlap = max(int(request.GET.get('min_overlap', len(holds))), len(holds)-3)
+    print(min_overlap)
+    set_year = request.GET.get('set_year', 2016)
     min_holds = 3
     max_holds = 20
-    print(holds)
+    #print(holds)
 
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
             .distinct()\
             .values('problem_id', 'problem__name', 'problem__grade','problem__setyear')\
             .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .filter(hold_count__gte=min_overlap, problem__setyear=setyear)
+            .filter(hold_count__gte=min_overlap, problem__setyear=set_year)
     else:
         problems = None
 
     html = render_to_string(template_name="problem-results-partial.html",
-            context={"problems": problems, "max_holds": len(holds)}
+            context={"problems": problems, "min_overlap": min_overlap, "max_holds": len(holds)}
         )
     data_dict = {"html_from_view": html}
 

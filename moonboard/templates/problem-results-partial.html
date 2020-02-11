@@ -1,9 +1,9 @@
-{% if problems %}
-<!-- <div class="slidecontainer">
-  Overlap: <input type="range" min="1" max={{max_holds}} value={{max_holds}} class="slider" id="foo" onchange="filterRoutes(this.value)">
+{% if max_holds > 4 %}
+<div class="slidecontainer mt-5">
+  Overlap: <input type="range" min={{max_holds|add:"-2"}} max={{max_holds}} value={{min_overlap}} class="slider" id="foo" onchange="filterRoutes(this.value)">
 </div>
-<div id="slider-range"></div>
-# TODO, check https://stackoverflow.com/a/42488787/4751065 -->
+{% endif %}
+{% if problems %}
   {% for problem in problems %}
   <div class="match-{{problem.hold_count}}">
     <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton

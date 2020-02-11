@@ -6,15 +6,17 @@ const delay_by_in_ms = 1000
 let scheduled_function = false
 sessionStorage.removeItem('hold')
 
-function filterRoutes(overlap){
-  var i;
-  for (i = 1; i < 50; i++) {
-    $('.match-' + i).removeClass('d-none')
-  } 
-  for (i = 1; i < overlap; i++) {
-    $('.match-' + i).addClass('d-none')
-  } 
-  
+function filterRoutes(minOverlap){
+  // TODO: Call getProblemList with current set of holds & setYear
+  var setYear = sessionStorage.getItem('setYear') || '2016';
+  holdsjson = sessionStorage.getItem('hold')
+
+  if (holdsjson) {
+    current_holds = JSON.parse(holdsjson)
+  } else {
+    current_holds = []
+  }
+  getProblemList(current_holds, setYear, minOverlap)
 }
 
 function changeSetYear() {
@@ -76,21 +78,9 @@ let problem_ajax_call = function (endpoint, request_parameters) {
 }
 
 function toggleButton(buttonId) {
-  
-    // if scheduled_function is NOT false, cancel the execution of the function
-    if (scheduled_function) {
-      clearTimeout(scheduled_function)
-    }
-
-    // console.log(buttonId);
     var classes = document.getElementById(buttonId).classList;
-  
-    var data = {
-        color: ""
-      };
 
     holdsjson = sessionStorage.getItem('hold')
-    var setYear = sessionStorage.getItem('setYear') || '2016';
 
     if (holdsjson) {
       current_holds = JSON.parse(holdsjson)
@@ -103,23 +93,14 @@ function toggleButton(buttonId) {
       classToAdd = "blue-button";
       current_holds.push(buttonId)
     }
-      else if(classes.item(1) == "blue-button") {
-        //Currently blue, turn off
-        classToAdd = ""
-        current_holds.splice($.inArray(buttonId, current_holds), 1);
-      }
-
+    else if(classes.item(1) == "blue-button") {
+      //Currently blue, turn off
+      classToAdd = ""
+      current_holds.splice($.inArray(buttonId, current_holds), 1);
+    }
     document.getElementById(buttonId).classList = "led-button " + classToAdd;
     sessionStorage.setItem('hold', JSON.stringify(current_holds))
-
-    const request_parameters = {
-      hold: current_holds,
-      'no-cache': new Date().getTime(),
-      setYear: setYear
-    }
-
-	// setTimeout returns the ID of the function to be executed
-	scheduled_function = setTimeout(ajax_call, delay_by_in_ms, endpoint, request_parameters)
+    getProblemList(holds=current_holds)
 }
 
 function toggleProblem(problemId) {
@@ -136,4 +117,24 @@ function toggleProblem(problemId) {
 
   scheduled_function = setTimeout(problem_ajax_call, delay_by_in_ms, '/problemjson', request_parameters)
 
+}
+
+function getProblemList(holds, setYear, minOverlap, minGrade, maxGrade, minHolds, maxHolds) {
+  if(!setYear) {
+    var setYear = sessionStorage.getItem('setYear') || '2016';
+  }
+  const request_parameters = {
+    hold: holds,
+    min_grade: minGrade,
+    max_grade: maxGrade,
+    min_overlap: minOverlap,
+    set_year: setYear,
+    min_holds: minHolds,
+    max_holds: maxHolds,
+    'no-cache': new Date().getTime(),
+  }
+  if (scheduled_function) {
+    clearTimeout(scheduled_function)
+  }
+  scheduled_function = setTimeout(ajax_call, delay_by_in_ms, endpoint, request_parameters)
 }
