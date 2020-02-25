@@ -9,6 +9,10 @@ sessionStorage.removeItem('hold')
 function filterRoutes(minOverlap){
   // TODO: Call getProblemList with current set of holds & setYear
   var setYear = sessionStorage.getItem('setYear') || '2016';
+  var setAngle = sessionStorage.getItem('setAngle') || '40';
+  var minGrade = sessionStorage.getItem('minGrade') || '5+';
+  var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+
   holdsjson = sessionStorage.getItem('hold')
 
   if (holdsjson) {
@@ -16,7 +20,8 @@ function filterRoutes(minOverlap){
   } else {
     current_holds = []
   }
-  getProblemList(current_holds, setYear, minOverlap)
+  console.log('min' + minGrade);
+  getProblemList(current_holds, setYear, setAngle, minOverlap, minGrade, maxGrade)
 }
 
 function changeSetYear() {
@@ -34,7 +39,33 @@ function changeSetYear() {
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
 
   }
-} 
+}
+
+function changeSetAngle() {
+  // Get the checkbox
+  var checkBox = document.getElementById("setAngleCheckbox");
+  //console.log('checkbox' + checkBox.checked)
+
+  // If the checkbox is checked, display the output text
+  if (checkBox.checked == true){
+    sessionStorage.setItem('setAngle', 40)
+  } else {
+    sessionStorage.setItem('setAngle', 25)
+  }
+
+  holdsjson = sessionStorage.getItem('hold')
+  if (holdsjson) {
+    current_holds = JSON.parse(holdsjson)
+  } else {
+    current_holds = []
+  }
+  sessionStorage.setItem('hold', JSON.stringify(current_holds))
+  getProblemList(holds=current_holds)
+
+
+
+  console.log('setAngle'+sessionStorage.getItem('setAngle'))
+}
 
 let ajax_call = function (endpoint, request_parameters) {
 	$.getJSON(endpoint, request_parameters)
@@ -55,7 +86,7 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     selected_problem_name.html(response['name'] + ' ' + response['grade'])
     $('.result-board button').fadeTo('fast', 0).promise().then(() => {
     $('.result-board button').removeClass('blue-button red-button green-button')
-    
+
     response['holds'].forEach(hold => {
       if(hold[1]) {
         classToAdd = 'green-button'
@@ -119,16 +150,21 @@ function toggleProblem(problemId) {
 
 }
 
-function getProblemList(holds, setYear, minOverlap, minGrade, maxGrade, minHolds, maxHolds) {
+function getProblemList(holds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds) {
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2016';
   }
+  if(!setAngle) {
+    var setAngle = sessionStorage.getItem('setAngle') || '40';
+  }
+  console.log('foo' + minGrade,maxGrade);
   const request_parameters = {
     hold: holds,
     min_grade: minGrade,
     max_grade: maxGrade,
     min_overlap: minOverlap,
     set_year: setYear,
+    set_angle: setAngle,
     min_holds: minHolds,
     max_holds: maxHolds,
     'no-cache': new Date().getTime(),

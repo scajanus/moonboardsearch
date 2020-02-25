@@ -4,7 +4,7 @@ from django.db.models import Count, Case, When
 
 from .models import Problem, ProblemMove
 from django.template.loader import render_to_string
-
+import pprint
 
 def helloView(request):
     return HttpResponse('Hello World!')
@@ -20,7 +20,7 @@ def homePageView(request):
         # .filter(position__in=holds).distinct()\
         # .values('problem_id', 'problem__name', 'problem__grade').annotate(move_count=Count('*'))\
         # .filter(move_count__gte=len(holds))
-        problems = ProblemMove.objects.prefetch_related('problem_set').distinct().values('problem_id', 'problem__name', 'problem__grade').annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
+        problems = ProblemMove.objects.prefetch_related('problem_set').distinct().values('problem_id', 'problem__name', 'problem__grade', 'problem__repeats').annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
             .filter(hold_count__gte=len(holds))
     else:
         problems = None
@@ -31,27 +31,31 @@ def homePageView(request):
             context={"problems": problems, "max_holds": len(holds)}
         )
         data_dict = {"html_from_view": html}
+        pprint(data_dict)
         return JsonResponse(data=data_dict, safe=False)
 
     return render(request, 'home.html')
 
 def problemListView(request):
+    pprint.pprint(request.GET)
     holds = request.GET.getlist('hold[]')
-    min_grade = request.GET.get('min_grade', '6A+')
+    min_grade = request.GET.get('min_grade', '5+')
     max_grade = request.GET.get('max_grade', '8C+')
     min_overlap = max(int(request.GET.get('min_overlap', len(holds))), len(holds)-3)
-    print(min_overlap)
     set_year = request.GET.get('set_year', 2016)
+    set_angle = request.GET.get('set_angle', 40)
+
     min_holds = 3
     max_holds = 20
     #print(holds)
 
+    pprint.pprint(('in renderer',min_grade,max_grade))
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
             .distinct()\
-            .values('problem_id', 'problem__name', 'problem__grade','problem__setyear')\
+            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle')\
             .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .filter(hold_count__gte=min_overlap, problem__setyear=set_year)
+            .filter(hold_count__gte=min_overlap, problem__setyear=set_year, problem__setangle=set_angle)
     else:
         problems = None
 
@@ -65,9 +69,9 @@ def problemListView(request):
 def problemView(request):
     # parameters: holds, grade, overlap, # of holds used
     holds = request.GET.getlist('hold')
-    min_grade = request.GET['mingrade']
-    max_grade = request.GET['maxgrade']
-    print(min_grade)
+    min_grade = request.GET['min_grade']
+    max_grade = request.GET['max_grade']
+
 
     qs  = ProblemMove.objects.prefetch_related('problem_set')\
         .filter(position__in=holds).distinct()\
@@ -75,7 +79,7 @@ def problemView(request):
         .filter(move_count__gte=len(holds))
     ctx = {'problems': qs}
     return render(request, 'problems.html', context=ctx)
-    
+
     #return Response('Holds:' + request.GET.getlist('hold'))
 
 def problemView(request):

@@ -1,14 +1,19 @@
-{% if max_holds > 4 %}
-<div class="slidecontainer mt-5">
-  Overlap: <input type="range" min={{max_holds|add:"-2"}} max={{max_holds}} value={{min_overlap}} class="slider" id="foo" onchange="filterRoutes(this.value)">
-</div>
-{% endif %}
+
 {% if problems %}
   {% for problem in problems %}
   <div class="match-{{problem.hold_count}}">
     <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
     " id="{{problem.problem_id}}" onclick="toggleProblem('{{ problem.problem_id }}')">
-    {{ problem.problem__name}} ({{problem.hold_count}}) ({{problem.total_holds}} holds)
+    <span>{{ problem.problem__name}} ({{problem.total_holds}} holds)
+    <span class="badge badge-primary badge-pill repeats
+    {% if problem.problem__repeats > 200 %}
+    badge-success
+    {% elif problem.problem__repeats <= 200 and problem.problem__repeats > 30  %}
+    badge-warning
+    {% elif problem.problem__repeats <= 30 %}
+    badge-danger
+    {% endif %}
+    ">{{problem.problem__repeats}}</span></span>
       <span class="badge badge-primary badge-pill
       {% if problem.problem__grade|first == '6' %}
   badge-success
@@ -16,7 +21,7 @@
   badge-warning
 {% elif problem.problem__grade|first == '8' %}
   badge-danger
-{% endif %} 
+{% endif %}
       ">{{problem.problem__grade}}</span></button>
   </div>
     <!-- <a id="problem.problem_id" title="Click to show {{ problem.problem__name }}"
@@ -25,3 +30,544 @@
 {% else %}
   <p>No problems found.</p>
 {% endif %}
+
+{% if max_holds > 4 %}
+<div class="slidecontainer mt-5">
+  Overlap: <input type="range" min={{max_holds|add:"-2"}} max={{max_holds}} value={{min_overlap}} class="slider" id="foo" onchange="filterRoutes(this.value)">
+</div>
+{% endif %}
+
+              <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
+                   <div id="slider"></div>
+               </div>
+
+<div class="filter-wrap" style="clear:both;  margin-top:50px">
+               <div class="row section-header">
+
+                   <div class="col-md-12">
+                       <h3>
+                           Filters
+                       </h3>
+
+                   </div>
+
+               </div>
+
+
+
+               <ul class="filters margin-wrapper">
+
+                   <li>
+                       <button class="filter" data-field="Myascents">My ascents</button>
+                   </li>
+
+
+                   <li>
+
+                       <button class="filter" data-field="Setbyme">Set by me</button>
+                   </li>
+                   <li>
+
+                       <button class="filter" data-field="Benchmarks">Benchmarks</button>
+
+                   </li>
+                   <li>
+
+                       <button class="filter" data-field="None">Clear filters</button>
+                   </li>
+
+               </ul>
+
+               <div class="row section-header">
+
+                   <div class="col-md-12">
+                       <h3>
+                           Sort
+
+                       </h3>
+
+                   </div>
+
+               </div>
+
+               <ul class="sort margin-wrapper">
+
+                   <li>
+                       <button class="sortBtn selected" data-field="New" data-dir="desc">New</button>
+                   </li>
+
+
+                   <li>
+
+                       <button class="sortBtn" data-field="GradeAsc" data-dir="asc">Easy</button>
+                   </li>
+                   <li>
+
+                       <button class="sortBtn" data-field="GradeDesc" data-dir="desc">Hard</button>
+
+                   </li>
+                   <li>
+
+                       <button class="sortBtn" data-field="Rating" data-dir="desc">Rating</button>
+                   </li>
+                   <li>
+
+                       <button class="sortBtn" data-field="RepeatsDesc" data-dir="desc">Most Repeats</button>
+
+                   </li>
+                   <li>
+
+                       <button class="sortBtn" data-field="RepeatsAsc" data-dir="asc">Least Repeated</button>
+                   </li>
+               </ul>
+</div>
+
+                 <script type="text/javascript">
+
+
+                    var holdsetups = JSON.parse('[{"Id":17,"Description":"MoonBoard Masters 2019","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":15,"Description":"MoonBoard Masters 2017","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":1,"Description":"MoonBoard 2016","AllowClimbMethods":false,"MoonBoardConfigurations":[]}]');
+
+
+
+
+
+
+
+                     var ticks_labels = ["5+","6A","6A+","6B","6B+","6C","6C+","7A","7A+","7B","7B+","7C","7C+","8A","8A+","8B","8B+"];
+
+
+
+
+                     var moonSlider = document.getElementById('slider');
+
+                     var minGrade, maxGrade, minTick, maxTick;
+                     minGrade = sessionStorage.getItem('minGrade') || '5+';
+                     maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+                     minTick = sessionStorage.getItem('minTick') || 0;
+                     maxTick = sessionStorage.getItem('maxTick') || 16;
+
+                     noUiSlider.create(moonSlider, {
+                         start: [minTick, maxTick],
+                         step: 1,
+                         connect: true,
+                         range: {
+                             'min': [0],
+                             'max': [16]
+                         },
+                         pips: {
+                             mode: 'values',
+                             values: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+                             density: 17
+                         }
+                     });
+
+
+
+                     var $sliderMin = $(".noUi-handle-lower");
+                     var $sliderMax = $(".noUi-handle-upper");
+
+
+
+                     function sliderValueChanged(values, handle, unencoded, tap, positions) {
+
+                         var tMin = ticks_labels[parseInt(values[0])];
+                         var tMax = ticks_labels[parseInt(values[1])];
+
+                         if (minGrade != tMin || maxGrade != tMax) {
+
+
+
+                             minGrade = tMin;
+                             maxGrade = tMax;
+                             console.log('Min ' + minGrade +': Max '+maxGrade)
+                             sessionStorage.setItem('minTick', parseInt(values[0]));
+                             sessionStorage.setItem('maxTick', parseInt(values[1]));
+
+                             sessionStorage.setItem('minGrade', minGrade);
+                             sessionStorage.setItem('maxGrade', maxGrade);
+
+
+                         }
+                         var setYear = sessionStorage.getItem('setYear') || '2016';
+                         var setAngle = sessionStorage.getItem('setAngle') || '40';
+
+
+                         holdsjson = sessionStorage.getItem('hold')
+
+                         if (holdsjson) {
+                           current_holds = JSON.parse(holdsjson)
+                         } else {
+                           current_holds = []
+                         }
+                         console.log('jere' + minGrade);
+                         getProblemList(current_holds, setYear, setAngle, 4, minGrade, maxGrade)
+
+
+                     }
+
+                     function sliderIsSliding(values, handle, unencoded, tap, positions) {
+
+                         if ($sliderMin.position().left === $sliderMax.position().left) {
+
+                             if (handle == 0) {
+                                 $sliderMax.css("z-index", 4);
+                             }
+                             else {
+                                 $sliderMax.css("z-index", 5);
+                             }
+                         }
+                     }
+
+
+                     moonSlider.noUiSlider.on('slide', sliderIsSliding);
+                     moonSlider.noUiSlider.on('change', sliderValueChanged);
+
+
+
+
+
+                     function updateSliderTicks()
+                     {
+                         var $nodes = $(".noUi-value-large");
+
+                         $nodes.each(function (index, e) {
+
+
+                             if (index % 2 === 0) {
+
+                                 e.innerHTML = ticks_labels[index];
+                             }
+                             else {
+                                 e.innerHTML = " ";
+                             }
+
+                         });
+                     }
+
+                     updateSliderTicks();
+
+
+                     $("button.btnGrade").on("click", function () {
+                         var $button = $(this);
+
+
+                         $button.toggleClass("unselected");
+
+                         var grades = $("button.btnGrade:not('.unselected')")
+                             .map(function () {
+                                 return this.innerText;
+                             })
+                             .get()
+                             .join(",");
+
+                         console.log('Grades '+grades);
+
+
+
+                     });
+
+                     
+
+
+
+
+                     $("button.tabButton").on("click", function () {
+
+                         var $tabButton = $(this);
+
+                         $("button.tabButton").removeClass("selected");
+                         $("div.moon-tab").removeClass("active");
+
+
+                         var id = $tabButton.data("id");
+
+                         $tabButton.addClass('selected');
+
+                         $('div.moon-tab[data-id="' + id + '"]').addClass('active');
+
+
+                     });
+
+
+                     var $grdProblems;
+                     var problemsDs;
+
+                     var $grdSetters;
+                     var settersDs;
+
+                     $(window).resize(function () {
+
+                         sizeContent();
+
+                     });
+
+
+
+
+
+
+
+
+                     var selectedIndex = -1;
+                     var currentProblem;
+
+                     $(function () {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                         $(".sortBtn").click(function () {
+
+                             var $btn = $(this);
+
+                             $(".sortBtn").removeClass('selected');
+
+                             $btn.addClass('selected');
+
+
+
+
+
+                             var dsSort = [];
+
+                             $("#sortedBy").text("Sorted by: " + $btn.text());
+
+
+                             console.log($btn.text());
+
+
+
+
+
+                         });
+
+
+
+
+
+                         $("#btnProblemSearch").click(function () {
+
+
+                         });
+
+                         $(".filter").click(function () {
+
+
+                             var $btn = $(this);
+
+                             $(".filter").removeClass('selected');
+
+                             var field = $btn.data("field");
+                             var filters = [];
+
+                             if (field != 'None') {
+
+                                 $btn.addClass('selected');
+
+
+
+
+                             }
+                             else {
+
+                                 $("button.btnHoldset:not(.selected)").addClass("selected");
+
+                                 $("button.btnConfig:not(.selected)").addClass("selected");
+
+
+
+
+                             }
+
+                            console.log('Field ' + field)
+
+
+                         });
+
+
+
+                     });
+
+
+                     function grdProblemsLoaded() {
+
+                         if (!$grdProblems) {
+                             $grdProblems = $("#grdProblems").data("kendoGrid");
+                         }
+
+                         problemsDs = $grdProblems.dataSource;
+
+                         dataSource = $grdProblems.dataSource;
+                             dataSource.transport.options.read.beforeSend = function (r) {r.setRequestHeader('_itbmdw', 'orWugj2yLI9CJ8tWUagVvLWkIWR4e80/k/ay4uqeFNE=__dGBu/HB93Z1l70xMDye4TTC5t5eefq/JKsGiZFcQzmQ=');
+                         };
+
+
+                         $('#totalProblems').text(toDisplayText('PROBLEM', problemsDs.total()));
+
+
+
+                             selectedIndex = -1;
+
+
+                     }
+
+
+                     function grdSettersLoaded() {
+
+                         if (!$grdSetters) {
+                             $grdSetters = $("#grdSetters").data("kendoGrid");
+                         }
+
+                         settersDs = $grdSetters.dataSource;
+
+                         $('#totalSetters').text('SET BY: (' + toDisplayText('setter', settersDs.total()) + ')');
+                     }
+
+
+
+
+
+                     var $lastProblemTr;
+
+                     function problemSelected(model) {
+
+
+                         var $problemTr = $(event.target).closest("tr");
+
+                         model = $grdProblems.dataItem($problemTr);
+
+                         moonBoardObj.renderProblem(model);
+
+                         $problemTr.addClass('selected');
+
+                         if ($lastProblemTr) {
+
+                             $lastProblemTr.removeClass('selected');
+                         }
+
+                         $lastProblemTr = $problemTr;
+
+                         setProblemHeader(model);
+
+                         toggleSlideMenu();
+
+                     }
+
+
+                     function setProblemHeader(model) {
+                         $("#moonBrand").text(model.Name + ", " + model.Grade);
+
+                         $("#pdSetby").text("SET BY: " + model.Setter.Nickname);
+                     }
+
+                     var $lastSetterTr;
+
+
+                     function filterBySetter() {
+
+
+                         var $setterTr = $(event.target).closest("tr");
+
+                         var model = $grdSetters.dataItem($setterTr);
+
+
+                         $setterTr.find('.setter').addClass('selected');
+
+                         if ($lastSetterTr) {
+
+                             $lastSetterTr.find('.setter').removeClass('selected');
+                         }
+
+                         $lastSetterTr = $setterTr;
+
+
+
+                         $("#TxtSetterName").val(model.SetBy);
+
+
+                     }
+
+
+                     function tog(v) { return v ? 'addClass' : 'removeClass'; }
+
+
+                     $(document).on('input', '.clearable', function () {
+                         $(this)[tog(this.value)]('x');
+
+                     }).on('touchstart click', '.x', function (ev) {
+
+
+                         ev.preventDefault();
+
+                         $(this).removeClass('x').val('').change();
+
+
+                         var filters = [];
+
+
+                         if (this === $("#TxtProblemName").get(0)) {
+                             if (filterContains(problemsDs.filter().filters, "Name")) {
+
+                                 filters = removeFilter(problemsDs.filter().filters, "Name");
+
+                                 problemsDs.filter(filters);
+
+                                 settersDs.filter(filters);
+                             }
+
+                         }
+                         else {
+
+                             if (filterContains(settersDs.filter().filters, "SetBy")) {
+
+                                 filters = removeFilter(settersDs.filter().filters, "SetBy");
+
+                                 problemsDs.filter(filters);
+
+                                 settersDs.filter(filters);
+                             }
+
+                         }
+
+
+
+                         });
+
+
+
+
+
+
+
+                     function getSelectedHoldsetup(curHoldsetId) {
+                         return $.grep(holdsetups, function (e) { return e.Id == curHoldsetId; });
+                     }
+
+
+
+                 </script>

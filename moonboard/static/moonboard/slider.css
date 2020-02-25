@@ -15,6 +15,7 @@
   
   /* The slider */
   .slider {
+    position: absolute;
     cursor: pointer;
     top: 0;
     left: 0;

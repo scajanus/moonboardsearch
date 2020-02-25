@@ -1,0 +1,13 @@
+]
+  }],
+  "suites": [{
+    "id": "e103db18-7553-4493-a187-7c6b78fdb2fd",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["3b148e55-ac01-4a10-923d-d0c6fbef853f"]
+  }],
+  "urls": ["https://www.moonboard.com/"],
+  "plugins": []
+}
