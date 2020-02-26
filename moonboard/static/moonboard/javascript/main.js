@@ -29,10 +29,14 @@ function changeSetYear() {
   var checkBox = document.getElementById("setYearCheckbox");
 
   // If the checkbox is checked, display the output text
-  if (checkBox.checked == true){
+  if (document.getElementById('set2017').checked){
     sessionStorage.setItem('setYear', 2017)
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
     document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
+  } else if (document.getElementById('set2019').checked) {
+    sessionStorage.setItem('setYear', 2019)
+    document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')"
+    document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')"
   } else {
     sessionStorage.setItem('setYear', 2016)
     document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
@@ -157,7 +161,6 @@ function getProblemList(holds, setYear, setAngle, minOverlap, minGrade, maxGrade
   if(!setAngle) {
     var setAngle = sessionStorage.getItem('setAngle') || '40';
   }
-  console.log('foo' + minGrade,maxGrade);
   const request_parameters = {
     hold: holds,
     min_grade: minGrade,
