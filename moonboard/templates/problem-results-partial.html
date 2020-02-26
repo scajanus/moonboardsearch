@@ -4,7 +4,11 @@
   <div class="match-{{problem.hold_count}}">
     <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
     " id="{{problem.problem_id}}" onclick="toggleProblem('{{ problem.problem_id }}')">
-    <span>{{ problem.problem__name}} ({{problem.total_holds}} holds)
+    <span style="{% if problem.problem__rating == '1' %}
+    font-style:italic
+    {% elif problem.problem__rating == '3' %}
+    font-weight:bold
+    {% endif %}">{{ problem.problem__name}} ({{problem.total_holds}} holds)
     <span class="badge badge-primary badge-pill repeats
     {% if problem.problem__repeats > 200 %}
     badge-success
@@ -14,6 +18,10 @@
     badge-danger
     {% endif %}
     ">{{problem.problem__repeats}}</span></span>
+
+
+
+
       <span class="badge badge-primary badge-pill
       {% if problem.problem__grade|first == '6' %}
   badge-success
@@ -42,7 +50,7 @@
                </div>
 
 <div class="filter-wrap" style="clear:both;  margin-top:50px">
-               <div class="row section-header">
+              <!-- <div class="row section-header">
 
                    <div class="col-md-12">
                        <h3>
@@ -76,7 +84,7 @@
                        <button class="filter" data-field="None">Clear filters</button>
                    </li>
 
-               </ul>
+               </ul>-->
 
                <div class="row section-header">
 
@@ -93,7 +101,7 @@
                <ul class="sort margin-wrapper">
 
                    <li>
-                       <button class="sortBtn selected" data-field="New" data-dir="desc">New</button>
+                       <button class="sortBtn" data-field="New" data-dir="desc">New</button>
                    </li>
 
 
@@ -179,7 +187,6 @@
 
                              minGrade = tMin;
                              maxGrade = tMax;
-                             console.log('Min ' + minGrade +': Max '+maxGrade)
                              sessionStorage.setItem('minTick', parseInt(values[0]));
                              sessionStorage.setItem('maxTick', parseInt(values[1]));
 
@@ -199,8 +206,7 @@
                          } else {
                            current_holds = []
                          }
-                         console.log('jere' + minGrade);
-                         getProblemList(current_holds, setYear, setAngle, 4, minGrade, maxGrade)
+                         getProblemList(current_holds, setYear, setAngle, 3, minGrade, maxGrade, 3,20, '')
 
 
                      }
@@ -266,7 +272,7 @@
 
                      });
 
-                     
+
 
 
 
@@ -348,17 +354,30 @@
                              $(".sortBtn").removeClass('selected');
 
                              $btn.addClass('selected');
-
+                             var sortedBy = $btn.text();
+                             var setYear = sessionStorage.getItem('setYear') || '2016';
+                             var setAngle = sessionStorage.getItem('setAngle') || '40';
+                             var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
+                             var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
 
 
 
 
                              var dsSort = [];
 
-                             $("#sortedBy").text("Sorted by: " + $btn.text());
+                             $("#sortedBy").text("Sorted by: " + sortedBy);
 
+                             sessionStorage.setItem('sortedBy', sortedBy);
 
                              console.log($btn.text());
+                             holdsjson = sessionStorage.getItem('hold')
+
+                             if (holdsjson) {
+                               current_holds = JSON.parse(holdsjson)
+                             } else {
+                               current_holds = []
+                             }
+                             getProblemList(current_holds, setYear, setAngle, 3, minGrade, maxGrade, 3,20,sortedBy)
 
 
 

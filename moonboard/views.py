@@ -40,6 +40,7 @@ def problemListView(request):
     holds = request.GET.getlist('hold[]')
     min_grade = request.GET.get('min_grade', '5+')
     max_grade = request.GET.get('max_grade', '8C+')
+    sortedBy = request.GET.get('sortedBy',None)
     gradelist = ["5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+"]
     filtered_gradelist =  []
     record=False
@@ -73,7 +74,7 @@ def problemListView(request):
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
             .distinct()\
-            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle')\
+            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating')\
             .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
             .filter(hold_count__gte=min_overlap, problem__setyear=set_year, problem__setangle=set_angle)
     else:
@@ -81,13 +82,25 @@ def problemListView(request):
 
     filtered_problems = []
     for problem in problems:
-        pprint.pprint((problem['problem__grade'],filtered_gradelist))
         if problem['problem__grade'] in filtered_gradelist:
             filtered_problems.append(problem)
 
 
+    pprint.pprint(sortedBy)
+
+    if sortedBy == 'Most Repeats':
+        pprint.pprint('Most Repeats woo')
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'], reverse=True)
+    elif sortedBy == 'Least Repeated':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'])
+    elif sortedBy == 'Rating':
+        pprint.pprint('Rating')
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__rating'], reverse=True)
+    else:
+        sorted_filtered_problems =  problems
+
     html = render_to_string(template_name="problem-results-partial.html",
-            context={"problems": filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds)}
+            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds)}
         )
     data_dict = {"html_from_view": html}
 

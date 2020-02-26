@@ -150,7 +150,7 @@ function toggleProblem(problemId) {
 
 }
 
-function getProblemList(holds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds) {
+function getProblemList(holds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy) {
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2016';
   }
@@ -167,6 +167,7 @@ function getProblemList(holds, setYear, setAngle, minOverlap, minGrade, maxGrade
     set_angle: setAngle,
     min_holds: minHolds,
     max_holds: maxHolds,
+    sortedBy: sortedBy,
     'no-cache': new Date().getTime(),
   }
   if (scheduled_function) {

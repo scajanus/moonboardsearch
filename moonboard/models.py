@@ -62,6 +62,7 @@ class Problem(models.Model):
     setyear = models.IntegerField(blank=False, null=False)
     setangle = models.IntegerField(blank=False, null=False)
     repeats = models.IntegerField(blank=False, null=False)
+    rating = models.TextField(blank=False, null=False)
 
     class Meta:
         managed = True

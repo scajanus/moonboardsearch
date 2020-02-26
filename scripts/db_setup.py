@@ -34,9 +34,9 @@ def insert_problem(conn,Id, Name,Grade,moves,
                 setup,firstname,lastname,setyear,NameForUrl,DateInserted,Master,
                 Repeats, HoldSetup, setangle,**kwargs):
     cmd0 = "INSERT INTO setter VALUES (?,?)"
-    cmd1 = "INSERT INTO moonboard_problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    cmd1 = "INSERT INTO moonboard_problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
     cmd2 = "INSERT INTO moonboard_problemmove VALUES (?,?,?,?,?,?,?)"
-
+    rating =  kwargs['rating']
     c = conn.cursor()
     try:
         c.execute(cmd0,(firstname,lastname))
@@ -61,7 +61,8 @@ def insert_problem(conn,Id, Name,Grade,moves,
             Master,
             Repeats,
             HoldSetup.strip(),
-            setangle
+            setangle,
+            rating
             )
             )
     except Exception as e :
@@ -127,6 +128,7 @@ if __name__=="__main__":
                             Master=Master,
                             Benchmark=Benchmark,
                             AssessmentProblem=AssessmentProblem,
+                            rating=problem['UserRating'],
                             **problem
             )
         except sqlite3.Error as e:

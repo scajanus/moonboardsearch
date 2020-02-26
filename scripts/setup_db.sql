@@ -36,6 +36,7 @@ CREATE TABLE moonboard_problem(
     Repeats INTEGER,
     HoldSetup TEXT,
     SetAngle TEXT,
+    Rating TEXT,
     FOREIGN KEY (Firstname,Lastname) REFERENCES setter(Firstname,Lastname)
     );
 --
