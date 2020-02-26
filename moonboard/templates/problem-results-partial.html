@@ -46,7 +46,7 @@
 </div>
 {% endif %}
 -->
-{% if max_holds > 4 %}
+{% if max_holds > 3 %}
 <div class="slider-wrapper margin-wrapper" style="margin:30px 20px 50px 20px">
      <div id="slider2"></div>
  </div>
@@ -141,14 +141,14 @@
                  <script type="text/javascript">
 
 
-                   {% if max_holds > 4 %}
+                   {% if max_holds > 3 %}
                    var minOverlapSlider = document.getElementById('slider2');
                    noUiSlider.create(minOverlapSlider, {
                        start: {{min_overlap}},
                        step: 1,
                        connect: 'lower',
                        range: {
-                           'min': [{{max_holds|add:"-2"}}],
+                           'min': [{{max_holds|add:"-4"}}],
                            'max': [{{max_holds}}]
                        },
                        pips: {
@@ -233,7 +233,7 @@
                          } else {
                            current_holds = []
                          }
-                         getProblemList(current_holds, setYear, setAngle, 3, minGrade, maxGrade, 3,20, '')
+                         getProblemList(current_holds, setYear, setAngle, {{min_overlap}}, minGrade, maxGrade, 3,20, '')
 
 
                      }
@@ -275,7 +275,8 @@
 
 
                      }
-                     {% if max_holds > 4 %}
+                     {% if max_holds > 3 %}
+                     console.log('change {{ min_overlap }}');
                      minOverlapSlider.noUiSlider.on('change', slider2ValueChanged);
                      {% endif %}
 

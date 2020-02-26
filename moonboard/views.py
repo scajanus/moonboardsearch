@@ -59,7 +59,7 @@ def problemListView(request):
 
 
     min_overlap = max(
-                    int(request.GET.get('min_overlap', len(holds))), len(holds)-3
+                    int(request.GET.get('min_overlap', len(holds))), len(holds)-4
                     )
     # For some reason  min_overlap was coming back from  a request as len(holds)+1
     min_overlap = min(min_overlap,len(holds))
