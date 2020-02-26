@@ -31,7 +31,6 @@ def homePageView(request):
             context={"problems": problems, "max_holds": len(holds)}
         )
         data_dict = {"html_from_view": html}
-        pprint(data_dict)
         return JsonResponse(data=data_dict, safe=False)
 
     return render(request, 'home.html')
@@ -90,20 +89,18 @@ def problemListView(request):
         filtered_problems=[]
 
 
-    pprint.pprint(sortedBy)
+
 
     if sortedBy == 'Most Repeats':
-        pprint.pprint('Most Repeats woo')
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'], reverse=True)
     elif sortedBy == 'Least Repeated':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'])
     elif sortedBy == 'Rating':
-        pprint.pprint('Rating')
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__rating'], reverse=True)
     elif sortedBy == 'Grade':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__gradenum'], reverse=True)
     else:
-        sorted_filtered_problems =  problems
+        sorted_filtered_problems =  filtered_problems
 
     html = render_to_string(template_name="problem-results-partial.html",
             context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds)}
