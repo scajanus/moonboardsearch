@@ -8,7 +8,7 @@
     font-style:italic
     {% elif problem.problem__rating == '3' %}
     font-weight:bold
-    {% endif %}">{{ problem.problem__name}} ({{problem.total_holds}} holds)
+    {% endif %}">{{ problem.problem__name}} {{ problem.hold_count}} out of {{problem.total_holds}} holds
     <span class="badge badge-primary badge-pill repeats
     {% if problem.problem__repeats > 200 %}
     badge-success
@@ -39,11 +39,19 @@
   <p>No problems found.</p>
 {% endif %}
 
+<!--
 {% if max_holds > 4 %}
 <div class="slidecontainer mt-5">
   Overlap: <input type="range" min={{max_holds|add:"-2"}} max={{max_holds}} value={{min_overlap}} class="slider" id="foo" onchange="filterRoutes(this.value)">
 </div>
 {% endif %}
+-->
+{% if max_holds > 4 %}
+<div class="slider-wrapper margin-wrapper" style="margin:30px 20px 50px 20px">
+     <div id="slider2"></div>
+ </div>
+{% endif %}
+
 
               <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
                    <div id="slider"></div>
@@ -101,7 +109,7 @@
                <ul class="sort margin-wrapper">
 
                    <li>
-                       <button class="sortBtn" data-field="New" data-dir="desc">New</button>
+                       <button class="sortBtn" data-field="Grade" data-dir="desc">Grade</button>
                    </li>
 
 
@@ -131,6 +139,25 @@
 </div>
 
                  <script type="text/javascript">
+
+
+                   {% if max_holds > 4 %}
+                   var minOverlapSlider = document.getElementById('slider2');
+                   noUiSlider.create(minOverlapSlider, {
+                       start: {{min_overlap}},
+                       step: 1,
+                       connect: 'lower',
+                       range: {
+                           'min': [{{max_holds|add:"-2"}}],
+                           'max': [{{max_holds}}]
+                       },
+                       pips: {
+                        mode: 'steps',
+                        density: 100
+
+  }
+                   });
+                   {% endif %}
 
 
                     var holdsetups = JSON.parse('[{"Id":17,"Description":"MoonBoard Masters 2019","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":15,"Description":"MoonBoard Masters 2017","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":1,"Description":"MoonBoard 2016","AllowClimbMethods":false,"MoonBoardConfigurations":[]}]');
@@ -229,12 +256,35 @@
                      moonSlider.noUiSlider.on('change', sliderValueChanged);
 
 
+                     function slider2ValueChanged(values, handle, unencoded, tap, positions) {
+
+
+                         sessionStorage.setItem('min_overlap', parseInt(values[0]));
+
+
+                         var setYear = sessionStorage.getItem('setYear') || '2016';
+                         var setAngle = sessionStorage.getItem('setAngle') || '40';
+                         holdsjson = sessionStorage.getItem('hold')
+
+                         if (holdsjson) {
+                           current_holds = JSON.parse(holdsjson)
+                         } else {
+                           current_holds = []
+                         }
+                         getProblemList(current_holds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, '')
+
+
+                     }
+                     {% if max_holds > 4 %}
+                     minOverlapSlider.noUiSlider.on('change', slider2ValueChanged);
+                     {% endif %}
+
 
 
 
                      function updateSliderTicks()
                      {
-                         var $nodes = $(".noUi-value-large");
+                         var $nodes = $("#slider .noUi-value-large");
 
                          $nodes.each(function (index, e) {
 
@@ -423,7 +473,6 @@
 
                              }
 
-                            console.log('Field ' + field)
 
 
                          });

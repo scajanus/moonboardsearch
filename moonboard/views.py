@@ -81,9 +81,13 @@ def problemListView(request):
         problems = None
 
     filtered_problems = []
-    for problem in problems:
-        if problem['problem__grade'] in filtered_gradelist:
-            filtered_problems.append(problem)
+    if problems:
+        for problem in problems:
+            if problem['problem__grade'] in filtered_gradelist:
+                problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
+                filtered_problems.append(problem)
+    else:
+        filtered_problems=[]
 
 
     pprint.pprint(sortedBy)
@@ -96,6 +100,8 @@ def problemListView(request):
     elif sortedBy == 'Rating':
         pprint.pprint('Rating')
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__rating'], reverse=True)
+    elif sortedBy == 'Grade':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__gradenum'], reverse=True)
     else:
         sorted_filtered_problems =  problems
 
