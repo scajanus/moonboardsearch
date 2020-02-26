@@ -37,11 +37,31 @@ def homePageView(request):
     return render(request, 'home.html')
 
 def problemListView(request):
-    pprint.pprint(request.GET)
     holds = request.GET.getlist('hold[]')
     min_grade = request.GET.get('min_grade', '5+')
     max_grade = request.GET.get('max_grade', '8C+')
-    min_overlap = max(int(request.GET.get('min_overlap', len(holds))), len(holds)-3)
+    gradelist = ["5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+"]
+    filtered_gradelist =  []
+    record=False
+    for grade in gradelist:
+        if grade == min_grade:
+            record=True
+            filtered_gradelist.append(grade)
+
+        if grade == max_grade:
+            record=False
+            if grade != min_grade:
+                 filtered_gradelist.append(grade)
+        else:
+            if record:
+                filtered_gradelist.append(grade)
+
+
+    min_overlap = max(
+                    int(request.GET.get('min_overlap', len(holds))), len(holds)-3
+                    )
+    # For some reason  min_overlap was coming back from  a request as len(holds)+1
+    min_overlap = min(min_overlap,len(holds))
     set_year = request.GET.get('set_year', 2016)
     set_angle = request.GET.get('set_angle', 40)
 
@@ -49,7 +69,7 @@ def problemListView(request):
     max_holds = 20
     #print(holds)
 
-    pprint.pprint(('in renderer',min_grade,max_grade))
+
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
             .distinct()\
@@ -59,8 +79,15 @@ def problemListView(request):
     else:
         problems = None
 
+    filtered_problems = []
+    for problem in problems:
+        pprint.pprint((problem['problem__grade'],filtered_gradelist))
+        if problem['problem__grade'] in filtered_gradelist:
+            filtered_problems.append(problem)
+
+
     html = render_to_string(template_name="problem-results-partial.html",
-            context={"problems": problems, "min_overlap": min_overlap, "max_holds": len(holds)}
+            context={"problems": filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds)}
         )
     data_dict = {"html_from_view": html}
 
