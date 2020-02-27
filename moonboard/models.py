@@ -24,8 +24,9 @@ from django.db import models
 class ProblemMove(models.Model):
     id = models.AutoField(primary_key=True, default="")
     problem = models.ForeignKey('Problem', models.DO_NOTHING, blank=True, null=True)
-    position = models.TextField(blank=True, null=True) 
+    position = models.TextField(blank=True, null=True)
     setup = models.TextField(blank=True, null=True)
+    setangle = models.IntegerField(blank=True, null=True)
     isstart = models.IntegerField(blank=True, null=True)
     isend = models.IntegerField(blank=True, null=True)
 
@@ -59,6 +60,9 @@ class Problem(models.Model):
     firstname = models.TextField(blank=True, null=True)  # Field name made lowercase.
     lastname = models.TextField(blank=True, null=True)  # Field name made lowercase.
     setyear = models.IntegerField(blank=False, null=False)
+    setangle = models.IntegerField(blank=False, null=False)
+    repeats = models.IntegerField(blank=False, null=False)
+    rating = models.TextField(blank=False, null=False)
 
     class Meta:
         managed = True

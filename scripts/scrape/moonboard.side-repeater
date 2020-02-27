@@ -1,0 +1,45 @@
+
+    ,{
+      "id": "$id1",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=$num1",
+      "targets": [
+        ["linkText=$num1", "linkText"],
+        ["css=li:nth-child($lichild1) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'$num1')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[$lichild1]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[$contains1]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[$lichild1]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'$num1')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "$id2",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=$num2",
+      "targets": [
+        ["linkText=$num2", "linkText"],
+        ["css=li:nth-child($lichild2) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'$num2')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[$lichild2]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[$contains2]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[$lichild2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'$num2')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "$id3",
+      "comment": "",
+      "command": "click",
+      "target": "css=li:nth-child($lichild3) > .k-link",
+      "targets": [
+        ["css=li:nth-child($lichild3) > .k-link", "css:finder"],
+        ["xpath=(//a[contains(text(),'...')])[2]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[$lichild3]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[$contains3]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[$lichild3]/a", "xpath:position"]
+      ],
+      "value": ""
+    }

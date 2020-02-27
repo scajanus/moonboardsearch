@@ -1,0 +1,218 @@
+{
+  "id": "ff481ead-eea3-4e7b-b22c-5dbdec56a3d5",
+  "version": "2.0",
+  "name": "moonboard",
+  "url": "https://www.moonboard.com",
+  "tests": [{
+    "id": "3b148e55-ac01-4a10-923d-d0c6fbef853f",
+    "name": "problems",
+    "commands": [{
+      "id": "94fc45d9-3b34-4d27-91d7-c3089861fd79",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "396eafd8-988c-4d93-9079-b30325ec6dee",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1440x875",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f953af2c-1c5e-4ece-b2b1-f632c026f047",
+      "comment": "",
+      "command": "click",
+      "target": "id=Holdsetup",
+      "targets": [
+        ["id=Holdsetup", "id"],
+        ["name=Holdsetup", "name"],
+        ["css=#Holdsetup", "css:finder"],
+        ["xpath=//select[@id='Holdsetup']", "xpath:attributes"],
+        ["xpath=//div[@id='tabFilters']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'MoonBoard Masters 2019\nMoonBoard Masters 2017\nMoonBoard 2016')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "091cb2b4-0367-49d3-840c-bda089ef4712",
+      "comment": "",
+      "command": "select",
+      "target": "id=Holdsetup",
+      "targets": [],
+      "value": "label=MoonBoard Masters 2017"
+    }, {
+      "id": "78eaad3a-9df7-477d-9b11-ccfe38f3019d",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=2",
+      "targets": [
+        ["linkText=2", "linkText"],
+        ["css=li:nth-child(3) > .k-link", "css:finder"],
+        ["xpath=(//a[contains(text(),'2')])[2]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[3]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[6]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[3]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7700ea93-b93f-485e-b5ea-6606a31495e0",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=3",
+      "targets": [
+        ["linkText=3", "linkText"],
+        ["css=li:nth-child(4) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'3')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[4]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[7]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'3')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f67ac491-9ea4-4756-b082-2f1220eb72bf",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=...",
+      "targets": [
+        ["linkText=...", "linkText"],
+        ["css=li:nth-child(5) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'...')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[8]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'...')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1051c047-3e12-4da7-a937-87b5338dc8ac",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=5",
+      "targets": [
+        ["linkText=5", "linkText"],
+        ["css=li:nth-child(4) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'5')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[4]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[7]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'5')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "15a509dd-5f91-4e59-b520-f8825e5205a2",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=6",
+      "targets": [
+        ["linkText=6", "linkText"],
+        ["css=li:nth-child(5) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'6')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[8]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'6')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a12091df-96d5-421e-89cb-3e6ca4677812",
+      "comment": "",
+      "command": "click",
+      "target": "css=li:nth-child(6) > .k-link",
+      "targets": [
+        ["css=li:nth-child(6) > .k-link", "css:finder"],
+        ["xpath=(//a[contains(text(),'...')])[2]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[6]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[9]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[6]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "889e809d-bfd7-461c-b82a-fc284b5a5986",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=8",
+      "targets": [
+        ["linkText=8", "linkText"],
+        ["css=li:nth-child(4) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'8')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[4]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[7]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'8')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "70f86fd2-820a-4da2-a4a0-3f059913425a",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=9",
+      "targets": [
+        ["linkText=9", "linkText"],
+        ["css=li:nth-child(5) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'9')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[8]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'9')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e8c20e17-a26a-44fe-b790-bca696cbb3b2",
+      "comment": "",
+      "command": "click",
+      "target": "css=li:nth-child(6) > .k-link",
+      "targets": [
+        ["css=li:nth-child(6) > .k-link", "css:finder"],
+        ["xpath=(//a[contains(text(),'...')])[3]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[6]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[9]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[6]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5038f9f0-1cf5-4443-b7a8-91aa85c7516c",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=11",
+      "targets": [
+        ["linkText=11", "linkText"],
+        ["css=li:nth-child(4) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'11')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[4]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[7]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'11')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a763384d-8637-40ca-9925-f9ca336c8ba5",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=12",
+      "targets": [
+        ["linkText=12", "linkText"],
+        ["css=li:nth-child(5) > .k-link", "css:finder"],
+        ["xpath=//a[contains(text(),'12')]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[8]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'12')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "97102355-31d0-4518-aab4-e37e9435fbc4",
+      "comment": "",
+      "command": "click",
+      "target": "css=li:nth-child(6) > .k-link",
+      "targets": [
+        ["css=li:nth-child(6) > .k-link", "css:finder"],
+        ["xpath=(//a[contains(text(),'...')])[2]", "xpath:link"],
+        ["xpath=//div[@id='grdProblems']/div[3]/div/ul/li[6]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[9]", "xpath:href"],
+        ["xpath=//div[3]/div/ul/li[6]/a", "xpath:position"]
+      ],
+      "value": ""
+    }
