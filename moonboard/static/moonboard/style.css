@@ -331,3 +331,6 @@ table.center {
 #setangle {
 	margin-left:20px;
 }
+#replaceable-content .list-group-item  {
+	padding: 10px 10px 10px 0 !important ;
+}

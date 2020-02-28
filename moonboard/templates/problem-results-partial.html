@@ -9,18 +9,18 @@
     font-style:italic
     {% elif problem.problem__rating == '3' %}
     font-weight:bold
-    {% endif %}">{{ problem.problem__name}} <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
+    {% endif %}"><div style="">{{ problem.problem__name}}   <span class="badge badge-primary badge-pill repeats
+      {% if problem.problem__repeats > 200 %}
+      badge-success
+      {% elif problem.problem__repeats <= 200 and problem.problem__repeats > 30  %}
+      badge-warning
+      {% elif problem.problem__repeats <= 30 %}
+      badge-danger
+      {% endif %}
+      ">{{problem.problem__repeats}}</span> </div>
 
-    <span class="badge badge-primary badge-pill repeats
-    {% if problem.problem__repeats > 200 %}
-    badge-success
-    {% elif problem.problem__repeats <= 200 and problem.problem__repeats > 30  %}
-    badge-warning
-    {% elif problem.problem__repeats <= 30 %}
-    badge-danger
-    {% endif %}
-    ">{{problem.problem__repeats}}</span> <span class="dateinserted">{{problem.date}}</span></span>
-
+  <span class="dateinserted">{{problem.date}}</span> <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
+</span>
 
 
 
