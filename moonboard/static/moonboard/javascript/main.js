@@ -52,9 +52,9 @@ function changeSetAngle() {
 
   // If the checkbox is checked, display the output text
   if (checkBox.checked == true){
-    sessionStorage.setItem('setAngle', 40)
-  } else {
     sessionStorage.setItem('setAngle', 25)
+  } else {
+    sessionStorage.setItem('setAngle', 40)
   }
 
   holdsjson = sessionStorage.getItem('hold')
@@ -156,7 +156,7 @@ function toggleProblem(problemId) {
 
 function getProblemList(holds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy) {
   if(!setYear) {
-    var setYear = sessionStorage.getItem('setYear') || '2016';
+    var setYear = sessionStorage.getItem('setYear') || '2017';
   }
   if(!setAngle) {
     var setAngle = sessionStorage.getItem('setAngle') || '40';
