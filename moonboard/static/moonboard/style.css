@@ -334,3 +334,10 @@ table.center {
 #replaceable-content .list-group-item  {
 	padding: 10px 10px 10px 0 !important ;
 }
+.navbar {
+	padding: 5px 10px 5px 10px;
+}
+h4 {
+	margin-top:10px;
+	font-size: 1rem;
+}
