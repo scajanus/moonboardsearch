@@ -97,7 +97,7 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     selected_problem_name.html(response['name'] + ' ' + response['grade'])
     $('.result-board button').fadeTo('fast', 0).promise().then(() => {
     $('.result-board button').removeClass('blue-button red-button green-button')
-
+    console.log(response);
     response['holds'].forEach(hold => {
       if(hold[1]) {
         classToAdd = 'green-button'
@@ -112,6 +112,19 @@ let problem_ajax_call = function (endpoint, request_parameters) {
       document.getElementById('result-' + hold[0]).classList = "nonclickable-led-button " + classToAdd;
 
     });
+    if (response['method'].includes('screw')) {
+      if (response['setyear'] == '2017') {
+        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min-screwons.jpg')";
+      } else if (response['setyear'] == '2019') {
+        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min-screwons.jpg')";
+      }
+    } else {
+      if (response['setyear'] == '2017') {
+        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')";
+      } else if (response['setyear'] == '2019') {
+        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')";
+      }
+    }
     $('.result-board button').fadeTo('slow', 1)
 
   });

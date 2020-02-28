@@ -151,6 +151,8 @@ def problemAsJsonView(request):
         'id': problem_id,
         'name': problem.name,
         'grade': problem.grade,
+        'method': problem.method,
+        'setyear': problem.setyear,
         'holds': holds[::1]
         }
 
