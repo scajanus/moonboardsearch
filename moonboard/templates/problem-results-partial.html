@@ -17,10 +17,10 @@
       {% elif problem.problem__repeats <= 30 %}
       badge-danger
       {% endif %}
-      ">{{problem.problem__repeats}}</span> </div>
+      ">{{problem.problem__repeats}}</span></div>
 
   <span class="dateinserted">{{problem.date}}</span> <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
-</span>
+  {% if problem.problem__method != 'Feet follow hands' %}<span class="method">({{problem.problem__method}})</span>{% endif %}</span>
 
 
 

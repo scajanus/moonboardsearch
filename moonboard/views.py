@@ -73,7 +73,7 @@ def problemListView(request):
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
             .distinct()\
-            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating','problem__dateinserted')\
+            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating','problem__dateinserted','problem__method')\
             .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
             .filter(hold_count__gte=min_overlap, problem__setyear=set_year, problem__setangle=set_angle)
     else:
@@ -88,6 +88,7 @@ def problemListView(request):
                 problem['date'] = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
                 problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
                 filtered_problems.append(problem)
+        pp(filtered_problems[0])
     else:
         filtered_problems=[]
 
