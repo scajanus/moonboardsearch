@@ -14,7 +14,7 @@ def helloView(request):
 def homePageView(request):
 
     holds = request.GET.getlist('hold[]')
-
+    set_year = request.GET.get('set_year', 2016)
     if holds:
         # problems = ProblemMove.objects.prefetch_related('problem_set')\
         # .filter(position__in=holds).distinct()\
@@ -28,7 +28,7 @@ def homePageView(request):
     if request.is_ajax():
         html = render_to_string(
             template_name="problem-results-partial.html",
-            context={"problems": problems, "max_holds": len(holds)}
+            context={"problems": problems, "max_holds": len(holds),"set_year": set_year}
         )
         data_dict = {"html_from_view": html}
         return JsonResponse(data=data_dict, safe=False)
@@ -91,8 +91,6 @@ def problemListView(request):
     else:
         filtered_problems=[]
 
-    pp(filtered_problems[0])
-
 
     if sortedBy == 'Most Repeats':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'], reverse=True)
@@ -112,7 +110,7 @@ def problemListView(request):
     pp(filtered_problems[0])
     min_for_min_overlap_slider = max(3,len(holds)-4)
     html = render_to_string(template_name="problem-results-partial.html",
-            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy}
+            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy,  "set_year": set_year}
         )
     data_dict = {"html_from_view": html}
 

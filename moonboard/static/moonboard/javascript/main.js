@@ -31,14 +31,17 @@ function changeSetYear() {
   // If the checkbox is checked, display the output text
   if (document.getElementById('set2017').checked){
     sessionStorage.setItem('setYear', 2017)
+    document.getElementById("setangle").style="display:inline";
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
     document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
   } else if (document.getElementById('set2019').checked) {
     sessionStorage.setItem('setYear', 2019)
+    document.getElementById("setangle").style="display:inline";
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')"
     document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')"
   } else {
     sessionStorage.setItem('setYear', 2016)
+    document.getElementById("setangle").style="display:none";
     document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
 
@@ -67,6 +70,7 @@ function changeSetAngle() {
     current_holds = []
   }
   sessionStorage.setItem('hold', JSON.stringify(current_holds))
+
   getProblemList(holds=current_holds)
 
 

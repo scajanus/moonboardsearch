@@ -41,9 +41,7 @@
     <!-- <a id="problem.problem_id" title="Click to show {{ problem.problem__name }}"
     href="PleaseEnableJavascript.html" onclick="toggleRoute('{{ problem.problem_id }}');return false;">{{ problem.problem__name}} {{problem.problem__grade}}</a> -->
   {% endfor %}
-{% else %}
-  <p>No problems found.</p>
-{% endif %}
+
 
 <!--
 {% if max_holds > 4 %}
@@ -53,7 +51,7 @@
 {% endif %}
 -->
 {% if max_holds > 3 %}
-Must match  N holds of your  hoice
+Minimum number of holds to match
 <div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
      <div id="slider2"></div>
  </div>
@@ -143,7 +141,20 @@ Grade Filter
                        <button class="sortBtn{% if sortedBy == "Least Repeats" %} selected{% endif %}" data-field="Least Repeats" data-dir="asc">Least Repeated</button>
                    </li>
                </ul>
-</div>
+               </div>
+               {% else %}
+                 <!--<p>No problems found.</p>-->
+               {% endif %}
+               <div class="filter-wrap" style="clear:both;  margin-top:50px">
+               <p>To filter by one or more holds, click on the hold on the left side to select it (selections shown with blue circles). Once two or more holds are selected, this column will show the problems that  use those holds. </p>
+
+               <p>You may filter the holds by grade using the slider and also sort the holds using the buttons above. </p>
+
+               <p>If you select more than four holds, a new slider will appear showing the minimum number of holds to match. This defaults to all of the holds you have chosen but you can reduce this. For instance if you chose 5 holds you can change the 'minmumum number of holds ot match' to 4 and all problems that have at least four of your chosen holds will be displayed.</p>
+
+               <p>Once the problems have been shown in the list, you can click on a single problem to show it on the right hand side.</p>
+               </div>
+
 
                  <script type="text/javascript">
 
