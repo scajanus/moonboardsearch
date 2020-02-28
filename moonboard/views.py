@@ -88,7 +88,7 @@ def problemListView(request):
                 problem['date'] = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
                 problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
                 filtered_problems.append(problem)
-        pp(filtered_problems[0])
+
     else:
         filtered_problems=[]
 
