@@ -8,7 +8,7 @@
     font-style:italic
     {% elif problem.problem__rating == '3' %}
     font-weight:bold
-    {% endif %}">{{ problem.problem__name}} {{ problem.hold_count}} out of {{problem.total_holds}} holds
+    {% endif %}">{{ problem.problem__name}} <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
     <span class="badge badge-primary badge-pill repeats
     {% if problem.problem__repeats > 200 %}
     badge-success
@@ -47,11 +47,12 @@
 {% endif %}
 -->
 {% if max_holds > 3 %}
-<div class="slider-wrapper margin-wrapper" style="margin:30px 20px 50px 20px">
+Must match  N holds of your  hoice
+<div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
      <div id="slider2"></div>
  </div>
 {% endif %}
-
+Grade Filter
 
               <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
                    <div id="slider"></div>
@@ -109,31 +110,31 @@
                <ul class="sort margin-wrapper">
 
                    <li>
-                       <button class="sortBtn" data-field="Grade" data-dir="desc">Grade</button>
+                       <button class="sortBtn{% if sortedBy == "Grade" %} selected{% endif %}" data-field="Grade" data-dir="desc">Grade</button>
                    </li>
 
 
                    <li>
 
-                       <button class="sortBtn" data-field="GradeAsc" data-dir="asc">Easy</button>
+                       <button class="sortBtn{% if sortedBy == "Easy" %} selected{% endif %}" data-field="GradeAsc" data-dir="asc">Easy</button>
                    </li>
                    <li>
 
-                       <button class="sortBtn" data-field="GradeDesc" data-dir="desc">Hard</button>
-
-                   </li>
-                   <li>
-
-                       <button class="sortBtn" data-field="Rating" data-dir="desc">Rating</button>
-                   </li>
-                   <li>
-
-                       <button class="sortBtn" data-field="RepeatsDesc" data-dir="desc">Most Repeats</button>
+                       <button class="sortBtn{% if sortedBy == "Hard" %} selected{% endif %}" data-field="GradeDesc" data-dir="desc">Hard</button>
 
                    </li>
                    <li>
 
-                       <button class="sortBtn" data-field="RepeatsAsc" data-dir="asc">Least Repeated</button>
+                       <button class="sortBtn{% if sortedBy == "Rating" %} selected{% endif %}" data-field="Rating" data-dir="desc">Rating</button>
+                   </li>
+                   <li>
+
+                       <button class="sortBtn{% if sortedBy == "Most Repeats" %} selected{% endif %}" data-field="RepeatsDesc" data-dir="desc">Most Repeats</button>
+
+                   </li>
+                   <li>
+
+                       <button class="sortBtn{% if sortedBy == "Least Repeats" %} selected{% endif %}" data-field="RepeatsAsc" data-dir="asc">Least Repeated</button>
                    </li>
                </ul>
 </div>
@@ -148,7 +149,7 @@
                        step: 1,
                        connect: 'lower',
                        range: {
-                           'min': [{{max_holds|add:"-4"}}],
+                           'min': [{{min_for_min_overlap_slider}}],
                            'max': [{{max_holds}}]
                        },
                        pips: {

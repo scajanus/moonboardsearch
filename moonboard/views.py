@@ -102,8 +102,9 @@ def problemListView(request):
     else:
         sorted_filtered_problems =  filtered_problems
 
+    min_for_min_overlap_slider = max(3,len(holds)-4)
     html = render_to_string(template_name="problem-results-partial.html",
-            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds)}
+            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy}
         )
     data_dict = {"html_from_view": html}
 
