@@ -63,6 +63,7 @@ class Problem(models.Model):
     setangle = models.IntegerField(blank=False, null=False)
     repeats = models.IntegerField(blank=False, null=False)
     rating = models.TextField(blank=False, null=False)
+    dateinserted = models.TextField(blank=False, null=False)
 
     class Meta:
         managed = True

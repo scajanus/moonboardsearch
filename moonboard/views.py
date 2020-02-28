@@ -4,7 +4,8 @@ from django.db.models import Count, Case, When
 
 from .models import Problem, ProblemMove
 from django.template.loader import render_to_string
-import pprint
+from pprint import pprint as pp
+from datetime import datetime
 
 def helloView(request):
     return HttpResponse('Hello World!')
@@ -72,7 +73,7 @@ def problemListView(request):
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
             .distinct()\
-            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating')\
+            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating','problem__dateinserted')\
             .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
             .filter(hold_count__gte=min_overlap, problem__setyear=set_year, problem__setangle=set_angle)
     else:
@@ -82,16 +83,21 @@ def problemListView(request):
     if problems:
         for problem in problems:
             if problem['problem__grade'] in filtered_gradelist:
+                dateinserted_timestamp = float(problem['problem__dateinserted'][6:-2])/1000
+                problem['datetimestamp'] = dateinserted_timestamp
+                problem['date'] = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
                 problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
                 filtered_problems.append(problem)
     else:
         filtered_problems=[]
 
-
+    pp(filtered_problems[0])
 
 
     if sortedBy == 'Most Repeats':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'], reverse=True)
+    elif sortedBy == 'New':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['datetimestamp'], reverse=True)
     elif sortedBy == 'Least Repeated':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'])
     elif sortedBy == 'Rating':
@@ -103,6 +109,7 @@ def problemListView(request):
     else:
         sorted_filtered_problems =  filtered_problems
 
+    pp(filtered_problems[0])
     min_for_min_overlap_slider = max(3,len(holds)-4)
     html = render_to_string(template_name="problem-results-partial.html",
             context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy}

@@ -4,11 +4,13 @@
   <div class="match-{{problem.hold_count}}">
     <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
     " id="{{problem.problem_id}}" onclick="toggleProblem('{{ problem.problem_id }}')">
+
     <span style="{% if problem.problem__rating == '1' or problem.problem__rating == '0'  %}
     font-style:italic
     {% elif problem.problem__rating == '3' %}
     font-weight:bold
     {% endif %}">{{ problem.problem__name}} <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
+
     <span class="badge badge-primary badge-pill repeats
     {% if problem.problem__repeats > 200 %}
     badge-success
@@ -17,7 +19,8 @@
     {% elif problem.problem__repeats <= 30 %}
     badge-danger
     {% endif %}
-    ">{{problem.problem__repeats}}</span></span>
+    ">{{problem.problem__repeats}}</span> <span class="dateinserted">{{problem.date}}</span></span>
+
 
 
 
@@ -30,7 +33,10 @@
 {% elif problem.problem__grade|first == '8' %}
   badge-danger
 {% endif %}
-      ">{{problem.problem__grade}}</span></button>
+      ">{{problem.problem__grade}}</span>
+
+      </button>
+
   </div>
     <!-- <a id="problem.problem_id" title="Click to show {{ problem.problem__name }}"
     href="PleaseEnableJavascript.html" onclick="toggleRoute('{{ problem.problem_id }}');return false;">{{ problem.problem__name}} {{problem.problem__grade}}</a> -->
@@ -229,13 +235,19 @@ Grade Filter
 
 
                          holdsjson = sessionStorage.getItem('hold')
+                         var min_overlap = '{{min_overlap}}';
+                         if (min_overlap) {
+                           console.log('min_overlap '+min_overlap);
+                         } else {
+                           min_overlap == 3;
+                         }
 
                          if (holdsjson) {
                            current_holds = JSON.parse(holdsjson)
                          } else {
                            current_holds = []
                          }
-                         getProblemList(current_holds, setYear, setAngle, {{min_overlap}}, minGrade, maxGrade, 3,20, sortedBy)
+                         getProblemList(current_holds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy)
 
 
                      }
@@ -347,17 +359,7 @@ Grade Filter
                      });
 
 
-                     var $grdProblems;
-                     var problemsDs;
 
-                     var $grdSetters;
-                     var settersDs;
-
-                     $(window).resize(function () {
-
-                         sizeContent();
-
-                     });
 
 
 
