@@ -96,8 +96,10 @@ def problemListView(request):
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'])
     elif sortedBy == 'Rating':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__rating'], reverse=True)
-    elif sortedBy == 'Grade':
+    elif sortedBy == 'Hard':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__gradenum'], reverse=True)
+    elif sortedBy == 'Easy':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__gradenum'])
     else:
         sorted_filtered_problems =  filtered_problems
 

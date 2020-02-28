@@ -43,6 +43,9 @@ function changeSetYear() {
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
 
   }
+  document.getElementById("replaceable-content").scrollTop;
+  console.log('setYear'+sessionStorage.getItem('setYear'))
+
 }
 
 function changeSetAngle() {
@@ -176,5 +179,7 @@ function getProblemList(holds, setYear, setAngle, minOverlap, minGrade, maxGrade
   if (scheduled_function) {
     clearTimeout(scheduled_function)
   }
+
+
   scheduled_function = setTimeout(ajax_call, delay_by_in_ms, endpoint, request_parameters)
 }

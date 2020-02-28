@@ -4,7 +4,7 @@
   <div class="match-{{problem.hold_count}}">
     <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
     " id="{{problem.problem_id}}" onclick="toggleProblem('{{ problem.problem_id }}')">
-    <span style="{% if problem.problem__rating == '1' %}
+    <span style="{% if problem.problem__rating == '1' or problem.problem__rating == '0'  %}
     font-style:italic
     {% elif problem.problem__rating == '3' %}
     font-weight:bold
@@ -110,17 +110,17 @@ Grade Filter
                <ul class="sort margin-wrapper">
 
                    <li>
-                       <button class="sortBtn{% if sortedBy == "Grade" %} selected{% endif %}" data-field="Grade" data-dir="desc">Grade</button>
+                       <button class="sortBtn{% if sortedBy == "New" %} selected{% endif %}" data-field="New" data-dir="desc">New</button>
                    </li>
 
 
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Easy" %} selected{% endif %}" data-field="GradeAsc" data-dir="asc">Easy</button>
+                       <button class="sortBtn{% if sortedBy == "Easy" %} selected{% endif %}" data-field="Easy" data-dir="asc">Easy</button>
                    </li>
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Hard" %} selected{% endif %}" data-field="GradeDesc" data-dir="desc">Hard</button>
+                       <button class="sortBtn{% if sortedBy == "Hard" %} selected{% endif %}" data-field="Hard" data-dir="desc">Hard</button>
 
                    </li>
                    <li>
@@ -129,12 +129,12 @@ Grade Filter
                    </li>
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Most Repeats" %} selected{% endif %}" data-field="RepeatsDesc" data-dir="desc">Most Repeats</button>
+                       <button class="sortBtn{% if sortedBy == "Most Repeats" %} selected{% endif %}" data-field="Most Repeats" data-dir="desc">Most Repeats</button>
 
                    </li>
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Least Repeats" %} selected{% endif %}" data-field="RepeatsAsc" data-dir="asc">Least Repeated</button>
+                       <button class="sortBtn{% if sortedBy == "Least Repeats" %} selected{% endif %}" data-field="Least Repeats" data-dir="asc">Least Repeated</button>
                    </li>
                </ul>
 </div>
@@ -489,7 +489,7 @@ Grade Filter
 
 
 
-
+  document.getElementById("replaceable-content").scrollTop = 0;
 
 
 
