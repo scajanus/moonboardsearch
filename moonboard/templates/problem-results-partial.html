@@ -225,6 +225,7 @@ Grade Filter
                          }
                          var setYear = sessionStorage.getItem('setYear') || '2016';
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
+                         var sortedBy = sessionStorage.getItem('sortedBy');
 
 
                          holdsjson = sessionStorage.getItem('hold')
@@ -234,7 +235,7 @@ Grade Filter
                          } else {
                            current_holds = []
                          }
-                         getProblemList(current_holds, setYear, setAngle, {{min_overlap}}, minGrade, maxGrade, 3,20, '')
+                         getProblemList(current_holds, setYear, setAngle, {{min_overlap}}, minGrade, maxGrade, 3,20, sortedBy)
 
 
                      }
@@ -266,18 +267,17 @@ Grade Filter
                          var setYear = sessionStorage.getItem('setYear') || '2016';
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
                          holdsjson = sessionStorage.getItem('hold')
-
+                         var sortedBy = sessionStorage.getItem('sortedBy');
                          if (holdsjson) {
                            current_holds = JSON.parse(holdsjson)
                          } else {
                            current_holds = []
                          }
-                         getProblemList(current_holds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, '')
+                         getProblemList(current_holds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, sortedBy)
 
 
                      }
                      {% if max_holds > 3 %}
-                     console.log('change {{ min_overlap }}');
                      minOverlapSlider.noUiSlider.on('change', slider2ValueChanged);
                      {% endif %}
 
@@ -412,7 +412,7 @@ Grade Filter
                              var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
                              var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
 
-
+                             var min_overlap = sessionStorage.getItem('min_overlap') || 3;
 
 
                              var dsSort = [];
@@ -429,7 +429,7 @@ Grade Filter
                              } else {
                                current_holds = []
                              }
-                             getProblemList(current_holds, setYear, setAngle, 3, minGrade, maxGrade, 3,20,sortedBy)
+                             getProblemList(current_holds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy)
 
 
 
@@ -484,159 +484,16 @@ Grade Filter
                      });
 
 
-                     function grdProblemsLoaded() {
 
-                         if (!$grdProblems) {
-                             $grdProblems = $("#grdProblems").data("kendoGrid");
-                         }
 
-                         problemsDs = $grdProblems.dataSource;
 
-                         dataSource = $grdProblems.dataSource;
-                             dataSource.transport.options.read.beforeSend = function (r) {r.setRequestHeader('_itbmdw', 'orWugj2yLI9CJ8tWUagVvLWkIWR4e80/k/ay4uqeFNE=__dGBu/HB93Z1l70xMDye4TTC5t5eefq/JKsGiZFcQzmQ=');
-                         };
 
 
-                         $('#totalProblems').text(toDisplayText('PROBLEM', problemsDs.total()));
 
 
 
-                             selectedIndex = -1;
 
 
-                     }
-
-
-                     function grdSettersLoaded() {
-
-                         if (!$grdSetters) {
-                             $grdSetters = $("#grdSetters").data("kendoGrid");
-                         }
-
-                         settersDs = $grdSetters.dataSource;
-
-                         $('#totalSetters').text('SET BY: (' + toDisplayText('setter', settersDs.total()) + ')');
-                     }
-
-
-
-
-
-                     var $lastProblemTr;
-
-                     function problemSelected(model) {
-
-
-                         var $problemTr = $(event.target).closest("tr");
-
-                         model = $grdProblems.dataItem($problemTr);
-
-                         moonBoardObj.renderProblem(model);
-
-                         $problemTr.addClass('selected');
-
-                         if ($lastProblemTr) {
-
-                             $lastProblemTr.removeClass('selected');
-                         }
-
-                         $lastProblemTr = $problemTr;
-
-                         setProblemHeader(model);
-
-                         toggleSlideMenu();
-
-                     }
-
-
-                     function setProblemHeader(model) {
-                         $("#moonBrand").text(model.Name + ", " + model.Grade);
-
-                         $("#pdSetby").text("SET BY: " + model.Setter.Nickname);
-                     }
-
-                     var $lastSetterTr;
-
-
-                     function filterBySetter() {
-
-
-                         var $setterTr = $(event.target).closest("tr");
-
-                         var model = $grdSetters.dataItem($setterTr);
-
-
-                         $setterTr.find('.setter').addClass('selected');
-
-                         if ($lastSetterTr) {
-
-                             $lastSetterTr.find('.setter').removeClass('selected');
-                         }
-
-                         $lastSetterTr = $setterTr;
-
-
-
-                         $("#TxtSetterName").val(model.SetBy);
-
-
-                     }
-
-
-                     function tog(v) { return v ? 'addClass' : 'removeClass'; }
-
-
-                     $(document).on('input', '.clearable', function () {
-                         $(this)[tog(this.value)]('x');
-
-                     }).on('touchstart click', '.x', function (ev) {
-
-
-                         ev.preventDefault();
-
-                         $(this).removeClass('x').val('').change();
-
-
-                         var filters = [];
-
-
-                         if (this === $("#TxtProblemName").get(0)) {
-                             if (filterContains(problemsDs.filter().filters, "Name")) {
-
-                                 filters = removeFilter(problemsDs.filter().filters, "Name");
-
-                                 problemsDs.filter(filters);
-
-                                 settersDs.filter(filters);
-                             }
-
-                         }
-                         else {
-
-                             if (filterContains(settersDs.filter().filters, "SetBy")) {
-
-                                 filters = removeFilter(settersDs.filter().filters, "SetBy");
-
-                                 problemsDs.filter(filters);
-
-                                 settersDs.filter(filters);
-                             }
-
-                         }
-
-
-
-                         });
-
-
-
-
-
-
-
-                     function getSelectedHoldsetup(curHoldsetId) {
-                         return $.grep(holdsetups, function (e) { return e.Id == curHoldsetId; });
-                     }
 
 
 

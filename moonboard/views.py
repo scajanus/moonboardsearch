@@ -13,7 +13,6 @@ def helloView(request):
 def homePageView(request):
 
     holds = request.GET.getlist('hold[]')
-    print(holds)
 
     if holds:
         # problems = ProblemMove.objects.prefetch_related('problem_set')\
