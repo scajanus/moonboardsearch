@@ -87,18 +87,19 @@ def problemListView(request):
                 problem['datetimestamp'] = dateinserted_timestamp
                 problem['date'] = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
                 problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
+                problem['screwons'] = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem['problem__method'])
                 filtered_problems.append(problem)
 
     else:
         filtered_problems=[]
 
 
-    if sortedBy == 'Most Repeats':
+    if sortedBy == 'Repeats':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'], reverse=True)
     elif sortedBy == 'New':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['datetimestamp'], reverse=True)
-    elif sortedBy == 'Least Repeated':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'])
+    elif sortedBy == 'Screw Ons':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['screwons'])
     elif sortedBy == 'Rating':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__rating'], reverse=True)
     elif sortedBy == 'Hard':
