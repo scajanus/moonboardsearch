@@ -154,6 +154,8 @@ Grade Filter
                <div class="filter-wrap" style="clear:both;  margin-top:50px">
                <p>To filter by one or more holds, click on the hold on the left side to select it (selections shown with blue circles). Once two or more holds are selected, this column will show the problems that  use those holds. </p>
 
+               <p> Clicking on a hold again changes it  to red  which means "exclude this hold". Clicking again removes the hold from the search criteria.</p>
+
                <p>You may filter the holds by grade using the slider and also sort the holds using the buttons above. </p>
 
                <p>If you select more than four holds, a new slider will appear showing the minimum number of holds to match. This defaults to all of the holds you have chosen but you can reduce this. For instance if you chose 5 holds you can change the 'minimum number of holds ot match' to 4 and all problems that have at least four of your chosen holds will be displayed.</p>
@@ -170,6 +172,8 @@ Grade Filter
                         sessionStorage.setItem('minTick',0);
                         sessionStorage.setItem('maxTick',16);
                         sessionStorage.setItem('hold', JSON.stringify([]));
+                        sessionStorage.setItem('nothold', JSON.stringify([]));
+
 
                    {% endif %}
 
@@ -181,6 +185,7 @@ Grade Filter
                      $('#search-board button').removeClass('blue-button red-button green-button');
 
                      sessionStorage.setItem('hold', JSON.stringify([]))
+                     sessionStorage.setItem('nothold', JSON.stringify([]))
                      getProblemList(holds=[])
 
                    })
@@ -230,6 +235,8 @@ Grade Filter
                      setYear = sessionStorage.getItem('setYear') || '2017';
                      setAngle = sessionStorage.getItem('setAngle') || '40';
                      holdsjson = sessionStorage.getItem('hold')
+                     notholdsjson = sessionStorage.getItem('nothold')
+
                      sortedBy = sessionStorage.getItem('sortedBy');
 
 
@@ -283,6 +290,7 @@ Grade Filter
 
 
                          holdsjson = sessionStorage.getItem('hold')
+                         notholdsjson = sessionStorage.getItem('nothold')
                          var min_overlap = '{{min_overlap}}';
                          if (min_overlap) {
                            console.log('min_overlap '+min_overlap);
@@ -295,7 +303,12 @@ Grade Filter
                          } else {
                            current_holds = []
                          }
-                         getProblemList(current_holds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy)
+                         if (notholdsjson) {
+                           current_notholds = JSON.parse(holdsjson)
+                         } else {
+                           current_notholds = []
+                         }
+                         getProblemList(current_holds, current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy)
 
 
                      }
@@ -329,13 +342,20 @@ Grade Filter
                          var setYear = sessionStorage.getItem('setYear') || '2016';
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
                          holdsjson = sessionStorage.getItem('hold')
+                         notholdsjson = sessionStorage.getItem('nothold')
                          var sortedBy = sessionStorage.getItem('sortedBy');
                          if (holdsjson) {
                            current_holds = JSON.parse(holdsjson)
                          } else {
                            current_holds = []
                          }
-                         getProblemList(current_holds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, sortedBy)
+                         if (notholdsjson) {
+                           current_notholds = JSON.parse(holdsjson)
+                         } else {
+                           current_notholds = []
+                         }
+
+                         getProblemList(current_holds,  current_notholds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, sortedBy)
 
 
                      }
@@ -481,7 +501,13 @@ Grade Filter
                              } else {
                                current_holds = []
                              }
-                             getProblemList(current_holds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy)
+                             if (notholdsjson) {
+                               current_notholds = JSON.parse(holdsjson)
+                             } else {
+                               current_notholds = []
+                             }
+
+                             getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy)
 
 
 

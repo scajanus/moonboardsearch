@@ -309,6 +309,8 @@ table.center {
 }
 .section-header h3, .section-header h2, .section-header h1 {
     color: #fff;
+		font-size: 1.2rem;
+		margin-top:  0.5rem;
 }
 .noUi-handle {
     border: 1px solid #d9d9d9;

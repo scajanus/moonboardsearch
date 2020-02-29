@@ -37,6 +37,8 @@ def homePageView(request):
 
 def problemListView(request):
     holds = request.GET.getlist('hold[]')
+    notholds = request.GET.getlist('nothold[]')
+
     min_grade = request.GET.get('min_grade', '5+')
     max_grade = request.GET.get('max_grade', '8C+')
     sortedBy = request.GET.get('sortedBy',None)
@@ -69,19 +71,23 @@ def problemListView(request):
     max_holds = 20
     #print(holds)
 
-
+    pp('holdinfo')
+    pp(holds)
+    pp(notholds)
     if holds:
         problems = ProblemMove.objects.prefetch_related('problem_set')\
             .distinct()\
             .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating','problem__dateinserted','problem__method')\
             .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .filter(hold_count__gte=min_overlap, problem__setyear=set_year, problem__setangle=set_angle)
+            .annotate(nothold_count=Count(Case(When(position__in=notholds, then=1))), total_notholds=Count('*'))\
+            .filter(hold_count__gte=min_overlap, nothold_count__lte=0, problem__setyear=set_year, problem__setangle=set_angle)
     else:
         problems = None
 
     filtered_problems = []
     if problems:
         for problem in problems:
+            pp((problem['hold_count'],problem['nothold_count']))
             if problem['problem__grade'] in filtered_gradelist:
                 dateinserted_timestamp = float(problem['problem__dateinserted'][6:-2])/1000
                 problem['datetimestamp'] = dateinserted_timestamp
