@@ -1,5 +1,6 @@
 
 {% if problems %}
+    <h4>Search results</h4>
   {% for problem in problems %}
   <div class="match-{{problem.hold_count}}">
     <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
@@ -56,12 +57,17 @@ Minimum number of holds to match
      <div id="slider2"></div>
  </div>
 {% endif %}
+
+{% endif %}
+
+{% if max_holds > 0 %}
 Grade Filter
+<div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
+   <div id="slider"></div>
+</div>
+{% endif %}
 
-              <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
-                   <div id="slider"></div>
-               </div>
-
+{% if problems %}
 <div class="filter-wrap" style="clear:both;  margin-top:50px">
               <!-- <div class="row section-header">
 
@@ -103,7 +109,7 @@ Grade Filter
 
                    <div class="col-md-12">
                        <h3>
-                           Sort
+                           Sort by
 
                        </h3>
 
@@ -150,14 +156,13 @@ Grade Filter
 
                <p>You may filter the holds by grade using the slider and also sort the holds using the buttons above. </p>
 
-               <p>If you select more than four holds, a new slider will appear showing the minimum number of holds to match. This defaults to all of the holds you have chosen but you can reduce this. For instance if you chose 5 holds you can change the 'minmumum number of holds ot match' to 4 and all problems that have at least four of your chosen holds will be displayed.</p>
+               <p>If you select more than four holds, a new slider will appear showing the minimum number of holds to match. This defaults to all of the holds you have chosen but you can reduce this. For instance if you chose 5 holds you can change the 'minimum number of holds ot match' to 4 and all problems that have at least four of your chosen holds will be displayed.</p>
 
                <p>Once the problems have been shown in the list, you can click on a single problem to show it on the right hand side.</p>
                </div>
 
 
                  <script type="text/javascript">
-
 
                    {% if max_holds > 3 %}
                    var minOverlapSlider = document.getElementById('slider2');
@@ -194,10 +199,19 @@ Grade Filter
                      var moonSlider = document.getElementById('slider');
 
                      var minGrade, maxGrade, minTick, maxTick;
+                     {% if not max_holds %}
+                          sessionStorage.setItem('minGrade','5+');
+                          sessionStorage.setItem('maxGrade','8B+');
+                          sessionStorage.setItem('minTick',0);
+                          sessionStorage.setItem('maxTick',16);
+                     {% endif %}
+
                      minGrade = sessionStorage.getItem('minGrade') || '5+';
                      maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
                      minTick = sessionStorage.getItem('minTick') || 0;
                      maxTick = sessionStorage.getItem('maxTick') || 16;
+
+                     console.log('{{maxholds}}',minGrade,maxGrade,minTick,maxTick);
 
                      noUiSlider.create(moonSlider, {
                          start: [minTick, maxTick],
@@ -222,7 +236,7 @@ Grade Filter
 
 
                      function sliderValueChanged(values, handle, unencoded, tap, positions) {
-
+                        console.log('sliderchanged',values);
                          var tMin = ticks_labels[parseInt(values[0])];
                          var tMax = ticks_labels[parseInt(values[1])];
 
