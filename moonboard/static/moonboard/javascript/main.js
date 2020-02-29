@@ -47,8 +47,11 @@ function changeSetYear() {
 
   }
   document.getElementById("replaceable-content").scrollTop;
-  console.log('setYear'+sessionStorage.getItem('setYear'))
+  $('.result-board button').removeClass('blue-button red-button green-button');
+  $('#search-board button').removeClass('blue-button red-button green-button');
 
+  sessionStorage.setItem('hold', JSON.stringify([]))
+  getProblemList(holds=[])
 }
 
 function changeSetAngle() {
@@ -63,19 +66,17 @@ function changeSetAngle() {
     sessionStorage.setItem('setAngle', 40)
   }
 
-  holdsjson = sessionStorage.getItem('hold')
-  if (holdsjson) {
-    current_holds = JSON.parse(holdsjson)
-  } else {
-    current_holds = []
-  }
-  sessionStorage.setItem('hold', JSON.stringify(current_holds))
 
-  getProblemList(holds=current_holds)
+  document.getElementById("replaceable-content").scrollTop;
+  $('.result-board button').removeClass('blue-button red-button green-button');
+  $('#search-board button').removeClass('blue-button red-button green-button');
 
+  sessionStorage.setItem('hold', JSON.stringify([]))
+
+  getProblemList(holds=[])
 
 
-  console.log('setAngle'+sessionStorage.getItem('setAngle'))
+
 }
 
 let ajax_call = function (endpoint, request_parameters) {
