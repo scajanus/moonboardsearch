@@ -46,6 +46,7 @@ function changeSetYear() {
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
 
   }
+  $('#replaceable-name').html('Selected route')
   document.getElementById("replaceable-content").scrollTop;
   $('.result-board button').removeClass('blue-button red-button green-button');
   $('#search-board button').removeClass('blue-button red-button green-button');
@@ -66,7 +67,7 @@ function changeSetAngle() {
     sessionStorage.setItem('setAngle', 40)
   }
 
-
+  $('#replaceable-name').html('Selected route')
   document.getElementById("replaceable-content").scrollTop;
   $('.result-board button').removeClass('blue-button red-button green-button');
   $('#search-board button').removeClass('blue-button red-button green-button');
@@ -95,7 +96,7 @@ let ajax_call = function (endpoint, request_parameters) {
 let problem_ajax_call = function (endpoint, request_parameters) {
   $.getJSON(endpoint, request_parameters)
   .done(response => {
-    selected_problem_name.html(response['name'] + ' ' + response['grade'])
+    selected_problem_name.html(response['name'] + ' <span style="font-weight: bold">' + response['grade'] + '</span>')
     $('.result-board button').fadeTo('fast', 0).promise().then(() => {
     $('.result-board button').removeClass('blue-button red-button green-button')
     console.log(response);
