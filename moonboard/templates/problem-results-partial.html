@@ -1,6 +1,6 @@
 
 {% if problems %}
-    <h4>Search results <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a></h4>
+    <h4>{{ problems|length}} results <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a></h4>
   {% for problem in problems %}
   <div class="match-{{problem.hold_count}}">
     <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
@@ -495,6 +495,7 @@ Grade Filter
 
                              console.log($btn.text());
                              holdsjson = sessionStorage.getItem('hold')
+                             notholdsjson = sessionStorage.getItem('nothold')
 
                              if (holdsjson) {
                                current_holds = JSON.parse(holdsjson)
@@ -502,7 +503,7 @@ Grade Filter
                                current_holds = []
                              }
                              if (notholdsjson) {
-                               current_notholds = JSON.parse(holdsjson)
+                               current_notholds = JSON.parse(notholdsjson)
                              } else {
                                current_notholds = []
                              }
