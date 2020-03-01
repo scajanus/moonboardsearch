@@ -51,13 +51,15 @@
 </div>
 {% endif %}
 -->
+
+
+{% endif %}
+
 {% if max_holds > 3 %}
 Minimum number of holds to match
 <div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
      <div id="slider2"></div>
  </div>
-{% endif %}
-
 {% endif %}
 
 {% if max_holds > 0 %}
@@ -192,6 +194,9 @@ Grade Filter
 
                    {% if max_holds > 3 %}
                    var minOverlapSlider = document.getElementById('slider2');
+                   console.log('min_overlap ' + {{min_overlap}})
+                   console.log('min_for_min_overlap_slider ' + {{min_for_min_overlap_slider}})
+                   console.log('max_holds '+ {{max_holds}})
                    noUiSlider.create(minOverlapSlider, {
                        start: {{min_overlap}},
                        step: 1,
@@ -339,7 +344,7 @@ Grade Filter
                          sessionStorage.setItem('min_overlap', parseInt(values[0]));
 
 
-                         var setYear = sessionStorage.getItem('setYear') || '2016';
+                         var setYear = sessionStorage.getItem('setYear') || '2017';
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
                          holdsjson = sessionStorage.getItem('hold')
                          notholdsjson = sessionStorage.getItem('nothold')
@@ -350,7 +355,7 @@ Grade Filter
                            current_holds = []
                          }
                          if (notholdsjson) {
-                           current_notholds = JSON.parse(holdsjson)
+                           current_notholds = JSON.parse(notholdsjson)
                          } else {
                            current_notholds = []
                          }

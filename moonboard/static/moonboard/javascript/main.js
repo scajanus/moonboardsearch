@@ -164,16 +164,20 @@ function toggleButton(buttonId) {
     console.log('1-not ' +current_notholds)
     if(classes.length == 1) {
       //Currently off, turn blue
+      console.log('currently off, pushing'+buttonId)
       classToAdd = "blue-button";
       current_holds.push(buttonId)
     }
     else if(classes.item(1) == "blue-button" || classes.item(1) == "red-button") {
       //Currently blue, turn off
+      console.log('currently blue  or red')
       if  (classes.item(1) == "blue-button") {
+        console.log('currently blue')
         classToAdd  = "red-button"
         current_holds.splice($.inArray(buttonId, current_holds), 1)
         current_notholds.push(buttonId)
       } else {
+        console.log('currently red')
         classToAdd = ""
         current_notholds.splice($.inArray(buttonId, current_holds), 1)
       }
