@@ -8,7 +8,7 @@ sessionStorage.removeItem('hold')
 
 function filterRoutes(minOverlap){
   // TODO: Call getProblemList with current set of holds & setYear
-  var setYear = sessionStorage.getItem('setYear') || '2016';
+  var setYear = sessionStorage.getItem('setYear') || '2017';
   var setAngle = sessionStorage.getItem('setAngle') || '40';
   var minGrade = sessionStorage.getItem('minGrade') || '5+';
   var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
@@ -34,11 +34,17 @@ function filterRoutes(minOverlap){
 function changeSetYear() {
   // Get the checkbox
   var checkBox = document.getElementById("setYearCheckbox");
-
+  var holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
   // If the checkbox is checked, display the output text
   if (document.getElementById('set2017').checked){
     sessionStorage.setItem('setYear', 2017)
     document.getElementById("setangle").style="display:inline";
+    var arrayLength = holdsetsSelected.length;
+    for (var i = 0; i < arrayLength; i++) {
+        holdset = holdsetsSelected[i];
+        console.log('i'+i)
+
+    }
     document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
     document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
   } else if (document.getElementById('set2019').checked) {
@@ -124,19 +130,50 @@ let problem_ajax_call = function (endpoint, request_parameters) {
       document.getElementById('result-' + hold[0]).classList = "nonclickable-led-button " + classToAdd;
 
     });
-    if (response['method'].includes('screw')) {
-      if (response['setyear'] == '2017') {
-        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min-screwons.jpg')";
-      } else if (response['setyear'] == '2019') {
-        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min-screwons.jpg')";
+
+    setYear = sessionStorage.getItem('setYear') || '2017';
+    var holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson === null) {
+      if (setYear == '2016') {
+        holdsetsSelected = ['A','B','school']
+      } else if (setYear == '2017') {
+        holdsetsSelected = ['A','B','C','wood','school']
+      } else if  (setYear == '2019') {
+        holdsetsSelected = ['A','B','C','wood','school']
       }
-    } else {
-      if (response['setyear'] == '2017') {
-        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')";
-      } else if (response['setyear'] == '2019') {
-        document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')";
-      }
+      sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
     }
+    $('#btnA').removeClass('selected')
+    $('#btnB').removeClass('selected')
+    $('#btnC').removeClass('selected')
+    $('#btnwood').removeClass('selected')
+    $('#btnwoodB').removeClass('selected')
+    $('#btnwoodC').removeClass('selected')
+    $('#btnschool').removeClass('selected')
+    holdsetsSelected =  JSON.parse(holdsetsSelectedjson)
+    console.log('in selected setting' +  holdsetsSelected)
+    if (holdsetsSelected.includes('A')) { $('#btnA').addClass('selected') }
+    if (holdsetsSelected.includes('B')) { $('#btnB').addClass('selected') }
+    if (holdsetsSelected.includes('C')) { $('#btnC').addClass('selected') }
+    if (holdsetsSelected.includes('wood')) { $('#btnwood').addClass('selected') }
+    if (holdsetsSelected.includes('woodB')) { $('#btnwoodB').addClass('selected') }
+    if (holdsetsSelected.includes('woodC')) { $('#btnwoodC').addClass('selected') }
+    if (holdsetsSelected.includes('school')) { $('#btnschool').addClass('selected') }
+    backgroundcss = []
+    blendcss =  []
+
+    var arrayLength = holdsetsSelected.length;
+    for (var i = 0; i < arrayLength; i++) {
+        holdset = holdsetsSelected[i];
+        console.log('i'+holdset)
+        backgroundcss.push("url(/static/moonboard/" + setYear + "/" +  holdset +  ".png)")
+        blendcss.push('darken')
+    }
+    backgroundcss.push('url(/static/moonboard/moonboard-background.png)')
+    blendcss.push('normal')
+    $('#search-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
+    $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))    
+
     $('.result-board button').fadeTo('slow', 1)
 
   });
@@ -160,6 +197,13 @@ function toggleButton(buttonId) {
     } else {
       current_notholds = []
     }
+    current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+      current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+      current_holdsetsSelected = []
+    }
+
     console.log('1 ' +current_holds)
     console.log('1-not ' +current_notholds)
     if(classes.length == 1) {
@@ -187,7 +231,7 @@ function toggleButton(buttonId) {
     document.getElementById(buttonId).classList = "led-button " + classToAdd;
     sessionStorage.setItem('hold', JSON.stringify(current_holds))
     sessionStorage.setItem('nothold', JSON.stringify(current_notholds))
-    getProblemList(holds=current_holds,  notholds=current_notholds)
+    getProblemList(holds=current_holds,  notholds=current_notholds, holdsetsSelected=current_holdsetsSelected)
 }
 
 function toggleProblem(problemId) {
@@ -206,13 +250,14 @@ function toggleProblem(problemId) {
 
 }
 
-function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy) {
+function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';
   }
   if(!setAngle) {
     var setAngle = sessionStorage.getItem('setAngle') || '40';
   }
+  console.log('IN MAIN getProblemList, holdsetsSelected '+ holdsetsSelected)
   const request_parameters = {
     hold: holds,
     nothold:  notholds,
@@ -224,6 +269,7 @@ function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade
     min_holds: minHolds,
     max_holds: maxHolds,
     sortedBy: sortedBy,
+    holdsetsSelected: holdsetsSelected,
     'no-cache': new Date().getTime(),
   }
   if (scheduled_function) {

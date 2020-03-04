@@ -132,7 +132,7 @@ Grade Filter
                    </li>
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Hard" %} selected{% endif %}" data-field="Hard" data-dir="desc">Hard</button>
+                       <button class="sortBtn{% if sortedBy == "Num Holds" %} selected{% endif %}" data-field="Num Holds" data-dir="desc">Num Holds</button>
 
                    </li>
                    <li>
@@ -149,6 +149,42 @@ Grade Filter
                        <button class="sortBtn{% if sortedBy == "Screw Ons" %} selected{% endif %}" data-field="Screw Ons" data-dir="asc">Screw Ons</button>
                    </li>
                </ul>
+
+
+
+
+               <ul class="sort margin-wrapper">
+                   <li>
+                       <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} xselected{% endif %}" value="A">Holdset A (White)</button>
+                   </li>
+                   <li>
+                       <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} xselected{% endif %}" value="B">Holdset B (Black)</button>
+                   </li>
+                   {% if set_year == '2017' %}
+                   <li>
+                       <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} xselected{% endif %}" value="C">Holdset C (Red)</button>
+                   </li>
+                   {% endif %}
+                   {% if set_year == '2017' or set_year == '2019' %}
+                   <li>
+                       <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood Holds</button>
+                   </li>
+                   {% endif %}
+                   {% if set_year == '2019' %}
+                   <li>
+                       <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood Holds</button>
+                   </li>
+                   {% endif %}
+                   {% if set_year == '2019' %}
+                   <li>
+                       <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood Holds</button>
+                   </li>
+                   {% endif %}
+                   <li>
+                       <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} xselected{% endif %}" value="school">School Room Holds</button>
+                   </li>
+               </ul>
+
                </div>
                {% else %}
                  <!--<p>No problems found.</p>-->
@@ -168,7 +204,60 @@ Grade Filter
 
                  <script type="text/javascript">
 
+
+                    setYear = sessionStorage.getItem('setYear') || '2017';
+                    var holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+                    if (holdsetsSelectedjson === null) {
+                      if (setYear == '2016') {
+                        holdsetsSelected = ['A','B','school']
+                      } else if (setYear == '2017') {
+                        holdsetsSelected = ['A','B','C','wood','school']
+                      } else if  (setYear == '2019') {
+                        holdsetsSelected = ['A','B','C','wood','school']
+                      }
+                      sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+                    }
+                    $('#btnA').removeClass('selected')
+                    $('#btnB').removeClass('selected')
+                    $('#btnC').removeClass('selected')
+                    $('#btnwood').removeClass('selected')
+                    $('#btnwoodB').removeClass('selected')
+                    $('#btnwoodC').removeClass('selected')
+                    $('#btnschool').removeClass('selected')
+                    holdsetsSelected =  JSON.parse(holdsetsSelectedjson)
+                    console.log('in selected setting' +  holdsetsSelected)
+                    if (holdsetsSelected.includes('A')) { $('#btnA').addClass('selected') }
+                    if (holdsetsSelected.includes('B')) { $('#btnB').addClass('selected') }
+                    if (holdsetsSelected.includes('C')) { $('#btnC').addClass('selected') }
+                    if (holdsetsSelected.includes('wood')) { $('#btnwood').addClass('selected') }
+                    if (holdsetsSelected.includes('woodB')) { $('#btnwoodB').addClass('selected') }
+                    if (holdsetsSelected.includes('woodC')) { $('#btnwoodC').addClass('selected') }
+                    if (holdsetsSelected.includes('school')) { $('#btnschool').addClass('selected') }
+                    backgroundcss = []
+                    blendcss =  []
+
+                    var arrayLength = holdsetsSelected.length;
+                    for (var i = 0; i < arrayLength; i++) {
+                        holdset = holdsetsSelected[i];
+                        console.log('i'+holdset)
+                        backgroundcss.push("url(/static/moonboard/" + setYear + "/" +  holdset +  ".png)")
+                        blendcss.push('darken')
+                    }
+                    backgroundcss.push('url(/static/moonboard/moonboard-background.png)')
+                    blendcss.push('normal')
+                    $('#search-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
+                    $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
+
                    {% if not max_holds %}
+                       setYear = sessionStorage.getItem('setYear') || '2017';
+                       if (setYear == '2016') {
+                         holdsetsSelected = ['A','B','school']
+                       } else if (setYear == '2017') {
+                         holdsetsSelected = ['A','B','C','wood','school']
+                       } else if  (setYear == '2019') {
+                         holdsetsSelected = ['A','B','C','wood','school']
+                       }
+                        sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
                         sessionStorage.setItem('minGrade','5+');
                         sessionStorage.setItem('maxGrade','8B+');
                         sessionStorage.setItem('minTick',0);
@@ -176,8 +265,7 @@ Grade Filter
                         sessionStorage.setItem('hold', JSON.stringify([]));
                         sessionStorage.setItem('nothold', JSON.stringify([]));
 
-
-                   {% endif %}
+                    {%  endif %}
 
                    $("#resetSearch").on("click", function () {
                      console.log('resetclick')
@@ -188,7 +276,16 @@ Grade Filter
 
                      sessionStorage.setItem('hold', JSON.stringify([]))
                      sessionStorage.setItem('nothold', JSON.stringify([]))
-                     getProblemList(holds=[])
+                     setYear = sessionStorage.getItem('setYear') || '2017';
+                     if (setYear == '2016') {
+                       holdsetsSelected = ['A','B','school']
+                     } else if (setYear == '2017') {
+                       holdsetsSelected = ['A','B','C','wood','school']
+                     } else if  (setYear == '2019') {
+                       holdsetsSelected = ['A','B','C','wood','school']
+                     }
+                     sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+                     getProblemList(holds=[], holdssetSelected=holdsetsSelected)
 
                    })
 
@@ -289,10 +386,17 @@ Grade Filter
 
 
                          }
-                         var setYear = sessionStorage.getItem('setYear') || '2016';
+                         var setYear = sessionStorage.getItem('setYear') || '2017';
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
                          var sortedBy = sessionStorage.getItem('sortedBy');
 
+                         current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
+                         console.log('current_holdsetsSelected-prejson',current_holdsetsSelected)
+                         if (holdsetsSelectedjson) {
+                           current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+                         } else {
+                           current_holdsetsSelected = []
+                         }
 
                          holdsjson = sessionStorage.getItem('hold')
                          notholdsjson = sessionStorage.getItem('nothold')
@@ -313,7 +417,7 @@ Grade Filter
                          } else {
                            current_notholds = []
                          }
-                         getProblemList(current_holds, current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy)
+                         getProblemList(current_holds, current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy,current_holdsetsSelected)
 
 
                      }
@@ -346,9 +450,18 @@ Grade Filter
 
                          var setYear = sessionStorage.getItem('setYear') || '2017';
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
+                         var sortedBy = sessionStorage.getItem('sortedBy');
+
+                         current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
+                         if (holdsetsSelectedjson) {
+                           current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+                         } else {
+                           current_holdsetsSelected = []
+                         }
+
                          holdsjson = sessionStorage.getItem('hold')
                          notholdsjson = sessionStorage.getItem('nothold')
-                         var sortedBy = sessionStorage.getItem('sortedBy');
+
                          if (holdsjson) {
                            current_holds = JSON.parse(holdsjson)
                          } else {
@@ -360,7 +473,7 @@ Grade Filter
                            current_notholds = []
                          }
 
-                         getProblemList(current_holds,  current_notholds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, sortedBy)
+                         getProblemList(current_holds,  current_notholds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, sortedBy,current_holdsetsSelected)
 
 
                      }
@@ -468,6 +581,85 @@ Grade Filter
 
 
 
+                       Array.prototype.remove = function() {
+                           var what, a = arguments, L = a.length, ax;
+                           while (L && this.length) {
+                               what = a[--L];
+                               while ((ax = this.indexOf(what)) !== -1) {
+                                   this.splice(ax, 1);
+                               }
+                           }
+                           return this;
+                       };
+
+
+
+
+
+                        $(".holdsetBtn").click(function () {
+
+                            holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+                            if (holdsetsSelectedjson) {
+                              current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+                            } else {
+                              current_holdsetsSelected = []
+                            }
+                            var $btn = $(this);
+
+                            $btn.toggleClass('selected');
+
+                            var holdsetSelected = $btn.val();
+
+                            if ($btn.hasClass('selected')) {
+                                current_holdsetsSelected.push(holdsetSelected)
+                            } else {
+                                current_holdsetsSelected.remove(holdsetSelected)
+                            }
+                            sessionStorage.setItem('holdsetsSelected',JSON.stringify(current_holdsetsSelected))
+                            console.log($btn.val())
+                            console.log(current_holdsetsSelected)
+
+
+                            holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+                            if (holdsetsSelectedjson) {
+                              current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+                            } else {
+                              current_holdsetsSelected = []
+                            }
+                            console.log('holdsetSelected after resetting '+ current_holdsetsSelected)
+                            var setYear = sessionStorage.getItem('setYear') || '2017';
+                            var setAngle = sessionStorage.getItem('setAngle') || '40';
+                            var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
+                            var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+
+                            var min_overlap = sessionStorage.getItem('min_overlap') || 3;
+                            var sortedBy = sessionStorage.getItem('sortedBy') || '';
+
+                            holdsjson = sessionStorage.getItem('hold')
+                            notholdsjson = sessionStorage.getItem('nothold')
+
+                            if (holdsjson) {
+                              current_holds = JSON.parse(holdsjson)
+                            } else {
+                              current_holds = []
+                            }
+                            if (notholdsjson) {
+                              current_notholds = JSON.parse(notholdsjson)
+                            } else {
+                              current_notholds = []
+                            }
+
+                            getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
+
+
+
+
+
+                        });
+
+
+
+
 
 
 
@@ -484,7 +676,7 @@ Grade Filter
 
                              $btn.addClass('selected');
                              var sortedBy = $btn.text();
-                             var setYear = sessionStorage.getItem('setYear') || '2016';
+                             var setYear = sessionStorage.getItem('setYear') || '2017';
                              var setAngle = sessionStorage.getItem('setAngle') || '40';
                              var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
                              var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
@@ -499,6 +691,13 @@ Grade Filter
                              sessionStorage.setItem('sortedBy', sortedBy);
 
                              console.log($btn.text());
+
+                             current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
+                             if (holdsetsSelectedjson) {
+                               current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+                             } else {
+                               current_holdsetsSelected = []
+                             }
                              holdsjson = sessionStorage.getItem('hold')
                              notholdsjson = sessionStorage.getItem('nothold')
 
@@ -513,7 +712,7 @@ Grade Filter
                                current_notholds = []
                              }
 
-                             getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy)
+                             getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
 
 
 

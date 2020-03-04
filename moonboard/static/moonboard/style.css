@@ -346,3 +346,7 @@ h4 {
 .method {
 	font-size:70%;
 }
+#search-board, #result-board  {
+	/* background-image: url(moonboard-background.png);  */
+	background-blend-mode: overlay;
+}

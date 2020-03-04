@@ -7,7 +7,10 @@ from django.template.loader import render_to_string
 from pprint import pprint as pp
 from datetime import datetime
 import logging
-logging.basicConfig(level=logging.ERROR)
+from .holdmappinginclude import holdmapping
+
+logging.basicConfig(level=logging.DEBUG)
+
 def helloView(request):
     return HttpResponse('Hello World!')
 
@@ -15,7 +18,7 @@ def helloView(request):
 def homePageView(request):
 
     holds = request.GET.getlist('hold[]')
-    set_year = request.GET.get('set_year', 2016)
+    set_year = request.GET.get('set_year', 2017)
     if holds:
         # problems = ProblemMove.objects.prefetch_related('problem_set')\
         # .filter(position__in=holds).distinct()\
@@ -37,8 +40,15 @@ def homePageView(request):
     return render(request, 'home.html')
 
 def problemListView(request):
+    set_year = request.GET.get('set_year', '2017')
+    defaultHoldsets = {'2016': ['A','B','school'], '2017':['A','B','C','wood','school'], '2019': ['A','B','wood','woodB','woodC','school'] }
+    holdsetsSelected = request.GET.getlist('holdsetsSelected[]')
+    if not holdsetsSelected:
+        holdsetsSelected = defaultHoldsets[set_year]
+
     holds = request.GET.getlist('hold[]')
     notholds = request.GET.getlist('nothold[]')
+    logging.debug(('holdsetsSelected: ',holdsetsSelected))
 
     min_grade = request.GET.get('min_grade', '5+')
     max_grade = request.GET.get('max_grade', '8B+')
@@ -66,8 +76,8 @@ def problemListView(request):
                     )
     # For some reason  min_overlap was coming back from  a request as len(holds)+1
     min_overlap = min(min_overlap,len(holds))
-    set_year = request.GET.get('set_year', 2017)
-    set_angle = request.GET.get('set_angle', 40)
+    set_year = request.GET.get('set_year', '2017')
+    set_angle = request.GET.get('set_angle', '40')
     logging.debug((set_year, set_angle, min_overlap))
 
     min_holds = 3
@@ -101,15 +111,30 @@ def problemListView(request):
 
     filtered_problems = []
     if problems:
+        pp(problems[0])
         for problem in problems:
-            nothold_count = problem.get('nothold_count',0)
-            if problem['problem__grade'] in filtered_gradelist:
-                dateinserted_timestamp = float(problem['problem__dateinserted'][6:-2])/1000
-                problem['datetimestamp'] = dateinserted_timestamp
-                problem['date'] = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
-                problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
-                problem['screwons'] = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem['problem__method'])
-                filtered_problems.append(problem)
+            outsideCurrentHoldset = False
+            pp(problem['problem__name'])
+            p = Problem.objects.get(id=problem['problem_id'])
+            pholds = p.problemmove_set.all()
+            pp(holdmapping.keys())
+            for h in pholds:
+                pp((h.position, holdmapping[set_year][h.position]))
+                if holdmapping[set_year][h.position][0] not in holdsetsSelected:
+                    outsideCurrentHoldset = True
+                    pp((holdmapping[set_year][h.position][0],' not in ',holdsetsSelected))
+
+
+            if not outsideCurrentHoldset:
+                nothold_count = problem.get('nothold_count',0)
+                if problem['problem__grade'] in filtered_gradelist:
+                    dateinserted_timestamp = float(problem['problem__dateinserted'][6:-2])/1000
+                    problem['numholds'] = len(pholds)
+                    problem['datetimestamp'] = dateinserted_timestamp
+                    problem['date'] = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
+                    problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
+                    problem['screwons'] = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem['problem__method'])
+                    filtered_problems.append(problem)
 
     else:
         filtered_problems=[]
@@ -123,8 +148,8 @@ def problemListView(request):
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['screwons'])
     elif sortedBy == 'Rating':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__rating'], reverse=True)
-    elif sortedBy == 'Hard':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__gradenum'], reverse=True)
+    elif sortedBy == 'Num Holds':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['numholds'], reverse=True)
     elif sortedBy == 'Easy':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__gradenum'])
     else:
@@ -133,7 +158,7 @@ def problemListView(request):
     logging.debug(('min_for_min_overlap_slider',len(holds)-4,max(3,len(holds)-4)))
     min_for_min_overlap_slider = max(3,len(holds)-4)
     html = render_to_string(template_name="problem-results-partial.html",
-            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy,  "set_year": set_year}
+            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy,  "set_year": set_year, "holdsetsSelected": holdsetsSelected}
         )
     data_dict = {"html_from_view": html}
 
