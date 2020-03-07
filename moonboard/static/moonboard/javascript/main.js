@@ -1,3 +1,5 @@
+// This version is OK Kenny
+
 const results_div = $('#replaceable-content')
 const selected_problem_name = $('#replaceable-name')
 var hold_overlap_slider = document.getElementById("hold-overlap");
@@ -33,32 +35,32 @@ function filterRoutes(minOverlap){
 
 function changeSetYear() {
   // Get the checkbox
-  var checkBox = document.getElementById("setYearCheckbox");
   var holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
   // If the checkbox is checked, display the output text
   if (document.getElementById('set2017').checked){
-    sessionStorage.setItem('setYear', 2017)
+    sessionStorage.setItem('setYear', '2017')
     document.getElementById("setangle").style="display:inline";
     var arrayLength = holdsetsSelected.length;
     for (var i = 0; i < arrayLength; i++) {
         holdset = holdsetsSelected[i];
         console.log('i'+i)
-
     }
-    document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
-    document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2017-min.jpg')"
   } else if (document.getElementById('set2019').checked) {
-    sessionStorage.setItem('setYear', 2019)
+    sessionStorage.setItem('setYear', '2019')
     document.getElementById("setangle").style="display:inline";
-    document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')"
-    document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-mbm2019-min.jpg')"
   } else {
-    sessionStorage.setItem('setYear', 2016)
+    sessionStorage.setItem('setYear', '2016')
     document.getElementById("setangle").style="display:none";
-    document.getElementById("result-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
-    document.getElementById("search-board").style.backgroundImage = "url('/static/moonboard/mbsetup-2016-min.jpg')"
-
   }
+  setYear = sessionStorage.getItem('setYear')
+    if (setYear == '2016') {
+      holdsetsSelected = ['A','B','school']
+    } else if (setYear == '2017') {
+      holdsetsSelected = ['A','B','C','wood','school']
+    } else if  (setYear == '2019') {
+      holdsetsSelected = ['A','B','wood','woodB','woodC','school']
+    }
+    sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
   $('#replaceable-name').html('Selected route')
   document.getElementById("replaceable-content").scrollTop;
   $('.result-board button').removeClass('blue-button red-button green-button');
@@ -66,8 +68,10 @@ function changeSetYear() {
 
   sessionStorage.setItem('hold', JSON.stringify([]))
   sessionStorage.setItem('nothold', JSON.stringify([]))
+  setYear = sessionStorage.getItem('setYear') || '2017'
+  setAngle = sessionStorage.getItem('setAngle') || '40'
 
-  getProblemList(holds=[], notholds=[])
+  getProblemList(holds=[], notholds=[], setYear, setAngle, 3, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 }
 
 function changeSetAngle() {
@@ -115,7 +119,7 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     selected_problem_name.html(response['name'] + ' <span style="font-weight: bold">' + response['grade'] + '</span>')
     $('.result-board button').fadeTo('fast', 0).promise().then(() => {
     $('.result-board button').removeClass('blue-button red-button green-button')
-    console.log(response);
+    console.log('Response '+response);
     response['holds'].forEach(hold => {
       if(hold[1]) {
         classToAdd = 'green-button'
@@ -172,7 +176,7 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     backgroundcss.push('url(/static/moonboard/moonboard-background.png)')
     blendcss.push('normal')
     $('#search-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
-    $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))    
+    $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
 
     $('.result-board button').fadeTo('slow', 1)
 
@@ -231,10 +235,13 @@ function toggleButton(buttonId) {
     document.getElementById(buttonId).classList = "led-button " + classToAdd;
     sessionStorage.setItem('hold', JSON.stringify(current_holds))
     sessionStorage.setItem('nothold', JSON.stringify(current_notholds))
-    getProblemList(holds=current_holds,  notholds=current_notholds, holdsetsSelected=current_holdsetsSelected)
+    setYear = sessionStorage.getItem('setYear') || '2017'
+    setAngle = sessionStorage.getItem('setAngle') || '40'
+    getProblemList(holds=current_holds,  notholds=current_notholds, setYear, setAngle, 3, '5+','8B+',3,20,'',current_holdsetsSelected)
 }
 
 function toggleProblem(problemId) {
+  console.log('pretoggle')
   console.log('toggle' + problemId)
 
   const request_parameters = {
@@ -251,6 +258,8 @@ function toggleProblem(problemId) {
 }
 
 function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
+  console.log('IN MAIN getProblemList, setYear '+ setYear)
+
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';
   }
@@ -258,6 +267,7 @@ function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade
     var setAngle = sessionStorage.getItem('setAngle') || '40';
   }
   console.log('IN MAIN getProblemList, holdsetsSelected '+ holdsetsSelected)
+  console.log('IN MAIN getProblemList post default, setYear '+ setYear)
   const request_parameters = {
     hold: holds,
     nothold:  notholds,

@@ -267,9 +267,9 @@ table.center {
     background-color: #fce2a8;
     color: #222;
     text-transform: uppercase;
-    font-size: 1em;
+    font-size: 0.7em;
     border: none;
-    height: 39px;
+    height: 29px;
     min-width: 5em;
 }
 .filter-wrap .filters li button, .filter-wrap .sort li button {
@@ -278,9 +278,9 @@ table.center {
     color: #333;
 }
 .filter-wrap .filters li, .filter-wrap .sort li {
-    width: 49%;
+    width: 16%;
     float: left;
-    margin-right: .2em;
+    margin-right: .1em;
     margin-bottom: .3em;
 }
 .filter-wrap ul {
@@ -297,7 +297,7 @@ table.center {
     margin-bottom: 1em;
 }
 .filter-wrap .section-header {
-    background-color: #222;
+    background-color: #fff;
 }
 .filter-wrap .row, .filter-wrap .container-fluid {
     padding: 0;
@@ -308,9 +308,13 @@ table.center {
     color: #fff;
 }
 .section-header h3, .section-header h2, .section-header h1 {
-    color: #fff;
-		font-size: 1.2rem;
-		margin-top:  0.5rem;
+    color: #222;
+		font-size: 0.8rem;
+		margin:  0 0 0 0;
+		background-color; #fff;
+}
+.filter-wrap ul.margin-wrapper {
+  margin: 0 0 0 0;
 }
 .noUi-handle {
     border: 1px solid #d9d9d9;
@@ -349,4 +353,7 @@ h4 {
 #search-board, #result-board  {
 	/* background-image: url(moonboard-background.png);  */
 	background-blend-mode: overlay;
+}
+.noUi-pips-horizontal {
+	height: 50px !important;
 }

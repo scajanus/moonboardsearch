@@ -40,6 +40,8 @@ def homePageView(request):
     return render(request, 'home.html')
 
 def problemListView(request):
+    logging.debug('request in problemListView')
+    logging.debug(request)
     set_year = request.GET.get('set_year', '2017')
     defaultHoldsets = {'2016': ['A','B','school'], '2017':['A','B','C','wood','school'], '2019': ['A','B','wood','woodB','woodC','school'] }
     holdsetsSelected = request.GET.getlist('holdsetsSelected[]')
@@ -87,23 +89,12 @@ def problemListView(request):
     logging.debug('holdinfo')
     logging.debug(holds)
     logging.debug(notholds)
-    if holds and notholds:
-        logging.debug('holds  and notholds')
-        logging.debug((holds, notholds,  min_overlap, set_year, set_angle))
-        problems = ProblemMove.objects.prefetch_related('problem_set')\
-            .distinct()\
-            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating','problem__dateinserted','problem__method')\
-            .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .annotate(nothold_count=Count(Case(When(position__in=notholds, then=1))), total_notholds=Count('*'))\
-            .filter(hold_count__gte=min_overlap, nothold_count__lte=0, problem__setyear=set_year, problem__setangle=set_angle)
-    elif holds and not notholds:
-        logging.debug('holds  and not notholds')
+    if len(holds)>1:
         logging.debug((holds, min_overlap, set_year, set_angle))
-        problems = ProblemMove.objects.prefetch_related('problem_set')\
-            .distinct()\
-            .values('problem_id', 'problem__name', 'problem__grade','problem__repeats','problem__setyear','problem__setangle','problem__rating','problem__dateinserted','problem__method')\
-            .annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .filter(hold_count__gte=min_overlap, problem__setyear=set_year, problem__setangle=set_angle)
+        problems = Problem.objects.prefetch_related('problemmove_set')\
+        .annotate(hold_count=Count(Case(When(problemmove__position__in=holds, then=1))), total_holds=Count('*'))\
+        .annotate(nothold_count=Count(Case(When(problemmove__position__in=notholds, then=1))), total_notholds=Count('*'))\
+        .filter(hold_count__gte=min_overlap, setyear=set_year, setangle=set_angle, grade__in=filtered_gradelist)
         logging.debug(('len(problems)',len(problems)))
     else:
         logging.debug('none')
@@ -114,9 +105,8 @@ def problemListView(request):
         pp(problems[0])
         for problem in problems:
             outsideCurrentHoldset = False
-            pp(problem['problem__name'])
-            p = Problem.objects.get(id=problem['problem_id'])
-            pholds = p.problemmove_set.all()
+            pp(problem.name)
+            pholds = problem.problemmove_set.all()
             pp(holdmapping.keys())
             for h in pholds:
                 pp((h.position, holdmapping[set_year][h.position]))
@@ -126,35 +116,34 @@ def problemListView(request):
 
 
             if not outsideCurrentHoldset:
-                nothold_count = problem.get('nothold_count',0)
-                if problem['problem__grade'] in filtered_gradelist:
-                    dateinserted_timestamp = float(problem['problem__dateinserted'][6:-2])/1000
-                    problem['numholds'] = len(pholds)
-                    problem['datetimestamp'] = dateinserted_timestamp
-                    problem['date'] = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
-                    problem['problem__gradenum'] = gradelist.index(problem['problem__grade'])
-                    problem['screwons'] = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem['problem__method'])
-                    filtered_problems.append(problem)
+                nothold_count = problem.nothold_count
+                dateinserted_timestamp = float(problem.dateinserted[6:-2])/1000
+                problem.numholds = len(pholds)
+                problem.datetimestamp = dateinserted_timestamp
+                problem.date = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
+                problem.gradenum = gradelist.index(problem.grade)
+                problem.screwons = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem.method)
+                filtered_problems.append(problem)
 
     else:
         filtered_problems=[]
     logging.debug(('len(filtered_problems)',len(filtered_problems)))
 
     if sortedBy == 'Repeats':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__repeats'], reverse=True)
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.repeats, reverse=True)
     elif sortedBy == 'New':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['datetimestamp'], reverse=True)
-    elif sortedBy == 'Screw Ons':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['screwons'])
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.datetimestamp, reverse=True)
+    elif sortedBy == 'Method':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.screwons)
     elif sortedBy == 'Rating':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__rating'], reverse=True)
-    elif sortedBy == 'Num Holds':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['numholds'], reverse=True)
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.rating, reverse=True)
+    elif sortedBy == 'Holds':
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.numholds, reverse=True)
     elif sortedBy == 'Easy':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i['problem__gradenum'])
+        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.gradenum)
     else:
         sorted_filtered_problems =  filtered_problems
-
+    logging.debug(('sortedBy',sortedBy))
     logging.debug(('min_for_min_overlap_slider',len(holds)-4,max(3,len(holds)-4)))
     min_for_min_overlap_slider = max(3,len(holds)-4)
     html = render_to_string(template_name="problem-results-partial.html",
@@ -192,7 +181,9 @@ def problemView(request):
 
 def problemAsJsonView(request):
     problem_id = request.GET['problemId']
+    logging.debug(('problem_id',problem_id))
     problem = Problem.objects.get(id=problem_id)
+    logging.debug(('problem',problem))
     holds = problem.problemmove_set.values_list('position','isstart','isend')
 
     problem_dict = {

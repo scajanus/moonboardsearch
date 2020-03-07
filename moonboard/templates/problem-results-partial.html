@@ -1,60 +1,8 @@
+<div>
+  <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
+<a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
 
-{% if problems %}
-    <h4>{{ problems|length}} results <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a></h4>
-  {% for problem in problems %}
-  <div class="match-{{problem.hold_count}}">
-    <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
-    " id="{{problem.problem_id}}" onclick="toggleProblem('{{ problem.problem_id }}')">
-
-    <span style="{% if problem.problem__rating == '1' or problem.problem__rating == '0'  %}
-    font-style:italic
-    {% elif problem.problem__rating == '3' %}
-    font-weight:bold
-    {% endif %}"><div style="">{{ problem.problem__name}}   <span class="badge badge-primary badge-pill repeats
-      {% if problem.problem__repeats > 200 %}
-      badge-success
-      {% elif problem.problem__repeats <= 200 and problem.problem__repeats > 30  %}
-      badge-warning
-      {% elif problem.problem__repeats <= 30 %}
-      badge-danger
-      {% endif %}
-      ">{{problem.problem__repeats}}</span></div>
-
-  <span class="dateinserted">{{problem.date}}</span> <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
-  {% if problem.problem__method != 'Feet follow hands' %}<span class="method">({{problem.problem__method}})</span>{% endif %}</span>
-
-
-
-
-      <span class="badge badge-primary badge-pill
-      {% if problem.problem__grade|first == '6' %}
-  badge-success
-{% elif problem.problem__grade|first == '7' %}
-  badge-warning
-{% elif problem.problem__grade|first == '8' %}
-  badge-danger
-{% endif %}
-      ">{{problem.problem__grade}}</span>
-
-      </button>
-
-  </div>
-    <!-- <a id="problem.problem_id" title="Click to show {{ problem.problem__name }}"
-    href="PleaseEnableJavascript.html" onclick="toggleRoute('{{ problem.problem_id }}');return false;">{{ problem.problem__name}} {{problem.problem__grade}}</a> -->
-  {% endfor %}
-
-
-<!--
-{% if max_holds > 4 %}
-<div class="slidecontainer mt-5">
-  Overlap: <input type="range" min={{max_holds|add:"-2"}} max={{max_holds}} value={{min_overlap}} class="slider" id="foo" onchange="filterRoutes(this.value)">
 </div>
-{% endif %}
--->
-
-
-{% endif %}
-
 {% if max_holds > 3 %}
 Minimum number of holds to match
 <div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
@@ -62,15 +10,59 @@ Minimum number of holds to match
  </div>
 {% endif %}
 
-{% if max_holds > 0 %}
+{% if max_holds > 1 %}
 Grade Filter
 <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
    <div id="slider"></div>
 </div>
-{% endif %}
 
+<div class="row section-header" style="clear:both;  margin-top:50px">
+
+    <div class="col-md-12">
+        <h3>
+            Filter Holdsets
+        </h3>
+
+    </div>
+
+</div>
+<div class="filter-wrap" style="">
+<ul class="sort margin-wrapper">
+    <li>
+        <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} xselected{% endif %}" value="A">A White</button>
+    </li>
+    <li>
+        <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} xselected{% endif %}" value="B">B Black</button>
+    </li>
+    {% if set_year == '2017' %}
+    <li>
+        <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} xselected{% endif %}" value="C">C Red</button>
+    </li>
+    {% endif %}
+    {% if set_year == '2017' or set_year == '2019' %}
+    <li>
+        <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood</button>
+    </li>
+    {% endif %}
+    {% if set_year == '2019' %}
+    <li>
+        <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} xselected{% endif %}" value="woodB">Wood B</button>
+    </li>
+    {% endif %}
+    {% if set_year == '2019' %}
+    <li>
+        <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} xselected{% endif %}" value="woodC">Woods C</button>
+    </li>
+    {% endif %}
+    <li>
+        <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} xselected{% endif %}" value="school">School</button>
+    </li>
+</ul>
+
+</div>
+{% endif %}
 {% if problems %}
-<div class="filter-wrap" style="clear:both;  margin-top:50px">
+<div class="filter-wrap">
               <!-- <div class="row section-header">
 
                    <div class="col-md-12">
@@ -112,7 +104,6 @@ Grade Filter
                    <div class="col-md-12">
                        <h3>
                            Sort by
-
                        </h3>
 
                    </div>
@@ -122,73 +113,98 @@ Grade Filter
                <ul class="sort margin-wrapper">
 
                    <li>
-                       <button class="sortBtn{% if sortedBy == "New" %} selected{% endif %}" data-field="New" data-dir="desc">New</button>
+                       <button class="sortBtn{% if sortedBy == "New" %} selected{% endif %}" data-field="New" data-dir="desc" value="New">New</button>
                    </li>
 
 
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Easy" %} selected{% endif %}" data-field="Easy" data-dir="asc">Easy</button>
+                       <button class="sortBtn{% if sortedBy == "Easy" %} selected{% endif %}" data-field="Easy" data-dir="asc" value="Easy">Easy</button>
                    </li>
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Num Holds" %} selected{% endif %}" data-field="Num Holds" data-dir="desc">Num Holds</button>
-
-                   </li>
-                   <li>
-
-                       <button class="sortBtn{% if sortedBy == "Rating" %} selected{% endif %}" data-field="Rating" data-dir="desc">Rating</button>
-                   </li>
-                   <li>
-
-                       <button class="sortBtn{% if sortedBy == "Repeats" %} selected{% endif %}" data-field="Repeats" data-dir="desc">Repeats</button>
+                       <button class="sortBtn{% if sortedBy == "Holds" %} selected{% endif %}" data-field="Holds" data-dir="desc" value="Holds">Holds</button>
 
                    </li>
                    <li>
 
-                       <button class="sortBtn{% if sortedBy == "Screw Ons" %} selected{% endif %}" data-field="Screw Ons" data-dir="asc">Screw Ons</button>
+                       <button class="sortBtn{% if sortedBy == "Rating" %} selected{% endif %}" data-field="Rating" data-dir="desc" value="Rating">Rating</button>
+                   </li>
+                   <li>
+
+                       <button class="sortBtn{% if sortedBy == "Repeats" %} selected{% endif %}" data-field="Repeats" data-dir="desc" value="Repeats">Repeats</button>
+
+                   </li>
+                   <li>
+
+                       <button class="sortBtn{% if sortedBy == "Method" %} selected{% endif %}" data-field="Method" data-dir="asc" value="Method">Method</button>
                    </li>
                </ul>
 
+</div>
 
-
-
-               <ul class="sort margin-wrapper">
-                   <li>
-                       <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} xselected{% endif %}" value="A">Holdset A (White)</button>
-                   </li>
-                   <li>
-                       <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} xselected{% endif %}" value="B">Holdset B (Black)</button>
-                   </li>
-                   {% if set_year == '2017' %}
-                   <li>
-                       <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} xselected{% endif %}" value="C">Holdset C (Red)</button>
-                   </li>
-                   {% endif %}
-                   {% if set_year == '2017' or set_year == '2019' %}
-                   <li>
-                       <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood Holds</button>
-                   </li>
-                   {% endif %}
-                   {% if set_year == '2019' %}
-                   <li>
-                       <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood Holds</button>
-                   </li>
-                   {% endif %}
-                   {% if set_year == '2019' %}
-                   <li>
-                       <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood Holds</button>
-                   </li>
-                   {% endif %}
-                   <li>
-                       <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} xselected{% endif %}" value="school">School Room Holds</button>
-                   </li>
-               </ul>
-
-               </div>
                {% else %}
                  <!--<p>No problems found.</p>-->
                {% endif %}
+{% if problems %}
+    <h4>{{ problems|length}} results <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a></h4>
+  {% for problem in problems %}
+  <div class="match-{{problem.hold_count}}">
+    <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
+    " id="{{problem.id}}" onclick="toggleProblem('{{ problem.id }}')">
+
+    <span style="{% if problem.rating == '1' or problem.rating == '0'  %}
+    font-style:italic
+    {% elif problem.rating == '3' %}
+    font-weight:bold
+    {% endif %}"><div style="">{{ problem.name}}   <span class="badge badge-primary badge-pill repeats
+      {% if problem.repeats > 200 %}
+      badge-success
+      {% elif problem.repeats <= 200 and problem.repeats > 30  %}
+      badge-warning
+      {% elif problem.repeats <= 30 %}
+      badge-danger
+      {% endif %}
+      ">{{problem.repeats}}</span></div>
+
+  <span class="dateinserted">{{problem.date}}</span> <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
+  {% if problem.method != 'Feet follow hands' %}<span class="method">({{problem.method}})</span>{% endif %}</span>
+
+
+
+
+      <span class="badge badge-primary badge-pill
+      {% if problem.grade|first == '6' %}
+  badge-success
+{% elif problem.grade|first == '7' %}
+  badge-warning
+{% elif problem.grade|first == '8' %}
+  badge-danger
+{% endif %}
+      ">{{problem.grade}}</span>
+
+      </button>
+
+  </div>
+    <!-- <a id="problem.problem_id" title="Click to show {{ problem.name }}"
+    href="PleaseEnableJavascript.html" onclick="toggleRoute('{{ problem.problem_id }}');return false;">{{ problem.name}} {{problem.grade}}</a> -->
+  {% endfor %}
+
+
+<!--
+{% if max_holds > 4 %}
+<div class="slidecontainer mt-5">
+  Overlap: <input type="range" min={{max_holds|add:"-2"}} max={{max_holds}} value={{min_overlap}} class="slider" id="foo" onchange="filterRoutes(this.value)">
+</div>
+{% endif %}
+-->
+
+
+{% endif %}
+
+
+
+
                <div class="filter-wrap" style="clear:both;  margin-top:50px">
                <p>To filter by one or more holds, click on the hold on the left side to select it (selections shown with blue circles). Once two or more holds are selected, this column will show the problems that  use those holds. </p>
 
@@ -203,9 +219,10 @@ Grade Filter
 
 
                  <script type="text/javascript">
-
+                   console.log("STARTING")
 
                     setYear = sessionStorage.getItem('setYear') || '2017';
+                    console.log('setYear on run '+setYear)
                     var holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
                     if (holdsetsSelectedjson === null) {
                       if (setYear == '2016') {
@@ -213,10 +230,13 @@ Grade Filter
                       } else if (setYear == '2017') {
                         holdsetsSelected = ['A','B','C','wood','school']
                       } else if  (setYear == '2019') {
-                        holdsetsSelected = ['A','B','C','wood','school']
+                        holdsetsSelected = ['A','B','wood','woodB','woodC','school']
                       }
                       sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+                    } else {
+                      holdsetsSelected = JSON.parse(holdsetsSelectedjson)
                     }
+                    console.log('holdsetsSelected,pre style board'+holdsetsSelected)
                     $('#btnA').removeClass('selected')
                     $('#btnB').removeClass('selected')
                     $('#btnC').removeClass('selected')
@@ -224,7 +244,6 @@ Grade Filter
                     $('#btnwoodB').removeClass('selected')
                     $('#btnwoodC').removeClass('selected')
                     $('#btnschool').removeClass('selected')
-                    holdsetsSelected =  JSON.parse(holdsetsSelectedjson)
                     console.log('in selected setting' +  holdsetsSelected)
                     if (holdsetsSelected.includes('A')) { $('#btnA').addClass('selected') }
                     if (holdsetsSelected.includes('B')) { $('#btnB').addClass('selected') }
@@ -248,23 +267,19 @@ Grade Filter
                     $('#search-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
                     $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
 
-                   {% if not max_holds %}
+                    var firstrun = sessionStorage.getItem('firstrun')
+                    console.log('firstrun '+firstrun)
+                   {% if firstrun %}
                        setYear = sessionStorage.getItem('setYear') || '2017';
                        if (setYear == '2016') {
                          holdsetsSelected = ['A','B','school']
                        } else if (setYear == '2017') {
                          holdsetsSelected = ['A','B','C','wood','school']
                        } else if  (setYear == '2019') {
-                         holdsetsSelected = ['A','B','C','wood','school']
+                         holdsetsSelected = ['A','B','wood','woodB','woodC','school']
                        }
                         sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
-                        sessionStorage.setItem('minGrade','5+');
-                        sessionStorage.setItem('maxGrade','8B+');
-                        sessionStorage.setItem('minTick',0);
-                        sessionStorage.setItem('maxTick',16);
-                        sessionStorage.setItem('hold', JSON.stringify([]));
-                        sessionStorage.setItem('nothold', JSON.stringify([]));
-
+                        sessionStorage.setItem('firstrun', false)
                     {%  endif %}
 
                    $("#resetSearch").on("click", function () {
@@ -277,15 +292,43 @@ Grade Filter
                      sessionStorage.setItem('hold', JSON.stringify([]))
                      sessionStorage.setItem('nothold', JSON.stringify([]))
                      setYear = sessionStorage.getItem('setYear') || '2017';
+                     setAngle = sessionStorage.getItem('setAngle') || '40';
                      if (setYear == '2016') {
                        holdsetsSelected = ['A','B','school']
                      } else if (setYear == '2017') {
                        holdsetsSelected = ['A','B','C','wood','school']
                      } else if  (setYear == '2019') {
-                       holdsetsSelected = ['A','B','C','wood','school']
+                       holdsetsSelected = ['A','B','wood','woodB','woodC','school']
                      }
                      sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
-                     getProblemList(holds=[], holdssetSelected=holdsetsSelected)
+                     getProblemList(holds=[], notholds=[], setYear, setAngle, 3, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+
+                   })
+
+
+                   $("#resetAll").on("click", function () {
+                     console.log('resetallclick')
+                     $('#replaceable-name').html('Selected route')
+                     document.getElementById("replaceable-content").scrollTop;
+                     $('.result-board button').removeClass('blue-button red-button green-button');
+                     $('#search-board button').removeClass('blue-button red-button green-button');
+
+                     sessionStorage.removeItem('hold')
+                     sessionStorage.removeItem('nothold')
+                     sessionStorage.removeItem('holdsetsSelected')
+                     sessionStorage.setItem('setYear','2017')
+                     sessionStorage.setItem('setAngle','40')
+                     setYear = '2017'
+                     setAngle = '40'
+                     if (setYear == '2016') {
+                       holdsetsSelected = ['A','B','school']
+                     } else if (setYear == '2017') {
+                       holdsetsSelected = ['A','B','C','wood','school']
+                     } else if  (setYear == '2019') {
+                       holdsetsSelected = ['A','B','wood','woodB','woodC','school']
+                     }
+                     sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+                     getProblemList(holds=[], notholds=[], setYear, setAngle, 3, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 
                    })
 
@@ -390,13 +433,14 @@ Grade Filter
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
                          var sortedBy = sessionStorage.getItem('sortedBy');
 
-                         current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
-                         console.log('current_holdsetsSelected-prejson',current_holdsetsSelected)
+                         holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+                         console.log('current_holdsetsSelected-prejson',holdsetsSelectedjson)
                          if (holdsetsSelectedjson) {
                            current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
                          } else {
                            current_holdsetsSelected = []
                          }
+                         console.log('current_holdsetsSelected-postjson',current_holdsetsSelected)
 
                          holdsjson = sessionStorage.getItem('hold')
                          notholdsjson = sessionStorage.getItem('nothold')
@@ -406,6 +450,9 @@ Grade Filter
                          } else {
                            min_overlap == 3;
                          }
+                         console.log('holdsjson '+holdsjson)
+                         console.log('notholdsjson '+notholdsjson)
+
 
                          if (holdsjson) {
                            current_holds = JSON.parse(holdsjson)
@@ -417,6 +464,7 @@ Grade Filter
                          } else {
                            current_notholds = []
                          }
+                         console.log(current_holds,current_notholds, setYear, setAngle, min_overlap,minGrade,maxGrade,3,20, sortedBy, current_holdsetsSelected);
                          getProblemList(current_holds, current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy,current_holdsetsSelected)
 
 
@@ -452,7 +500,7 @@ Grade Filter
                          var setAngle = sessionStorage.getItem('setAngle') || '40';
                          var sortedBy = sessionStorage.getItem('sortedBy');
 
-                         current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
+                         holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
                          if (holdsetsSelectedjson) {
                            current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
                          } else {
@@ -675,7 +723,7 @@ Grade Filter
                              $(".sortBtn").removeClass('selected');
 
                              $btn.addClass('selected');
-                             var sortedBy = $btn.text();
+                             var sortedBy = $btn.val();
                              var setYear = sessionStorage.getItem('setYear') || '2017';
                              var setAngle = sessionStorage.getItem('setAngle') || '40';
                              var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
@@ -690,7 +738,7 @@ Grade Filter
 
                              sessionStorage.setItem('sortedBy', sortedBy);
 
-                             console.log($btn.text());
+                             console.log($btn.val());
 
                              current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
                              if (holdsetsSelectedjson) {
