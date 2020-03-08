@@ -74,7 +74,7 @@ def problemListView(request):
     min_holds = 3
     max_holds = 20
 
-    if len(holds)>1:
+    if len(holds)>0:
         problems = Problem.objects.prefetch_related('problemmove_set')\
         .annotate(hold_count=Count(Case(When(problemmove__position__in=holds, then=1))), total_holds=Count('*'))\
         .annotate(nothold_count=Count(Case(When(problemmove__position__in=notholds, then=1))), total_notholds=Count('*'))\

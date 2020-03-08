@@ -11,7 +11,7 @@ Minimum number of holds to match
 </div>
 {% endif %}
 <!-- Grade Filter Slider -->
-{% if max_holds > 1 %}
+{% if max_holds > 0 %}
 Grade Filter
 <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
  <div id="slider"></div>
@@ -325,7 +325,7 @@ function sliderValueChanged(values, handle, unencoded, tap, positions) {
     } else {
         current_notholds = []
     }
-    var min_overlap = sessionStorage.getItem('min_overlap',len(current_holds))
+    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
     console.log(current_holds,current_notholds, setYear, setAngle, min_overlap,minGrade,maxGrade,3,20, sortedBy, current_holdsetsSelected);
     getProblemList(current_holds, current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy,current_holdsetsSelected)
 }
@@ -466,7 +466,7 @@ $(".holdsetBtn").click(function () {
     } else {
         current_notholds = []
     }
-    var min_overlap = sessionStorage.getItem('min_overlap',len(current_holds))
+    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
 
     getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
 });
@@ -505,7 +505,7 @@ $(".sortBtn").click(function () {
     } else {
         current_notholds = []
     }
-    var min_overlap = sessionStorage.getItem('min_overlap',len(current_holds))
+    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
     getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
 });
 });

@@ -70,7 +70,7 @@ function changeSetYear() {
   setYear = sessionStorage.getItem('setYear') || '2017'
   setAngle = sessionStorage.getItem('setAngle') || '40'
 
-  min_overlap = sessionStorage.getItem('min_overlap',0)
+  min_overlap = sessionStorage.removeItem('min_overlap')
 
   getProblemList(holds=[], notholds=[], setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 }
@@ -106,7 +106,7 @@ function changeSetAngle() {
   setYear = sessionStorage.getItem('setYear') || '2017'
   setAngle = sessionStorage.getItem('setAngle') || '40'
 
-  min_overlap = sessionStorage.getItem('min_overlap',0)
+  min_overlap = sessionStorage.removeItem('min_overlap')
 
   getProblemList(holds=[], notholds=[], setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 
