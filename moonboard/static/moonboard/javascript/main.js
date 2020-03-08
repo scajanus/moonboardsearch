@@ -141,7 +141,6 @@ let problem_ajax_call = function (endpoint, request_parameters) {
       }
       else if (hold[2]) {
         classToAdd = 'red-button'
-
       }
       else {
         classToAdd = 'blue-button'
@@ -223,30 +222,22 @@ function toggleButton(buttonId) {
       current_holdsetsSelected = []
     }
 
-    console.log('1 ' +current_holds)
-    console.log('1-not ' +current_notholds)
     if(classes.length == 1) {
       //Currently off, turn blue
-      console.log('currently off, pushing'+buttonId)
       classToAdd = "blue-button";
       current_holds.push(buttonId)
     }
     else if(classes.item(1) == "blue-button" || classes.item(1) == "red-button") {
       //Currently blue, turn off
-      console.log('currently blue  or red')
       if  (classes.item(1) == "blue-button") {
-        console.log('currently blue')
         classToAdd  = "red-button"
         current_holds.splice($.inArray(buttonId, current_holds), 1)
         current_notholds.push(buttonId)
       } else {
-        console.log('currently red')
         classToAdd = ""
         current_notholds.splice($.inArray(buttonId, current_holds), 1)
       }
     }
-    console.log('2 ' +current_holds)
-    console.log('2-not ' +current_notholds)
     document.getElementById(buttonId).classList = "led-button " + classToAdd;
     sessionStorage.setItem('hold', JSON.stringify(current_holds))
     sessionStorage.setItem('nothold', JSON.stringify(current_notholds))
@@ -275,7 +266,7 @@ function toggleProblem(problemId) {
 
 function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
 
-  console.log('min_overlap in mainjs get Problem List '+ minOverlap)
+
 
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';

@@ -2,6 +2,7 @@
   <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
   <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
 </div>
+<script src="/static/moonboard/javascript/holdsetmapping.js"></script>
 <!-- Min Hold Slider -->
 {{min_overlap}}
 {% if max_holds > 3 %}
@@ -466,8 +467,23 @@ $(".holdsetBtn").click(function () {
     } else {
         current_notholds = []
     }
-    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
+    filtered_current_holds = current_holds
+    for (var hi = 0; hi < current_holds.length; hi++) {
+        hold = current_holds[hi]
+        console.log('CHSS '+current_holdsetsSelected)
+        console.log('testing hold '+hold+' which is in '+holdsetmapping[setYear][hold])
+        if (current_holdsetsSelected.includes(holdsetmapping[setYear][hold])) {
+            console.log('hold '+hold+' included')
 
+        } else {
+            console.log('hold '+hold+' not included')
+            filtered_current_holds.splice( filtered_current_holds.indexOf(hold), 1 )
+            document.getElementById(hold).classList = "led-button"
+        }
+      }
+
+
+    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
     getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
 });
 
