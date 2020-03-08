@@ -3,6 +3,7 @@
   <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
 </div>
 <!-- Min Hold Slider -->
+{{min_overlap}}
 {% if max_holds > 3 %}
 Minimum number of holds to match
 <div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
@@ -268,7 +269,7 @@ notholdsjson = sessionStorage.getItem('nothold')
 
 sortedBy = sessionStorage.getItem('sortedBy');
 
-console.log('General log on page init ',{{maxholds}}',minGrade,maxGrade,minTick,maxTick, setYear, setAngle, sortedBy, holdsjson);
+console.log('General log on page init ','{{max_holds}}',minGrade,maxGrade,minTick,maxTick, setYear, setAngle, sortedBy, holdsjson);
 
 noUiSlider.create(moonSlider, {
    start: [minTick, maxTick],
