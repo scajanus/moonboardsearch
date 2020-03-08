@@ -35,7 +35,6 @@ def homePageView(request):
     return render(request, 'home.html')
 
 def problemListView(request):
-    logging.debug(('first in problem list view - request min_overlap ', request.GET.get('min_overlap') ))
     set_year = request.GET.get('set_year', '2017')
     defaultHoldsets = {'2016': ['A','B','school'], '2017':['A','B','C','wood','school'], '2019': ['A','B','wood','woodB','woodC','school'] }
     holdsetsSelected = request.GET.getlist('holdsetsSelected[]')
@@ -67,7 +66,6 @@ def problemListView(request):
     min_overlap = request.GET.get('min_overlap')
     if min_overlap == '':
         min_overlap = len(holds)
-    logging.debug(('min_overlap',min_overlap))
     set_year = request.GET.get('set_year', '2017')
     set_angle = request.GET.get('set_angle', '40')
 
@@ -119,7 +117,6 @@ def problemListView(request):
     else:
         sorted_filtered_problems =  filtered_problems
     min_for_min_overlap_slider = max(3,len(holds)-4)
-    logging.debug(('in problem list  view, min_overlap',min_overlap))
     html = render_to_string(template_name="problem-results-partial.html",
             context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy,  "set_year": set_year, "holdsetsSelected": holdsetsSelected}
         )
@@ -144,7 +141,6 @@ def problemView(request):
     #return Response('Holds:' + request.GET.getlist('hold'))
 
 def problemView(request):
-    logging.debug(('first in problem view - request min_overlap ',request.GET.get('min_overlap') ))
 
     problem_id = request.GET['problemId']
     problem = Problem.objects.get(id=problem_id)
@@ -155,7 +151,6 @@ def problemView(request):
     return HttpResponse('Problem fetched ' + problem.name + holdstr)
 
 def problemAsJsonView(request):
-    logging.debug(('first in problem as json view - request min_overlap ', request.GET.get('min_overlap') ))
 
     problem_id = request.GET['problemId']
     problem = Problem.objects.get(id=problem_id)
