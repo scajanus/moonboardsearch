@@ -29,7 +29,6 @@ function filterRoutes(minOverlap){
   } else {
     current_notholds = []
   }
-  console.log('min' + minGrade);
   getProblemList(current_holds, current_notholds, setYear, setAngle, minOverlap, minGrade, maxGrade)
 }
 
@@ -53,14 +52,14 @@ function changeSetYear() {
     document.getElementById("setangle").style="display:none";
   }
   setYear = sessionStorage.getItem('setYear')
-    if (setYear == '2016') {
-      holdsetsSelected = ['A','B','school']
-    } else if (setYear == '2017') {
-      holdsetsSelected = ['A','B','C','wood','school']
-    } else if  (setYear == '2019') {
-      holdsetsSelected = ['A','B','wood','woodB','woodC','school']
-    }
-    sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+  if (setYear == '2016') {
+    holdsetsSelected = ['A','B','school']
+  } else if (setYear == '2017') {
+    holdsetsSelected = ['A','B','C','wood','school']
+  } else if  (setYear == '2019') {
+    holdsetsSelected = ['A','B','wood','woodB','woodC','school']
+  }
+  sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
   $('#replaceable-name').html('Selected route')
   document.getElementById("replaceable-content").scrollTop;
   $('.result-board button').removeClass('blue-button red-button green-button');
@@ -71,7 +70,9 @@ function changeSetYear() {
   setYear = sessionStorage.getItem('setYear') || '2017'
   setAngle = sessionStorage.getItem('setAngle') || '40'
 
-  getProblemList(holds=[], notholds=[], setYear, setAngle, 3, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+  min_overlap = sessionStorage.getItem('min_overlap',0)
+
+  getProblemList(holds=[], notholds=[], setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 }
 
 function changeSetAngle() {
@@ -85,6 +86,15 @@ function changeSetAngle() {
   } else {
     sessionStorage.setItem('setAngle', 40)
   }
+  setYear = sessionStorage.getItem('setYear')
+  if (setYear == '2016') {
+    holdsetsSelected = ['A','B','school']
+  } else if (setYear == '2017') {
+    holdsetsSelected = ['A','B','C','wood','school']
+  } else if  (setYear == '2019') {
+    holdsetsSelected = ['A','B','wood','woodB','woodC','school']
+  }
+  sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
 
   $('#replaceable-name').html('Selected route')
   document.getElementById("replaceable-content").scrollTop;
@@ -93,8 +103,13 @@ function changeSetAngle() {
 
   sessionStorage.setItem('hold', JSON.stringify([]))
   sessionStorage.setItem('nothold', JSON.stringify([]))
+  setYear = sessionStorage.getItem('setYear') || '2017'
+  setAngle = sessionStorage.getItem('setAngle') || '40'
 
-  getProblemList(holds=[],notholds=[])
+  min_overlap = sessionStorage.getItem('min_overlap',0)
+
+  getProblemList(holds=[], notholds=[], setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+
 
 
 
@@ -201,7 +216,7 @@ function toggleButton(buttonId) {
     } else {
       current_notholds = []
     }
-    current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
+    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
     if (holdsetsSelectedjson) {
       current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
     } else {
@@ -237,7 +252,8 @@ function toggleButton(buttonId) {
     sessionStorage.setItem('nothold', JSON.stringify(current_notholds))
     setYear = sessionStorage.getItem('setYear') || '2017'
     setAngle = sessionStorage.getItem('setAngle') || '40'
-    getProblemList(holds=current_holds,  notholds=current_notholds, setYear, setAngle, 3, '5+','8B+',3,20,'',current_holdsetsSelected)
+    min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
+    getProblemList(holds=current_holds,  notholds=current_notholds, setYear, setAngle, min_overlap, '5+','8B+',3,20,'',current_holdsetsSelected)
 }
 
 function toggleProblem(problemId) {
@@ -258,7 +274,8 @@ function toggleProblem(problemId) {
 }
 
 function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
-  console.log('IN MAIN getProblemList, setYear '+ setYear)
+
+  console.log('min_overlap in mainjs get Problem List '+ minOverlap)
 
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';
@@ -266,8 +283,6 @@ function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade
   if(!setAngle) {
     var setAngle = sessionStorage.getItem('setAngle') || '40';
   }
-  console.log('IN MAIN getProblemList, holdsetsSelected '+ holdsetsSelected)
-  console.log('IN MAIN getProblemList post default, setYear '+ setYear)
   const request_parameters = {
     hold: holds,
     nothold:  notholds,

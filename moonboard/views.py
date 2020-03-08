@@ -20,12 +20,7 @@ def homePageView(request):
     holds = request.GET.getlist('hold[]')
     set_year = request.GET.get('set_year', 2017)
     if holds:
-        # problems = ProblemMove.objects.prefetch_related('problem_set')\
-        # .filter(position__in=holds).distinct()\
-        # .values('problem_id', 'problem__name', 'problem__grade').annotate(move_count=Count('*'))\
-        # .filter(move_count__gte=len(holds))
-        problems = ProblemMove.objects.prefetch_related('problem_set').distinct().values('problem_id', 'problem__name', 'problem__grade', 'problem__repeats').annotate(hold_count=Count(Case(When(position__in=holds, then=1))), total_holds=Count('*'))\
-            .filter(hold_count__gte=len(holds))
+        problems = None
     else:
         problems = None
 
@@ -40,8 +35,7 @@ def homePageView(request):
     return render(request, 'home.html')
 
 def problemListView(request):
-    logging.debug('request in problemListView')
-    logging.debug(request)
+    logging.debug(('first in problem list view - request min_overlap ', request.GET.get('min_overlap') ))
     set_year = request.GET.get('set_year', '2017')
     defaultHoldsets = {'2016': ['A','B','school'], '2017':['A','B','C','wood','school'], '2019': ['A','B','wood','woodB','woodC','school'] }
     holdsetsSelected = request.GET.getlist('holdsetsSelected[]')
@@ -50,12 +44,10 @@ def problemListView(request):
 
     holds = request.GET.getlist('hold[]')
     notholds = request.GET.getlist('nothold[]')
-    logging.debug(('holdsetsSelected: ',holdsetsSelected))
 
     min_grade = request.GET.get('min_grade', '5+')
     max_grade = request.GET.get('max_grade', '8B+')
     sortedBy = request.GET.get('sortedBy','')
-    logging.debug((holds,notholds,min_grade,max_grade,sortedBy))
     gradelist = ["5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+"]
     filtered_gradelist =  []
     record=False
@@ -72,47 +64,32 @@ def problemListView(request):
             if record:
                 filtered_gradelist.append(grade)
 
-
-    min_overlap = max(
-                    int(request.GET.get('min_overlap', len(holds))), len(holds)-4
-                    )
-    # For some reason  min_overlap was coming back from  a request as len(holds)+1
-    min_overlap = min(min_overlap,len(holds))
+    min_overlap = request.GET.get('min_overlap')
+    if min_overlap == '':
+        min_overlap = len(holds)
+    logging.debug(('min_overlap',min_overlap))
     set_year = request.GET.get('set_year', '2017')
     set_angle = request.GET.get('set_angle', '40')
-    logging.debug((set_year, set_angle, min_overlap))
 
     min_holds = 3
     max_holds = 20
-    #print(holds)
 
-    logging.debug('holdinfo')
-    logging.debug(holds)
-    logging.debug(notholds)
     if len(holds)>1:
-        logging.debug((holds, min_overlap, set_year, set_angle))
         problems = Problem.objects.prefetch_related('problemmove_set')\
         .annotate(hold_count=Count(Case(When(problemmove__position__in=holds, then=1))), total_holds=Count('*'))\
         .annotate(nothold_count=Count(Case(When(problemmove__position__in=notholds, then=1))), total_notholds=Count('*'))\
         .filter(hold_count__gte=min_overlap, setyear=set_year, setangle=set_angle, grade__in=filtered_gradelist)
-        logging.debug(('len(problems)',len(problems)))
     else:
-        logging.debug('none')
         problems = None
 
     filtered_problems = []
     if problems:
-        pp(problems[0])
         for problem in problems:
             outsideCurrentHoldset = False
-            pp(problem.name)
             pholds = problem.problemmove_set.all()
-            pp(holdmapping.keys())
             for h in pholds:
-                pp((h.position, holdmapping[set_year][h.position]))
                 if holdmapping[set_year][h.position][0] not in holdsetsSelected:
                     outsideCurrentHoldset = True
-                    pp((holdmapping[set_year][h.position][0],' not in ',holdsetsSelected))
 
 
             if not outsideCurrentHoldset:
@@ -127,8 +104,6 @@ def problemListView(request):
 
     else:
         filtered_problems=[]
-    logging.debug(('len(filtered_problems)',len(filtered_problems)))
-
     if sortedBy == 'Repeats':
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.repeats, reverse=True)
     elif sortedBy == 'New':
@@ -143,9 +118,8 @@ def problemListView(request):
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.gradenum)
     else:
         sorted_filtered_problems =  filtered_problems
-    logging.debug(('sortedBy',sortedBy))
-    logging.debug(('min_for_min_overlap_slider',len(holds)-4,max(3,len(holds)-4)))
     min_for_min_overlap_slider = max(3,len(holds)-4)
+    logging.debug(('in problem list  view, min_overlap',min_overlap))
     html = render_to_string(template_name="problem-results-partial.html",
             context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy,  "set_year": set_year, "holdsetsSelected": holdsetsSelected}
         )
@@ -170,8 +144,9 @@ def problemView(request):
     #return Response('Holds:' + request.GET.getlist('hold'))
 
 def problemView(request):
+    logging.debug(('first in problem view - request min_overlap ',request.GET.get('min_overlap') ))
+
     problem_id = request.GET['problemId']
-    #import ipdb; ipdb.set_trace()
     problem = Problem.objects.get(id=problem_id)
     holds = problem.problemmove_set.all()
     holdstr = ''
@@ -180,10 +155,10 @@ def problemView(request):
     return HttpResponse('Problem fetched ' + problem.name + holdstr)
 
 def problemAsJsonView(request):
+    logging.debug(('first in problem as json view - request min_overlap ', request.GET.get('min_overlap') ))
+
     problem_id = request.GET['problemId']
-    logging.debug(('problem_id',problem_id))
     problem = Problem.objects.get(id=problem_id)
-    logging.debug(('problem',problem))
     holds = problem.problemmove_set.values_list('position','isstart','isend')
 
     problem_dict = {
