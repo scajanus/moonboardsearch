@@ -35,6 +35,7 @@ def homePageView(request):
     return render(request, 'home.html')
 
 def problemListView(request):
+    logging.debug(request.GET.get('min_overlap'))
     set_year = request.GET.get('set_year', '2017')
     defaultHoldsets = {'2016': ['A','B','school'], '2017':['A','B','C','wood','school'], '2019': ['A','B','wood','woodB','woodC','school'] }
     holdsetsSelected = request.GET.getlist('holdsetsSelected[]')
@@ -64,7 +65,7 @@ def problemListView(request):
                 filtered_gradelist.append(grade)
 
     min_overlap = request.GET.get('min_overlap')
-    if min_overlap == '':
+    if not min_overlap:
         min_overlap = len(holds)
     set_year = request.GET.get('set_year', '2017')
     set_angle = request.GET.get('set_angle', '40')
@@ -116,7 +117,7 @@ def problemListView(request):
         sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.gradenum)
     else:
         sorted_filtered_problems =  filtered_problems
-    min_for_min_overlap_slider = max(3,len(holds)-4)
+    min_for_min_overlap_slider = max(3,len(holds)-6)
     html = render_to_string(template_name="problem-results-partial.html",
             context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy,  "set_year": set_year, "holdsetsSelected": holdsetsSelected}
         )

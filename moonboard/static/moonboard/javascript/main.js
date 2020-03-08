@@ -70,9 +70,9 @@ function changeSetYear() {
   setYear = sessionStorage.getItem('setYear') || '2017'
   setAngle = sessionStorage.getItem('setAngle') || '40'
 
-  min_overlap = sessionStorage.removeItem('min_overlap')
+  sessionStorage.removeItem('min_overlap')
 
-  getProblemList(holds=[], notholds=[], setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+  getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 }
 
 function changeSetAngle() {
@@ -106,9 +106,9 @@ function changeSetAngle() {
   setYear = sessionStorage.getItem('setYear') || '2017'
   setAngle = sessionStorage.getItem('setAngle') || '40'
 
-  min_overlap = sessionStorage.removeItem('min_overlap')
+  sessionStorage.removeItem('min_overlap')
 
-  getProblemList(holds=[], notholds=[], setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+  getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 
 
 
@@ -249,7 +249,7 @@ function toggleButton(buttonId) {
     sessionStorage.setItem('nothold', JSON.stringify(current_notholds))
     setYear = sessionStorage.getItem('setYear') || '2017'
     setAngle = sessionStorage.getItem('setAngle') || '40'
-    min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
+    min_overlap = sessionStorage.setItem('min_overlap',current_holds.length)
     getProblemList(holds=current_holds,  notholds=current_notholds, setYear, setAngle, min_overlap, '5+','8B+',3,20,'',current_holdsetsSelected)
 }
 
@@ -273,7 +273,7 @@ function toggleProblem(problemId) {
 
 function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
 
-console.log('in get  problem list '+ holds)
+console.log('in get  problem list '+ minOverlap)
 
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';

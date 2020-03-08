@@ -186,14 +186,14 @@ $('#search-board').css('background-image', backgroundcss.join(',')).css('backgro
 $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
 
 $("#resetSearch").on("click", function () {
-   console.log('Noraml Reset')
+   console.log('Normal Reset')
    $('#replaceable-name').html('Selected route')
    document.getElementById("replaceable-content").scrollTop;
    $('.result-board button').removeClass('blue-button red-button green-button');
    $('#search-board button').removeClass('blue-button red-button green-button');
    sessionStorage.setItem('hold', JSON.stringify([]))
    sessionStorage.setItem('nothold', JSON.stringify([]))
-   sessionStorage.removeItem('min_overlap')
+   sessionStorage.setItem('min_overlap',0)
 
    setYear = sessionStorage.getItem('setYear') || '2017';
    setAngle = sessionStorage.getItem('setAngle') || '40';
