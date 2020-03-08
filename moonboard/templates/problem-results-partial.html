@@ -427,6 +427,40 @@ $(function () {
      return this;
 }
 
+$("#usetheseholdstosearch").click(function () {
+    problem_holds = JSON.parse(sessionStorage.getItem('current_problem_holds'))
+
+    console.log('problem_holds in use these holds' + problem_holds)
+    var setYear = sessionStorage.getItem('setYear') || '2017';
+    var setAngle = sessionStorage.getItem('setAngle') || '40';
+    var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
+    var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+    var sortedBy = sessionStorage.getItem('sortedBy') || '';
+    notholdsjson = sessionStorage.getItem('nothold')
+    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+        current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+        current_holdsetsSelected = []
+    }
+    if (notholdsjson) {
+        current_notholds = JSON.parse(notholdsjson)
+    } else {
+        current_notholds = []
+    }
+    $('#replaceable-name').html('Selected route')
+    document.getElementById("replaceable-content").scrollTop;
+    $('.result-board button').removeClass('blue-button red-button green-button');
+    $('#search-board button').removeClass('blue-button red-button green-button');
+    for (var hi = 0; hi < problem_holds.length; hi++) {
+        document.getElementById(problem_holds[hi]).classList = "led-button blue-button";
+    }
+
+    current_holds = problem_holds
+    sessionStorage.setItem('hold',JSON.stringify(current_holds))
+    getProblemList(problem_holds, current_notholds,  setYear, setAngle, problem_holds.length, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
+})
+
 $(".holdsetBtn").click(function () {
     console.log('holdsetBtnClick')
     holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')

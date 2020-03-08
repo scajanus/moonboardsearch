@@ -148,6 +148,14 @@ let problem_ajax_call = function (endpoint, request_parameters) {
       document.getElementById('result-' + hold[0]).classList = "nonclickable-led-button " + classToAdd;
 
     });
+    problem_holds = []
+    for (var hi = 0; hi < response['holds'].length; hi++) {
+      problem_holds.push(response['holds'][hi][0])
+    }
+
+
+    sessionStorage.setItem('current_problem_holds',JSON.stringify(problem_holds))
+    console.log('in ajax ' +problem_holds)
 
     setYear = sessionStorage.getItem('setYear') || '2017';
     var holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
@@ -183,7 +191,6 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     var arrayLength = holdsetsSelected.length;
     for (var i = 0; i < arrayLength; i++) {
         holdset = holdsetsSelected[i];
-        console.log('i'+holdset)
         backgroundcss.push("url(/static/moonboard/" + setYear + "/" +  holdset +  ".png)")
         blendcss.push('darken')
     }
@@ -191,7 +198,6 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     blendcss.push('normal')
     $('#search-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
     $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
-
     $('.result-board button').fadeTo('slow', 1)
 
   });
@@ -250,6 +256,7 @@ function toggleButton(buttonId) {
 function toggleProblem(problemId) {
   console.log('pretoggle')
   console.log('toggle' + problemId)
+  sessionStorage.setItem('current_problem',problemId)
 
   const request_parameters = {
     problemId: problemId,
@@ -266,7 +273,7 @@ function toggleProblem(problemId) {
 
 function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
 
-
+console.log('in get  problem list '+ holds)
 
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';
