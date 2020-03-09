@@ -259,13 +259,13 @@ noUiSlider.create(minOverlapSlider, {
 
 
 var holdsetups = JSON.parse('[{"Id":17,"Description":"MoonBoard Masters 2019","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":15,"Description":"MoonBoard Masters 2017","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":1,"Description":"MoonBoard 2016","AllowClimbMethods":false,"MoonBoardConfigurations":[]}]');
-var ticks_labels = ["5+","6A","6A+","6B","6B+","6C","6C+","7A","7A+","7B","7B+","7C","7C+","8A","8A+","8B","8B+"];
+var ticks_labels = ["5","5+","6A","6A+","6B","6B+","6C","6C+","7A","7A+","7B","7B+","7C","7C+","8A","8A+","8B","8B+","8C"];
 var moonSlider = document.getElementById('slider');
 var minGrade, maxGrade, minTick, maxTick;
 minGrade = sessionStorage.getItem('minGrade') || '5+';
 maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
-minTick = sessionStorage.getItem('minTick') || 0;
-maxTick = sessionStorage.getItem('maxTick') || 16;
+minTick = sessionStorage.getItem('minTick') || 1;
+maxTick = sessionStorage.getItem('maxTick') || 17 ;
 
 setYear = sessionStorage.getItem('setYear') || '2017';
 setAngle = sessionStorage.getItem('setAngle') || '40';
@@ -282,12 +282,12 @@ noUiSlider.create(moonSlider, {
    connect: true,
    range: {
        'min': [0],
-       'max': [16]
+       'max': [18]
    },
    pips: {
        mode: 'values',
-       values: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
-       density: 17
+       values: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
+       density: 19
    }
 });
 
@@ -343,6 +343,7 @@ function sliderIsSliding(values, handle, unencoded, tap, positions) {
             $sliderMax.css("z-index", 5);
         }
     }
+
 }
 
 moonSlider.noUiSlider.on('slide', sliderIsSliding);
