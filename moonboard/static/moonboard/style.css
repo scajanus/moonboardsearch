@@ -271,6 +271,7 @@ table.center {
     font-size: 0.6em;
     border: none;
     height: 29px;
+		padding: 0 !important;
 }
 .filter-wrap .filters li button, .filter-wrap .sort li button {
     width: 100%;

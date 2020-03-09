@@ -22,7 +22,7 @@ Grade Filter    </h3>
  <div id="slider"></div>
 </div>
 <!-- Holdset Filter -->
-<div class="row section-header" style="clear:both;  margin-top:50px">
+<div class="row section-header" style="clear:both;  margin-top:40px">
   <div class="col-md-12">
     <h3>
       Filter Holdsets
@@ -505,23 +505,27 @@ $(".holdsetBtn").click(function () {
     } else {
         current_notholds = []
     }
-    filtered_current_holds = current_holds
-    for (var hi = 0; hi < current_holds.length; hi++) {
-        hold = current_holds[hi]
-        console.log('CHSS '+current_holdsetsSelected)
-        console.log('testing hold '+hold+' which is in '+holdsetmapping[setYear][hold])
-        if (current_holdsetsSelected.includes(holdsetmapping[setYear][hold])) {
-            console.log('hold '+hold+' included')
+    filtered_current_holds = current_holds.slice(0)
+    filtered_current_notholds = current_notholds.slice(0)
 
-        } else {
-            console.log('hold '+hold+' not included')
-            filtered_current_holds.splice( filtered_current_holds.indexOf(hold), 1 )
-            document.getElementById(hold).classList = "led-button"
-        }
+    current_holds.forEach( function(hold) {
+      if (!current_holdsetsSelected.includes(holdsetmapping[setYear][hold])) {
+          filtered_current_holds.splice( filtered_current_holds.indexOf(hold), 1 )
+          document.getElementById(hold).classList = "led-button"
       }
+    })
+    current_notholds.forEach( function(hold) {
+      if (!current_holdsetsSelected.includes(holdsetmapping[setYear][hold])) {
+          filtered_current_notholds.splice( filtered_current_notholds.indexOf(hold), 1 )
+          document.getElementById(hold).classList = "led-button"
+      }
+    })
 
-
-    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
+    current_holds = filtered_current_holds
+    current_notholds = filtered_current_notholds
+    sessionStorage.setItem('hold',JSON.stringify(current_holds))
+    min_overlap = current_holds.length
+    sessionStorage.setItem('min_overlap',min_overlap)
     getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
 });
 
