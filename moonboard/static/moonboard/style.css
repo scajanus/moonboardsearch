@@ -22,6 +22,7 @@ body {
 	height: 100%;
 	font-family: "Avenir", sans-serif;
 	text-align: center;
+	line-height:1;
 }
 
 h1 {
@@ -267,10 +268,9 @@ table.center {
     background-color: #fce2a8;
     color: #222;
     text-transform: uppercase;
-    font-size: 0.7em;
+    font-size: 0.6em;
     border: none;
     height: 29px;
-    min-width: 5em;
 }
 .filter-wrap .filters li button, .filter-wrap .sort li button {
     width: 100%;
@@ -356,4 +356,7 @@ h4 {
 }
 .noUi-pips-horizontal {
 	height: 50px !important;
+}
+.holdsetBtn {
+	 white-space:nowrap;
 }

@@ -1,10 +1,9 @@
-<div>
+<div style="margin: 3px 0 5px 0">
   <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
   <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
 </div>
 <script src="/static/moonboard/javascript/holdsetmapping.js"></script>
 <!-- Min Hold Slider -->
-{{min_overlap}}
 {% if max_holds > 3 %}
 Minimum number of holds to match
 <div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
@@ -13,7 +12,12 @@ Minimum number of holds to match
 {% endif %}
 <!-- Grade Filter Slider -->
 {% if max_holds > 0 %}
-Grade Filter
+<div class="row section-header" style="clear:both; margin-bottom:5px;">
+  <div class="col-md-12">
+    <h3>
+Grade Filter    </h3>
+  </div>
+</div>
 <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
  <div id="slider"></div>
 </div>
@@ -25,36 +29,36 @@ Grade Filter
     </h3>
   </div>
 </div>
-<div class="filter-wrap" style="">
+<div class="filter-wrap" style="font-family: arial, sans">
 <ul class="sort margin-wrapper">
   <li>
-    <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} xselected{% endif %}" value="A">A White</button>
+    <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} selected{% endif %}" value="A">A White</button>
   </li>
   <li>
-    <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} xselected{% endif %}" value="B">B Black</button>
+    <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} selected{% endif %}" value="B">B Black</button>
   </li>
   {% if set_year == '2017' %}
   <li>
-    <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} xselected{% endif %}" value="C">C Red</button>
+    <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} selected{% endif %}" value="C">C Red</button>
   </li>
   {% endif %}
   {% if set_year == '2017' or set_year == '2019' %}
   <li>
-    <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} xselected{% endif %}" value="wood">Wood</button>
+    <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} selected{% endif %}" value="wood">Wood</button>
   </li>
   {% endif %}
   {% if set_year == '2019' %}
   <li>
-    <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} xselected{% endif %}" value="woodB">Wood B</button>
+    <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} selected{% endif %}" value="woodB">Wood B</button>
   </li>
   {% endif %}
   {% if set_year == '2019' %}
   <li>
-    <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} xselected{% endif %}" value="woodC">Woods C</button>
+    <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} selected{% endif %}" value="woodC">Woods C</button>
   </li>
   {% endif %}
   <li>
-    <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} xselected{% endif %}" value="school">School</button>
+    <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} selected{% endif %}" value="school">School</button>
   </li>
 </ul>
 </div>
@@ -69,7 +73,7 @@ Grade Filter
       </h3>
     </div>
   </div>
-  <ul class="sort margin-wrapper">
+  <ul class="sort margin-wrapper" style="font-family: arial, sans">
     <li>
       <button class="sortBtn{% if sortedBy == "New" %} selected{% endif %}" data-field="New" data-dir="desc" value="New">New</button>
     </li>
