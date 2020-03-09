@@ -45,10 +45,10 @@ def problemListView(request):
     holds = request.GET.getlist('hold[]')
     notholds = request.GET.getlist('nothold[]')
 
-    min_grade = request.GET.get('min_grade', '5+')
-    max_grade = request.GET.get('max_grade', '8B+')
+    min_grade = request.GET.get('min_grade', '5')
+    max_grade = request.GET.get('max_grade', '8C')
     sortedBy = request.GET.get('sortedBy','')
-    gradelist = ["5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+"]
+    gradelist = ["5", "5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+", "8C"]
     filtered_gradelist =  []
     record=False
     for grade in gradelist:

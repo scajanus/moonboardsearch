@@ -42,7 +42,6 @@ function changeSetYear() {
     var arrayLength = holdsetsSelected.length;
     for (var i = 0; i < arrayLength; i++) {
         holdset = holdsetsSelected[i];
-        console.log('i'+i)
     }
   } else if (document.getElementById('set2019').checked) {
     sessionStorage.setItem('setYear', '2019')
@@ -69,18 +68,12 @@ function changeSetYear() {
   sessionStorage.setItem('nothold', JSON.stringify([]))
   setYear = sessionStorage.getItem('setYear') || '2017'
   setAngle = sessionStorage.getItem('setAngle') || '40'
-
   sessionStorage.removeItem('min_overlap')
-
   getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
 }
 
 function changeSetAngle() {
-  // Get the checkbox
   var checkBox = document.getElementById("setAngleCheckbox");
-  //console.log('checkbox' + checkBox.checked)
-
-  // If the checkbox is checked, display the output text
   if (checkBox.checked == true){
     sessionStorage.setItem('setAngle', 25)
   } else {
@@ -105,14 +98,8 @@ function changeSetAngle() {
   sessionStorage.setItem('nothold', JSON.stringify([]))
   setYear = sessionStorage.getItem('setYear') || '2017'
   setAngle = sessionStorage.getItem('setAngle') || '40'
-
   sessionStorage.removeItem('min_overlap')
-
   getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
-
-
-
-
 }
 
 let ajax_call = function (endpoint, request_parameters) {
@@ -134,7 +121,6 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     selected_problem_name.html(response['name'] + ' <span style="font-weight: bold">' + response['grade'] + '</span>')
     $('.result-board button').fadeTo('fast', 0).promise().then(() => {
     $('.result-board button').removeClass('blue-button red-button green-button')
-    console.log('Response '+response);
     response['holds'].forEach(hold => {
       if(hold[1]) {
         classToAdd = 'green-button'
@@ -146,17 +132,12 @@ let problem_ajax_call = function (endpoint, request_parameters) {
         classToAdd = 'blue-button'
       }
       document.getElementById('result-' + hold[0]).classList = "nonclickable-led-button " + classToAdd;
-
     });
     problem_holds = []
     for (var hi = 0; hi < response['holds'].length; hi++) {
       problem_holds.push(response['holds'][hi][0])
     }
-
-
     sessionStorage.setItem('current_problem_holds',JSON.stringify(problem_holds))
-    console.log('in ajax ' +problem_holds)
-
     setYear = sessionStorage.getItem('setYear') || '2017';
     var holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
     if (holdsetsSelectedjson === null) {
@@ -177,7 +158,6 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     $('#btnwoodC').removeClass('selected')
     $('#btnschool').removeClass('selected')
     holdsetsSelected =  JSON.parse(holdsetsSelectedjson)
-    console.log('in selected setting' +  holdsetsSelected)
     if (holdsetsSelected.includes('A')) { $('#btnA').addClass('selected') }
     if (holdsetsSelected.includes('B')) { $('#btnB').addClass('selected') }
     if (holdsetsSelected.includes('C')) { $('#btnC').addClass('selected') }
@@ -254,8 +234,6 @@ function toggleButton(buttonId) {
 }
 
 function toggleProblem(problemId) {
-  console.log('pretoggle')
-  console.log('toggle' + problemId)
   sessionStorage.setItem('current_problem',problemId)
 
   const request_parameters = {
@@ -272,9 +250,6 @@ function toggleProblem(problemId) {
 }
 
 function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
-
-console.log('in get  problem list '+ minOverlap)
-
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';
   }
@@ -298,7 +273,5 @@ console.log('in get  problem list '+ minOverlap)
   if (scheduled_function) {
     clearTimeout(scheduled_function)
   }
-
-
   scheduled_function = setTimeout(ajax_call, delay_by_in_ms, endpoint, request_parameters)
 }

@@ -277,8 +277,9 @@ holdsjson = sessionStorage.getItem('hold')
 notholdsjson = sessionStorage.getItem('nothold')
 
 sortedBy = sessionStorage.getItem('sortedBy');
+min_overlap = null
 
-console.log('General log on page init ','{{max_holds}}',minGrade,maxGrade,minTick,maxTick, setYear, setAngle, sortedBy, holdsjson);
+console.log('General log on page init max_holds,minGrade,maxGrade,minTick,maxTick, setYear, setAngle, min_overlap, sortedBy, holdsjson ','{{max_holds}}',minGrade,maxGrade,minTick,maxTick, setYear, setAngle, min_overlap, sortedBy, holdsjson);
 
 noUiSlider.create(moonSlider, {
    start: [minTick, maxTick],
@@ -334,7 +335,7 @@ function sliderValueChanged(values, handle, unencoded, tap, positions) {
     } else {
         current_notholds = []
     }
-    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
+    min_overlap = null
     console.log(current_holds,current_notholds, setYear, setAngle, min_overlap,minGrade,maxGrade,3,20, sortedBy, current_holdsetsSelected);
     getProblemList(current_holds, current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy,current_holdsetsSelected)
 }
