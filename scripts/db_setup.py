@@ -27,7 +27,7 @@ def insert_problem(conn,Id, Name,Grade,moves,
                 setup,firstname,lastname,setyear,NameForUrl,DateInserted,Master,
                 Repeats, HoldSetup, setangle,**kwargs):
     cmd0 = "INSERT INTO setter (firstname, lastname) VALUES (?,?)"
-    cmd1 = "INSERT INTO moonboard_problem (id, name, grade, benchmark, assessmentproblem, method, firstname, lastname, setyear, nameforurl, dateinserted, ismaster, repeats, holdsetup, setangle, rating) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    cmd1 = "INSERT INTO moonboard_problem (id, name, grade, benchmark, assessmentproblem, method, firstname, lastname, setyear, nameforurl, dateinserted, ismaster, repeats, holdsetup, setangle, rating) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
     cmd2 = "INSERT INTO moonboard_problemmove (id, position, setup, setangle, isstart, problem_id, isend) VALUES (?,?,?,?,?,?,?)"
     rating =  kwargs['rating']
 
