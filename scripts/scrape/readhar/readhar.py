@@ -2,7 +2,6 @@ import zlib
 import json
 import base64
 import sys
-<<<<<<< HEAD
 from pprint import pprint as pp
 
 years = ['2016','2017','2019']
