@@ -81,7 +81,7 @@ Grade Filter    </h3>
       <button class="sortBtn{% if sortedBy == "Easy" %} selected{% endif %}" data-field="Easy" data-dir="asc" value="Easy">Easy</button>
     </li>
     <li>
-      <button class="sortBtn{% if sortedBy == "Holds" %} selected{% endif %}" data-field="Holds" data-dir="desc" value="Holds">Holds</button>
+      <button class="sortBtn{% if sortedBy == "Similar" %} selected{% endif %}" data-field="Similar" data-dir="asc" value="Similar">Similar</button>
     </li>
     <li>
       <button class="sortBtn{% if sortedBy == "Rating" %} selected{% endif %}" data-field="Rating" data-dir="desc" value="Rating">Rating</button>
@@ -116,6 +116,7 @@ Grade Filter    </h3>
       ">{{problem.repeats}}</span>
     </div>
     <span class="dateinserted">{{problem.date}}</span>
+    <span class="dateinserted">[{{problem.newdistance|floatformat:"0"}}%]</span>
     <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
     {% if problem.method != 'Feet follow hands' %}
       <span class="method">({{problem.method}})</span>
