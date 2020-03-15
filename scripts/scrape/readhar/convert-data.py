@@ -2,12 +2,12 @@ import zlib
 import json
 import base64
 import sys
-import pprint as pp
+from pprint import pprint as pp
 from collections import Counter
 
-har2016 = json.loads(open("www.moonboard.com.2016.har").read())
+#har2016 = json.loads(open("www.moonboard.com.2016.har").read())
 har2017 = json.loads(open("www.moonboard.com.2017.har").read())
-har2019 = json.loads(open("www.moonboard.com.2019.har").read())
+#har2019 = json.loads(open("www.moonboard.com.2019.har").read())
 
 allproblems = []
 allsetters = []
@@ -15,7 +15,7 @@ allholdsets = []
 allgrades = []
 
 #for har in [har2017]:
-for har in [har2016,har2017,har2019]:
+for har in [har2017]:
 
     for n,h in enumerate(har['log']['entries']):
         if 'POST' in  h['request']['method']:
@@ -33,12 +33,20 @@ for har in [har2016,har2017,har2019]:
 
         if 'GET' in h['request']['method'] and h['response']['content']['mimeType'] == 'application/json':
             content = h['response']['content']
+            requrl = h['request']['url']
+
             if 'GetGrades' in h['request']['url']:
                 allgrades.extend(json.loads(content['text']))
             if 'GetHoldsets' in h['request']['url']:
+                pp(requrl)
+                data = json.loads(content['text'])
+                for l in data:
+                    pp(l['Description'])
+                    for h in l['Holds']:
+                        pp(h['Location']['Description'])
                 allholdsets.extend(json.loads(content['text']))
 
-
+sys.exit()
 flatlist =  []
 for p in allproblems:
     flat = dict()

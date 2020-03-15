@@ -22,6 +22,7 @@ body {
 	height: 100%;
 	font-family: "Avenir", sans-serif;
 	text-align: center;
+	line-height:1;
 }
 
 h1 {
@@ -41,7 +42,7 @@ table {
 }
 
 table {
-	background: url(mbsetup-2016-min.jpg) no-repeat scroll center center;
+	background: url(mbsetup-mbm2017-min.jpg) no-repeat scroll center center;
 	background-size: contain;
 	background-repeat: no-repeat;
 
@@ -198,8 +199,8 @@ table.center {
 
 .repeats {
 	text-align:left;
-  top: -1em;
 	font-size:50%;
+	vertical-align: super;
 }
 
 @media screen and (max-width: 768px) {
@@ -267,10 +268,10 @@ table.center {
     background-color: #fce2a8;
     color: #222;
     text-transform: uppercase;
-    font-size: 1em;
+    font-size: 0.6em;
     border: none;
-    height: 39px;
-    min-width: 5em;
+    height: 29px;
+		padding: 0 !important;
 }
 .filter-wrap .filters li button, .filter-wrap .sort li button {
     width: 100%;
@@ -278,9 +279,9 @@ table.center {
     color: #333;
 }
 .filter-wrap .filters li, .filter-wrap .sort li {
-    width: 49%;
+    width: 16%;
     float: left;
-    margin-right: .2em;
+    margin-right: .1em;
     margin-bottom: .3em;
 }
 .filter-wrap ul {
@@ -297,7 +298,7 @@ table.center {
     margin-bottom: 1em;
 }
 .filter-wrap .section-header {
-    background-color: #222;
+    background-color: #fff;
 }
 .filter-wrap .row, .filter-wrap .container-fluid {
     padding: 0;
@@ -308,7 +309,13 @@ table.center {
     color: #fff;
 }
 .section-header h3, .section-header h2, .section-header h1 {
-    color: #fff;
+    color: #222;
+		font-size: 0.8rem;
+		margin:  0 0 0 0;
+		background-color; #fff;
+}
+.filter-wrap ul.margin-wrapper {
+  margin: 0 0 0 0;
 }
 .noUi-handle {
     border: 1px solid #d9d9d9;
@@ -320,4 +327,44 @@ table.center {
 .slider-wrapper {
   margin: 20px 0 20px 0;
 
+}
+.howmany {
+  font-size:80%;
+
+}
+.dateinserted  {
+	 font-size:70%;
+}
+#setangle {
+	margin-left:20px;
+}
+#replaceable-content .list-group-item  {
+	padding: 10px 10px 10px 0 !important ;
+}
+.navbar {
+	padding: 5px 10px 5px 10px;
+}
+h4 {
+	margin-top:10px;
+	font-size: 1rem;
+}
+.method {
+	font-size:70%;
+}
+#search-board, #result-board  {
+	/* background-image: url(moonboard-background.png);  */
+	background-blend-mode: overlay;
+}
+.noUi-pips-horizontal {
+	height: 50px !important;
+}
+.holdsetBtn {
+	 white-space:nowrap;
+}
+
+element.style {
+    left: 0%;
+}
+.noUi-marker-horizontal.noUi-marker-large {
+  height: 5px !important;
 }

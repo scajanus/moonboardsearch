@@ -60,9 +60,10 @@ class Problem(models.Model):
     firstname = models.TextField(blank=True, null=True)  # Field name made lowercase.
     lastname = models.TextField(blank=True, null=True)  # Field name made lowercase.
     setyear = models.IntegerField(blank=False, null=False)
-    setangle = models.IntegerField(blank=False, null=False)
-    repeats = models.IntegerField(blank=False, null=False)
-    rating = models.TextField(blank=False, null=False)
+    setangle = models.IntegerField(blank=False, null=True)
+    repeats = models.IntegerField(blank=False, null=True)
+    rating = models.TextField(blank=False, null=True)
+    dateinserted = models.TextField(blank=False, null=True)
 
     class Meta:
         managed = True

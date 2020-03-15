@@ -1,642 +1,577 @@
+<div style="margin: 3px 0 5px 0">
+  <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
+  <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
+</div>
+<script src="/static/moonboard/javascript/holdsetmapping.js"></script>
+<!-- Min Hold Slider -->
+{% if max_holds > 3 %}
+Minimum number of holds to match
+<div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
+  <div id="minOverlapSlider"></div>
+</div>
+{% endif %}
+<!-- Grade Filter Slider -->
+{% if max_holds > 0 %}
+<div class="row section-header" style="clear:both; margin-bottom:5px;">
+  <div class="col-md-12">
+    <h3>
+Grade Filter    </h3>
+  </div>
+</div>
+<div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
+ <div id="slider"></div>
+</div>
+<!-- Holdset Filter -->
+<div class="row section-header" style="clear:both;  margin-top:40px">
+  <div class="col-md-12">
+    <h3>
+      Filter Holdsets
+    </h3>
+  </div>
+</div>
+<div class="filter-wrap" style="font-family: arial, sans">
+<ul class="sort margin-wrapper">
+  <li>
+    <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} selected{% endif %}" value="A">A White</button>
+  </li>
+  <li>
+    <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} selected{% endif %}" value="B">B Black</button>
+  </li>
+  {% if set_year == '2017' %}
+  <li>
+    <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} selected{% endif %}" value="C">C Red</button>
+  </li>
+  {% endif %}
+  {% if set_year == '2017' or set_year == '2019' %}
+  <li>
+    <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} selected{% endif %}" value="wood">Wood</button>
+  </li>
+  {% endif %}
+  {% if set_year == '2019' %}
+  <li>
+    <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} selected{% endif %}" value="woodB">Wood B</button>
+  </li>
+  {% endif %}
+  {% if set_year == '2019' %}
+  <li>
+    <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} selected{% endif %}" value="woodC">Woods C</button>
+  </li>
+  {% endif %}
+  <li>
+    <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} selected{% endif %}" value="school">School</button>
+  </li>
+</ul>
+</div>
+{% endif %}
 
 {% if problems %}
-  {% for problem in problems %}
+<div class="filter-wrap">
+  <div class="row section-header">
+    <div class="col-md-12">
+      <h3>
+        Sort by
+      </h3>
+    </div>
+  </div>
+  <ul class="sort margin-wrapper" style="font-family: arial, sans">
+    <li>
+      <button class="sortBtn{% if sortedBy == "New" %} selected{% endif %}" data-field="New" data-dir="desc" value="New">New</button>
+    </li>
+    <li>
+      <button class="sortBtn{% if sortedBy == "Easy" %} selected{% endif %}" data-field="Easy" data-dir="asc" value="Easy">Easy</button>
+    </li>
+    <li>
+      <button class="sortBtn{% if sortedBy == "Holds" %} selected{% endif %}" data-field="Holds" data-dir="desc" value="Holds">Holds</button>
+    </li>
+    <li>
+      <button class="sortBtn{% if sortedBy == "Rating" %} selected{% endif %}" data-field="Rating" data-dir="desc" value="Rating">Rating</button>
+    </li>
+    <li>
+      <button class="sortBtn{% if sortedBy == "Repeats" %} selected{% endif %}" data-field="Repeats" data-dir="desc" value="Repeats">Repeats</button>
+    </li>
+    <li>
+      <button class="sortBtn{% if sortedBy == "Method" %} selected{% endif %}" data-field="Method" data-dir="asc" value="Method">Method</button>
+    </li>
+  </ul>
+</div>
+<!-- Problems Found -->
+<h4>{{ problems|length}} results <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a></h4>
+{% for problem in problems %}
   <div class="match-{{problem.hold_count}}">
-    <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton
-    " id="{{problem.problem_id}}" onclick="toggleProblem('{{ problem.problem_id }}')">
-    <span style="{% if problem.problem__rating == '1' %}
+    <button class="list-group-item list-group-item-action justify-content-between d-flex align-items-center routeButton" id="{{problem.id}}" onclick="toggleProblem('{{ problem.id }}')">
+    <span style="{% if problem.rating == '1' or problem.rating == '0'  %}
     font-style:italic
-    {% elif problem.problem__rating == '3' %}
+    {% elif problem.rating == '3' %}
     font-weight:bold
-    {% endif %}">{{ problem.problem__name}} {{ problem.hold_count}} out of {{problem.total_holds}} holds
-    <span class="badge badge-primary badge-pill repeats
-    {% if problem.problem__repeats > 200 %}
+    {% endif %}">
+    <div style="">{{ problem.name}}
+      <span class="badge badge-primary badge-pill repeats
+      {% if problem.repeats > 200 %}
+      badge-success
+      {% elif problem.repeats <= 200 and problem.repeats > 30  %}
+      badge-warning
+      {% elif problem.repeats <= 30 %}
+      badge-danger
+      {% endif %}
+      ">{{problem.repeats}}</span>
+    </div>
+    <span class="dateinserted">{{problem.date}}</span>
+    <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
+    {% if problem.method != 'Feet follow hands' %}
+      <span class="method">({{problem.method}})</span>
+    {% endif %}
+    </span>
+    <span class="badge badge-primary badge-pill
+    {% if problem.grade|first == '6' %}
     badge-success
-    {% elif problem.problem__repeats <= 200 and problem.problem__repeats > 30  %}
+    {% elif problem.grade|first == '7' %}
     badge-warning
-    {% elif problem.problem__repeats <= 30 %}
+    {% elif problem.grade|first == '8' %}
     badge-danger
     {% endif %}
-    ">{{problem.problem__repeats}}</span></span>
-
-
-
-
-      <span class="badge badge-primary badge-pill
-      {% if problem.problem__grade|first == '6' %}
-  badge-success
-{% elif problem.problem__grade|first == '7' %}
-  badge-warning
-{% elif problem.problem__grade|first == '8' %}
-  badge-danger
-{% endif %}
-      ">{{problem.problem__grade}}</span></button>
+    ">{{problem.grade}}</span>
+    </button>
   </div>
-    <!-- <a id="problem.problem_id" title="Click to show {{ problem.problem__name }}"
-    href="PleaseEnableJavascript.html" onclick="toggleRoute('{{ problem.problem_id }}');return false;">{{ problem.problem__name}} {{problem.problem__grade}}</a> -->
-  {% endfor %}
-{% else %}
-  <p>No problems found.</p>
+{% endfor %}
 {% endif %}
-
-<!--
-{% if max_holds > 4 %}
-<div class="slidecontainer mt-5">
-  Overlap: <input type="range" min={{max_holds|add:"-2"}} max={{max_holds}} value={{min_overlap}} class="slider" id="foo" onchange="filterRoutes(this.value)">
-</div>
-{% endif %}
--->
-{% if max_holds > 3 %}
-<div class="slider-wrapper margin-wrapper" style="margin:30px 20px 50px 20px">
-     <div id="slider2"></div>
- </div>
-{% endif %}
-
-
-              <div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
-                   <div id="slider"></div>
-               </div>
-
+<!--  Help -->
 <div class="filter-wrap" style="clear:both;  margin-top:50px">
-              <!-- <div class="row section-header">
-
-                   <div class="col-md-12">
-                       <h3>
-                           Filters
-                       </h3>
-
-                   </div>
-
-               </div>
-
-
-
-               <ul class="filters margin-wrapper">
-
-                   <li>
-                       <button class="filter" data-field="Myascents">My ascents</button>
-                   </li>
-
-
-                   <li>
-
-                       <button class="filter" data-field="Setbyme">Set by me</button>
-                   </li>
-                   <li>
-
-                       <button class="filter" data-field="Benchmarks">Benchmarks</button>
-
-                   </li>
-                   <li>
-
-                       <button class="filter" data-field="None">Clear filters</button>
-                   </li>
-
-               </ul>-->
-
-               <div class="row section-header">
-
-                   <div class="col-md-12">
-                       <h3>
-                           Sort
-
-                       </h3>
-
-                   </div>
-
-               </div>
-
-               <ul class="sort margin-wrapper">
-
-                   <li>
-                       <button class="sortBtn" data-field="Grade" data-dir="desc">Grade</button>
-                   </li>
-
-
-                   <li>
-
-                       <button class="sortBtn" data-field="GradeAsc" data-dir="asc">Easy</button>
-                   </li>
-                   <li>
-
-                       <button class="sortBtn" data-field="GradeDesc" data-dir="desc">Hard</button>
-
-                   </li>
-                   <li>
-
-                       <button class="sortBtn" data-field="Rating" data-dir="desc">Rating</button>
-                   </li>
-                   <li>
-
-                       <button class="sortBtn" data-field="RepeatsDesc" data-dir="desc">Most Repeats</button>
-
-                   </li>
-                   <li>
-
-                       <button class="sortBtn" data-field="RepeatsAsc" data-dir="asc">Least Repeated</button>
-                   </li>
-               </ul>
+  <p>To filter by one or more holds, click on the hold on the left side to select it (selections shown with blue circles). Once two or more holds are selected, this column will show the problems that  use those holds. </p>
+  <p> Clicking on a hold again changes it  to red  which means "exclude this hold". Clicking again removes the hold from the search criteria.</p>
+  <p>You may filter the holds by grade using the slider and also sort the holds using the buttons above. </p>
+  <p>If you select more than four holds, a new slider will appear showing the minimum number of holds to match. This defaults to all of the holds you have chosen but you can reduce this. For instance if you chose 5 holds you can change the 'minimum number of holds ot match' to 4 and all problems that have at least four of your chosen holds will be displayed.</p>
+  <p>Once the problems have been shown in the list, you can click on a single problem to show it on the right hand side.</p>
 </div>
-
-                 <script type="text/javascript">
-
-
-                   {% if max_holds > 3 %}
-                   var minOverlapSlider = document.getElementById('slider2');
-                   noUiSlider.create(minOverlapSlider, {
-                       start: {{min_overlap}},
-                       step: 1,
-                       connect: 'lower',
-                       range: {
-                           'min': [{{max_holds|add:"-4"}}],
-                           'max': [{{max_holds}}]
-                       },
-                       pips: {
-                        mode: 'steps',
-                        density: 100
-
-  }
-                   });
-                   {% endif %}
-
-
-                    var holdsetups = JSON.parse('[{"Id":17,"Description":"MoonBoard Masters 2019","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":15,"Description":"MoonBoard Masters 2017","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":1,"Description":"MoonBoard 2016","AllowClimbMethods":false,"MoonBoardConfigurations":[]}]');
-
-
-
-
-
-
-
-                     var ticks_labels = ["5+","6A","6A+","6B","6B+","6C","6C+","7A","7A+","7B","7B+","7C","7C+","8A","8A+","8B","8B+"];
-
-
-
-
-                     var moonSlider = document.getElementById('slider');
-
-                     var minGrade, maxGrade, minTick, maxTick;
-                     minGrade = sessionStorage.getItem('minGrade') || '5+';
-                     maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
-                     minTick = sessionStorage.getItem('minTick') || 0;
-                     maxTick = sessionStorage.getItem('maxTick') || 16;
-
-                     noUiSlider.create(moonSlider, {
-                         start: [minTick, maxTick],
-                         step: 1,
-                         connect: true,
-                         range: {
-                             'min': [0],
-                             'max': [16]
-                         },
-                         pips: {
-                             mode: 'values',
-                             values: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
-                             density: 17
-                         }
-                     });
-
-
-
-                     var $sliderMin = $(".noUi-handle-lower");
-                     var $sliderMax = $(".noUi-handle-upper");
-
-
-
-                     function sliderValueChanged(values, handle, unencoded, tap, positions) {
-
-                         var tMin = ticks_labels[parseInt(values[0])];
-                         var tMax = ticks_labels[parseInt(values[1])];
-
-                         if (minGrade != tMin || maxGrade != tMax) {
-
-
-
-                             minGrade = tMin;
-                             maxGrade = tMax;
-                             sessionStorage.setItem('minTick', parseInt(values[0]));
-                             sessionStorage.setItem('maxTick', parseInt(values[1]));
-
-                             sessionStorage.setItem('minGrade', minGrade);
-                             sessionStorage.setItem('maxGrade', maxGrade);
-
-
-                         }
-                         var setYear = sessionStorage.getItem('setYear') || '2016';
-                         var setAngle = sessionStorage.getItem('setAngle') || '40';
-
-
-                         holdsjson = sessionStorage.getItem('hold')
-
-                         if (holdsjson) {
-                           current_holds = JSON.parse(holdsjson)
-                         } else {
-                           current_holds = []
-                         }
-                         getProblemList(current_holds, setYear, setAngle, {{min_overlap}}, minGrade, maxGrade, 3,20, '')
-
-
-                     }
-
-                     function sliderIsSliding(values, handle, unencoded, tap, positions) {
-
-                         if ($sliderMin.position().left === $sliderMax.position().left) {
-
-                             if (handle == 0) {
-                                 $sliderMax.css("z-index", 4);
-                             }
-                             else {
-                                 $sliderMax.css("z-index", 5);
-                             }
-                         }
-                     }
-
-
-                     moonSlider.noUiSlider.on('slide', sliderIsSliding);
-                     moonSlider.noUiSlider.on('change', sliderValueChanged);
-
-
-                     function slider2ValueChanged(values, handle, unencoded, tap, positions) {
-
-
-                         sessionStorage.setItem('min_overlap', parseInt(values[0]));
-
-
-                         var setYear = sessionStorage.getItem('setYear') || '2016';
-                         var setAngle = sessionStorage.getItem('setAngle') || '40';
-                         holdsjson = sessionStorage.getItem('hold')
-
-                         if (holdsjson) {
-                           current_holds = JSON.parse(holdsjson)
-                         } else {
-                           current_holds = []
-                         }
-                         getProblemList(current_holds, setYear, setAngle, parseInt(values[0]), minGrade, maxGrade, 3,20, '')
-
-
-                     }
-                     {% if max_holds > 3 %}
-                     console.log('change {{ min_overlap }}');
-                     minOverlapSlider.noUiSlider.on('change', slider2ValueChanged);
-                     {% endif %}
-
-
-
-
-                     function updateSliderTicks()
-                     {
-                         var $nodes = $("#slider .noUi-value-large");
-
-                         $nodes.each(function (index, e) {
-
-
-                             if (index % 2 === 0) {
-
-                                 e.innerHTML = ticks_labels[index];
-                             }
-                             else {
-                                 e.innerHTML = " ";
-                             }
-
-                         });
-                     }
-
-                     updateSliderTicks();
-
-
-                     $("button.btnGrade").on("click", function () {
-                         var $button = $(this);
-
-
-                         $button.toggleClass("unselected");
-
-                         var grades = $("button.btnGrade:not('.unselected')")
-                             .map(function () {
-                                 return this.innerText;
-                             })
-                             .get()
-                             .join(",");
-
-                         console.log('Grades '+grades);
-
-
-
-                     });
-
-
-
-
-
-
-                     $("button.tabButton").on("click", function () {
-
-                         var $tabButton = $(this);
-
-                         $("button.tabButton").removeClass("selected");
-                         $("div.moon-tab").removeClass("active");
-
-
-                         var id = $tabButton.data("id");
-
-                         $tabButton.addClass('selected');
-
-                         $('div.moon-tab[data-id="' + id + '"]').addClass('active');
-
-
-                     });
-
-
-                     var $grdProblems;
-                     var problemsDs;
-
-                     var $grdSetters;
-                     var settersDs;
-
-                     $(window).resize(function () {
-
-                         sizeContent();
-
-                     });
-
-
-
-
-
-
-
-
-                     var selectedIndex = -1;
-                     var currentProblem;
-
-                     $(function () {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                         $(".sortBtn").click(function () {
-
-                             var $btn = $(this);
-
-                             $(".sortBtn").removeClass('selected');
-
-                             $btn.addClass('selected');
-                             var sortedBy = $btn.text();
-                             var setYear = sessionStorage.getItem('setYear') || '2016';
-                             var setAngle = sessionStorage.getItem('setAngle') || '40';
-                             var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
-                             var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
-
-
-
-
-                             var dsSort = [];
-
-                             $("#sortedBy").text("Sorted by: " + sortedBy);
-
-                             sessionStorage.setItem('sortedBy', sortedBy);
-
-                             console.log($btn.text());
-                             holdsjson = sessionStorage.getItem('hold')
-
-                             if (holdsjson) {
-                               current_holds = JSON.parse(holdsjson)
-                             } else {
-                               current_holds = []
-                             }
-                             getProblemList(current_holds, setYear, setAngle, 3, minGrade, maxGrade, 3,20,sortedBy)
-
-
-
-
-
-                         });
-
-
-
-
-
-                         $("#btnProblemSearch").click(function () {
-
-
-                         });
-
-                         $(".filter").click(function () {
-
-
-                             var $btn = $(this);
-
-                             $(".filter").removeClass('selected');
-
-                             var field = $btn.data("field");
-                             var filters = [];
-
-                             if (field != 'None') {
-
-                                 $btn.addClass('selected');
-
-
-
-
-                             }
-                             else {
-
-                                 $("button.btnHoldset:not(.selected)").addClass("selected");
-
-                                 $("button.btnConfig:not(.selected)").addClass("selected");
-
-
-
-
-                             }
-
-
-
-                         });
-
-
-
-                     });
-
-
-                     function grdProblemsLoaded() {
-
-                         if (!$grdProblems) {
-                             $grdProblems = $("#grdProblems").data("kendoGrid");
-                         }
-
-                         problemsDs = $grdProblems.dataSource;
-
-                         dataSource = $grdProblems.dataSource;
-                             dataSource.transport.options.read.beforeSend = function (r) {r.setRequestHeader('_itbmdw', 'orWugj2yLI9CJ8tWUagVvLWkIWR4e80/k/ay4uqeFNE=__dGBu/HB93Z1l70xMDye4TTC5t5eefq/JKsGiZFcQzmQ=');
-                         };
-
-
-                         $('#totalProblems').text(toDisplayText('PROBLEM', problemsDs.total()));
-
-
-
-                             selectedIndex = -1;
-
-
-                     }
-
-
-                     function grdSettersLoaded() {
-
-                         if (!$grdSetters) {
-                             $grdSetters = $("#grdSetters").data("kendoGrid");
-                         }
-
-                         settersDs = $grdSetters.dataSource;
-
-                         $('#totalSetters').text('SET BY: (' + toDisplayText('setter', settersDs.total()) + ')');
-                     }
-
-
-
-
-
-                     var $lastProblemTr;
-
-                     function problemSelected(model) {
-
-
-                         var $problemTr = $(event.target).closest("tr");
-
-                         model = $grdProblems.dataItem($problemTr);
-
-                         moonBoardObj.renderProblem(model);
-
-                         $problemTr.addClass('selected');
-
-                         if ($lastProblemTr) {
-
-                             $lastProblemTr.removeClass('selected');
-                         }
-
-                         $lastProblemTr = $problemTr;
-
-                         setProblemHeader(model);
-
-                         toggleSlideMenu();
-
-                     }
-
-
-                     function setProblemHeader(model) {
-                         $("#moonBrand").text(model.Name + ", " + model.Grade);
-
-                         $("#pdSetby").text("SET BY: " + model.Setter.Nickname);
-                     }
-
-                     var $lastSetterTr;
-
-
-                     function filterBySetter() {
-
-
-                         var $setterTr = $(event.target).closest("tr");
-
-                         var model = $grdSetters.dataItem($setterTr);
-
-
-                         $setterTr.find('.setter').addClass('selected');
-
-                         if ($lastSetterTr) {
-
-                             $lastSetterTr.find('.setter').removeClass('selected');
-                         }
-
-                         $lastSetterTr = $setterTr;
-
-
-
-                         $("#TxtSetterName").val(model.SetBy);
-
-
-                     }
-
-
-                     function tog(v) { return v ? 'addClass' : 'removeClass'; }
-
-
-                     $(document).on('input', '.clearable', function () {
-                         $(this)[tog(this.value)]('x');
-
-                     }).on('touchstart click', '.x', function (ev) {
-
-
-                         ev.preventDefault();
-
-                         $(this).removeClass('x').val('').change();
-
-
-                         var filters = [];
-
-
-                         if (this === $("#TxtProblemName").get(0)) {
-                             if (filterContains(problemsDs.filter().filters, "Name")) {
-
-                                 filters = removeFilter(problemsDs.filter().filters, "Name");
-
-                                 problemsDs.filter(filters);
-
-                                 settersDs.filter(filters);
-                             }
-
-                         }
-                         else {
-
-                             if (filterContains(settersDs.filter().filters, "SetBy")) {
-
-                                 filters = removeFilter(settersDs.filter().filters, "SetBy");
-
-                                 problemsDs.filter(filters);
-
-                                 settersDs.filter(filters);
-                             }
-
-                         }
-
-
-
-                         });
-
-
-
-
-
-
-
-                     function getSelectedHoldsetup(curHoldsetId) {
-                         return $.grep(holdsetups, function (e) { return e.Id == curHoldsetId; });
-                     }
-
-
-
-                 </script>
+<!-- page javascript initialisation -->
+<script type="text/javascript">
+console.log("ProblemResultsPartial-Javascript Start")
+setYear = sessionStorage.getItem('setYear') || '2017';
+var holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+if (holdsetsSelectedjson === null) {
+    if (setYear == '2016') {
+        holdsetsSelected = ['A','B','school']
+    } else if (setYear == '2017') {
+        holdsetsSelected = ['A','B','C','wood','school']
+    } else if  (setYear == '2019') {
+        holdsetsSelected = ['A','B','wood','woodB','woodC','school']
+    }
+    sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+} else {
+    holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+}
+console.log(' - setYear = '+setYear)
+console.log(' - holdsetsSelected = '+holdsetsSelected)
+$('#btnA').removeClass('selected')
+$('#btnB').removeClass('selected')
+$('#btnC').removeClass('selected')
+$('#btnwood').removeClass('selected')
+$('#btnwoodB').removeClass('selected')
+$('#btnwoodC').removeClass('selected')
+$('#btnschool').removeClass('selected')
+if (holdsetsSelected.includes('A')) { $('#btnA').addClass('selected') }
+if (holdsetsSelected.includes('B')) { $('#btnB').addClass('selected') }
+if (holdsetsSelected.includes('C')) { $('#btnC').addClass('selected') }
+if (holdsetsSelected.includes('wood')) { $('#btnwood').addClass('selected') }
+if (holdsetsSelected.includes('woodB')) { $('#btnwoodB').addClass('selected') }
+if (holdsetsSelected.includes('woodC')) { $('#btnwoodC').addClass('selected') }
+if (holdsetsSelected.includes('school')) { $('#btnschool').addClass('selected') }
+backgroundcss = []
+blendcss =  []
+
+var arrayLength = holdsetsSelected.length;
+for (var i = 0; i < arrayLength; i++) {
+    holdset = holdsetsSelected[i];
+    backgroundcss.push("url(/static/moonboard/" + setYear + "/" +  holdset +  ".png)")
+    blendcss.push('darken')
+}
+backgroundcss.push('url(/static/moonboard/moonboard-background.png)')
+blendcss.push('normal')
+$('#search-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
+$('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
+
+$("#resetSearch").on("click", function () {
+   console.log('Normal Reset')
+   $('#replaceable-name').html('Selected route')
+   document.getElementById("replaceable-content").scrollTop;
+   $('.result-board button').removeClass('blue-button red-button green-button');
+   $('#search-board button').removeClass('blue-button red-button green-button');
+   sessionStorage.setItem('hold', JSON.stringify([]))
+   sessionStorage.setItem('nothold', JSON.stringify([]))
+   sessionStorage.setItem('min_overlap',0)
+
+   setYear = sessionStorage.getItem('setYear') || '2017';
+   setAngle = sessionStorage.getItem('setAngle') || '40';
+   if (setYear == '2016') {
+     holdsetsSelected = ['A','B','school']
+   } else if (setYear == '2017') {
+     holdsetsSelected = ['A','B','C','wood','school']
+   } else if  (setYear == '2019') {
+     holdsetsSelected = ['A','B','wood','woodB','woodC','school']
+   }
+   sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+   getProblemList(holds=[], notholds=[], setYear, setAngle, null, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+
+})
+
+
+$("#resetAll").on("click", function () {
+ console.log('Full Reset')
+ $('#replaceable-name').html('Selected route')
+ document.getElementById("replaceable-content").scrollTop;
+ $('.result-board button').removeClass('blue-button red-button green-button');
+ $('#search-board button').removeClass('blue-button red-button green-button');
+ sessionStorage.removeItem('hold')
+ sessionStorage.removeItem('nothold')
+ sessionStorage.removeItem('holdsetsSelected')
+ sessionStorage.removeItem('min_overlap')
+ sessionStorage.setItem('setYear','2017')
+ sessionStorage.setItem('setAngle','40')
+ sessionStorage.setItem('minGrade','5+')
+ sessionStorage.setItem('maxGrade', '8B+')
+ sessionStorage.setItem('minTick', 1)
+ sessionStorage.setItem('maxTick', 17)
+ setYear = '2017'
+ setAngle = '40'
+ if (setYear == '2016') {
+   holdsetsSelected = ['A','B','school']
+ } else if (setYear == '2017') {
+   holdsetsSelected = ['A','B','C','wood','school']
+ } else if  (setYear == '2019') {
+   holdsetsSelected = ['A','B','wood','woodB','woodC','school']
+ }
+ sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
+ getProblemList(holds=[], notholds=[], setYear, setAngle, null, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+})
+
+{% if max_holds > 3 %}
+console.log('initialising minOverlapSlider')
+var minOverlapSlider = document.getElementById('minOverlapSlider');
+noUiSlider.create(minOverlapSlider, {
+   start: {{min_overlap}},
+   step: 1,
+   connect: 'lower',
+   range: {
+       'min': [{{min_for_min_overlap_slider}}],
+       'max': [{{max_holds}}]
+   },
+   pips: {
+    mode: 'steps',
+    density: 100
+}
+});
+{% endif %}
+
+
+var holdsetups = JSON.parse('[{"Id":17,"Description":"MoonBoard Masters 2019","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":15,"Description":"MoonBoard Masters 2017","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":1,"Description":"MoonBoard 2016","AllowClimbMethods":false,"MoonBoardConfigurations":[]}]');
+var ticks_labels = ["5","5+","6A","6A+","6B","6B+","6C","6C+","7A","7A+","7B","7B+","7C","7C+","8A","8A+","8B","8B+","8C"];
+var moonSlider = document.getElementById('slider');
+var minGrade, maxGrade, minTick, maxTick;
+minGrade = sessionStorage.getItem('minGrade') || '5+';
+maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+minTick = sessionStorage.getItem('minTick') || 1;
+maxTick = sessionStorage.getItem('maxTick') || 17 ;
+
+setYear = sessionStorage.getItem('setYear') || '2017';
+setAngle = sessionStorage.getItem('setAngle') || '40';
+holdsjson = sessionStorage.getItem('hold')
+notholdsjson = sessionStorage.getItem('nothold')
+
+sortedBy = sessionStorage.getItem('sortedBy');
+min_overlap = null
+
+console.log('General log on page init max_holds,minGrade,maxGrade,minTick,maxTick, setYear, setAngle, min_overlap, sortedBy, holdsjson ','{{max_holds}}',minGrade,maxGrade,minTick,maxTick, setYear, setAngle, min_overlap, sortedBy, holdsjson);
+
+noUiSlider.create(moonSlider, {
+   start: [minTick, maxTick],
+   step: 1,
+   connect: true,
+   range: {
+       'min': [0],
+       'max': [18]
+   },
+   pips: {
+       mode: 'values',
+       values: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
+       density: 19
+   }
+});
+
+var $sliderMin = $(".noUi-handle-lower");
+var $sliderMax = $(".noUi-handle-upper");
+
+function sliderValueChanged(values, handle, unencoded, tap, positions) {
+    console.log('sliderValueChanged')
+    var tMin = ticks_labels[parseInt(values[0])];
+    var tMax = ticks_labels[parseInt(values[1])];
+
+    if (minGrade != tMin || maxGrade != tMax) {
+        minGrade = tMin;
+        maxGrade = tMax;
+        sessionStorage.setItem('minTick', parseInt(values[0]));
+        sessionStorage.setItem('maxTick', parseInt(values[1]));
+
+        sessionStorage.setItem('minGrade', minGrade);
+        sessionStorage.setItem('maxGrade', maxGrade);
+    }
+    var setYear = sessionStorage.getItem('setYear') || '2017';
+    var setAngle = sessionStorage.getItem('setAngle') || '40';
+    var sortedBy = sessionStorage.getItem('sortedBy');
+
+    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+        current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+        current_holdsetsSelected = []
+    }
+    holdsjson = sessionStorage.getItem('hold')
+    notholdsjson = sessionStorage.getItem('nothold')
+    if (holdsjson) {
+        current_holds = JSON.parse(holdsjson)
+    } else {
+        current_holds = []
+    }
+    if (notholdsjson) {
+        current_notholds = JSON.parse(notholdsjson)
+    } else {
+        current_notholds = []
+    }
+    min_overlap = null
+    console.log(current_holds,current_notholds, setYear, setAngle, min_overlap,minGrade,maxGrade,3,20, sortedBy, current_holdsetsSelected);
+    getProblemList(current_holds, current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy,current_holdsetsSelected)
+}
+
+function sliderIsSliding(values, handle, unencoded, tap, positions) {
+    if ($sliderMin.position().left === $sliderMax.position().left) {
+        if (handle == 0) {
+            $sliderMax.css("z-index", 4);
+        } else {
+            $sliderMax.css("z-index", 5);
+        }
+    }
+
+}
+
+moonSlider.noUiSlider.on('slide', sliderIsSliding);
+moonSlider.noUiSlider.on('change', sliderValueChanged);
+
+function minOverlapSliderValueChanged(values, handle, unencoded, tap, positions) {
+    console.log('minOverlapSliderValueChanged')
+    min_overlap = parseInt(values[0])
+    sessionStorage.setItem('min_overlap', min_overlap)
+    var setYear = sessionStorage.getItem('setYear') || '2017';
+    var setAngle = sessionStorage.getItem('setAngle') || '40';
+    var sortedBy = sessionStorage.getItem('sortedBy');
+    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+       current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+       current_holdsetsSelected = []
+    }
+    holdsjson = sessionStorage.getItem('hold')
+    notholdsjson = sessionStorage.getItem('nothold')
+    if (holdsjson) {
+       current_holds = JSON.parse(holdsjson)
+    } else {
+       current_holds = []
+    }
+    if (notholdsjson) {
+       current_notholds = JSON.parse(notholdsjson)
+    } else {
+       current_notholds = []
+    }
+    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
+    console.log(current_holds,current_notholds, setYear, setAngle, min_overlap,minGrade,maxGrade,3,20, sortedBy, current_holdsetsSelected)
+    getProblemList(current_holds,  current_notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy,current_holdsetsSelected)
+}
+
+{% if max_holds > 3 %}
+    minOverlapSlider.noUiSlider.on('change', minOverlapSliderValueChanged);
+{% endif %}
+
+function updateSliderTicks() {
+    var $nodes = $("#slider .noUi-value-large");
+    $nodes.each( function (index, e) {
+        if (index % 2 === 0) {
+            e.innerHTML = ticks_labels[index];
+        } else {
+            e.innerHTML = " ";
+        }
+    })
+}
+
+updateSliderTicks();
+
+$("button.btnGrade").on("click", function () {
+    var $button = $(this);
+    $button.toggleClass("unselected");
+    var grades = $("button.btnGrade:not('.unselected')")
+       .map( function () {
+           return this.innerText;
+       })
+       .get()
+       .join(",");
+});
+
+
+$("button.tabButton").on("click", function () {
+    var $tabButton = $(this);
+    $("button.tabButton").removeClass("selected");
+    $("div.moon-tab").removeClass("active");
+    var id = $tabButton.data("id");
+    $tabButton.addClass('selected');
+    $('div.moon-tab[data-id="' + id + '"]').addClass('active');
+});
+
+var selectedIndex = -1;
+var currentProblem;
+
+$(function () {
+    Array.prototype.remove = function() {
+        var what, a = arguments, L = a.length, ax;
+        while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+             this.splice(ax, 1);
+        }
+     }
+     return this;
+}
+
+$("#usetheseholdstosearch").click(function () {
+    problem_holds = JSON.parse(sessionStorage.getItem('current_problem_holds'))
+
+    console.log('problem_holds in use these holds' + problem_holds)
+    var setYear = sessionStorage.getItem('setYear') || '2017';
+    var setAngle = sessionStorage.getItem('setAngle') || '40';
+    var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
+    var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+    var sortedBy = sessionStorage.getItem('sortedBy') || '';
+    notholdsjson = sessionStorage.getItem('nothold')
+    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+        current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+        current_holdsetsSelected = []
+    }
+    if (notholdsjson) {
+        current_notholds = JSON.parse(notholdsjson)
+    } else {
+        current_notholds = []
+    }
+    $('#replaceable-name').html('Selected route')
+    document.getElementById("replaceable-content").scrollTop;
+    $('.result-board button').removeClass('blue-button red-button green-button');
+    $('#search-board button').removeClass('blue-button red-button green-button');
+    for (var hi = 0; hi < problem_holds.length; hi++) {
+        document.getElementById(problem_holds[hi]).classList = "led-button blue-button";
+    }
+
+    current_holds = problem_holds
+    sessionStorage.setItem('hold',JSON.stringify(current_holds))
+    getProblemList(problem_holds, current_notholds,  setYear, setAngle, problem_holds.length, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
+})
+
+$(".holdsetBtn").click(function () {
+    console.log('holdsetBtnClick')
+    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+        current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+        current_holdsetsSelected = []
+    }
+    var $btn = $(this);
+    $btn.toggleClass('selected');
+    var holdsetSelected = $btn.val();
+    if ($btn.hasClass('selected')) {
+        current_holdsetsSelected.push(holdsetSelected)
+    } else {
+        current_holdsetsSelected.remove(holdsetSelected)
+    }
+    sessionStorage.setItem('holdsetsSelected',JSON.stringify(current_holdsetsSelected))
+    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+        current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+        current_holdsetsSelected = []
+    }
+    var setYear = sessionStorage.getItem('setYear') || '2017';
+    var setAngle = sessionStorage.getItem('setAngle') || '40';
+    var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
+    var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+    var sortedBy = sessionStorage.getItem('sortedBy') || '';
+    holdsjson = sessionStorage.getItem('hold')
+    notholdsjson = sessionStorage.getItem('nothold')
+    if (holdsjson) {
+        current_holds = JSON.parse(holdsjson)
+    } else {
+        current_holds = []
+    }
+    if (notholdsjson) {
+        current_notholds = JSON.parse(notholdsjson)
+    } else {
+        current_notholds = []
+    }
+    filtered_current_holds = current_holds.slice(0)
+    filtered_current_notholds = current_notholds.slice(0)
+
+    current_holds.forEach( function(hold) {
+      if (!current_holdsetsSelected.includes(holdsetmapping[setYear][hold])) {
+          filtered_current_holds.splice( filtered_current_holds.indexOf(hold), 1 )
+          document.getElementById(hold).classList = "led-button"
+      }
+    })
+    current_notholds.forEach( function(hold) {
+      if (!current_holdsetsSelected.includes(holdsetmapping[setYear][hold])) {
+          filtered_current_notholds.splice( filtered_current_notholds.indexOf(hold), 1 )
+          document.getElementById(hold).classList = "led-button"
+      }
+    })
+
+    current_holds = filtered_current_holds
+    current_notholds = filtered_current_notholds
+    sessionStorage.setItem('hold',JSON.stringify(current_holds))
+    min_overlap = current_holds.length
+    sessionStorage.setItem('min_overlap',min_overlap)
+    getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
+});
+
+$(".sortBtn").click(function () {
+    console.log('sortBtnClick')
+
+    var $btn = $(this);
+
+    $(".sortBtn").removeClass('selected');
+
+    $btn.addClass('selected');
+    var sortedBy = $btn.val();
+    var setYear = sessionStorage.getItem('setYear') || '2017';
+    var setAngle = sessionStorage.getItem('setAngle') || '40';
+    var minGrade = sessionStorage.getItem('minGrade') ||  '5+';
+    var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
+    var dsSort = [];
+    $("#sortedBy").text("Sorted by: " + sortedBy);
+    sessionStorage.setItem('sortedBy', sortedBy);
+    current_holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
+    if (holdsetsSelectedjson) {
+        current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
+    } else {
+        current_holdsetsSelected = []
+    }
+    holdsjson = sessionStorage.getItem('hold')
+    notholdsjson = sessionStorage.getItem('nothold')
+    if (holdsjson) {
+        current_holds = JSON.parse(holdsjson)
+    } else {
+        current_holds = []
+    }
+    if (notholdsjson) {
+        current_notholds = JSON.parse(notholdsjson)
+    } else {
+        current_notholds = []
+    }
+    var min_overlap = sessionStorage.getItem('min_overlap',current_holds.length)
+    getProblemList(current_holds, current_notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20,sortedBy,current_holdsetsSelected)
+});
+});
+document.getElementById("replaceable-content").scrollTop = 0;
+</script>
