@@ -4,18 +4,11 @@ from  pathlib import Path
 from pprint import pprint
 def setup_problem_db(db_name = "../db.sqlite3", init_script_path = Path("setup_db.sql")):
     conn = sqlite3.connect(db_name)
-    with init_script_path.open("r+") as f:
-        init_script=f.read()
-    #
-    with conn:
-        for cmd in init_script.split('--'):
-            print(cmd)
-            conn.executescript(cmd)
     return conn
 
 
 def setup_holds(conn, hold_setup=Path("HoldSetup.json")):
-    cmd = "INSERT INTO holds VALUES (?,?,?,?,?)"
+    cmd = "INSERT INTO moonboard_holds VALUES (NULL, ?,?,?,?,?)"
     c = conn.cursor()
     with hold_setup.open("r+") as f:
         holds = json.load(f)
@@ -33,10 +26,11 @@ def insert_problem(conn,Id, Name,Grade,moves,
                 Benchmark,AssessmentProblem, Method,
                 setup,firstname,lastname,setyear,NameForUrl,DateInserted,Master,
                 Repeats, HoldSetup, setangle,**kwargs):
-    cmd0 = "INSERT INTO setter VALUES (?,?)"
-    cmd1 = "INSERT INTO moonboard_problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-    cmd2 = "INSERT INTO moonboard_problemmove VALUES (?,?,?,?,?,?,?)"
+    cmd0 = "INSERT INTO setter (firstname, lastname) VALUES (?,?)"
+    cmd1 = "INSERT INTO moonboard_problem (id, name, grade, benchmark, assessmentproblem, method, firstname, lastname, setyear, nameforurl, dateinserted, ismaster, repeats, holdsetup, setangle, rating) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    cmd2 = "INSERT INTO moonboard_problemmove (id, position, setup, setangle, isstart, problem_id, isend) VALUES (?,?,?,?,?,?,?)"
     rating =  kwargs['rating']
+
     c = conn.cursor()
     try:
         c.execute(cmd0,(firstname,lastname))
