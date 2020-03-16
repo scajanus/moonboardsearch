@@ -8,15 +8,16 @@
 from django.db import models
 
 
-# class Holds(models.Model):
-#     position = models.TextField(db_column='Position', blank=True, null=True)  # Field name made lowercase.
-#     setup = models.TextField(db_column='Setup', blank=True, null=True)  # Field name made lowercase.
-#     holdset = models.TextField(db_column='HoldSet', blank=True, null=True)  # Field name made lowercase.
-#     hold = models.IntegerField(db_column='Hold', blank=True, null=True)  # Field name made lowercase.
-#     orientation = models.TextField(db_column='Orientation', blank=True, null=True)  # Field name made lowercase.
+class Holds(models.Model):
+     id = models.AutoField(primary_key=True, default="")
+     position = models.TextField(db_column='Position', blank=True, null=True)  # Field name made lowercase.
+     setup = models.TextField(db_column='Setup', blank=True, null=True)  # Field name made lowercase.
+     holdset = models.TextField(db_column='HoldSet', blank=True, null=True)  # Field name made lowercase.
+     hold = models.IntegerField(db_column='Hold', blank=True, null=True)  # Field name made lowercase.
+     orientation = models.TextField(db_column='Orientation', blank=True, null=True)  # Field name made lowercase.
 
-#     class Meta:
-#         managed = True
+     class Meta:
+         managed = True
 #         db_table = 'holds'
 #         app_label = 'moonboard'
 
@@ -60,10 +61,13 @@ class Problem(models.Model):
     firstname = models.TextField(blank=True, null=True)  # Field name made lowercase.
     lastname = models.TextField(blank=True, null=True)  # Field name made lowercase.
     setyear = models.IntegerField(blank=False, null=False)
-    setangle = models.IntegerField(blank=False, null=True)
-    repeats = models.IntegerField(blank=False, null=True)
+    dateinserted = models.TextField(blank=True, null=True) 
+    holdsetup = models.TextField(blank=True, null=True) 
+    ismaster = models.IntegerField(blank=False, null=True)
+    nameforurl = models.TextField(blank=True, null=True)
     rating = models.TextField(blank=False, null=True)
-    dateinserted = models.TextField(blank=False, null=True)
+    repeats = models.IntegerField(blank=False, null=True)
+    setangle = models.IntegerField(blank=False, null=False)
 
     class Meta:
         managed = True
@@ -77,5 +81,6 @@ class Setter(models.Model):
 
     class Meta:
         managed = True
+        unique_together = ('firstname', 'lastname')
         # db_table = 'setter'
         # app_label = 'moonboard'
