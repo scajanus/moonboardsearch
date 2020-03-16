@@ -161,9 +161,7 @@ noUiSlider.create(minOverlapSlider, {
     density: 100
 }
 });
-{% endif %}
-{% if max_holds > 3 %}
-    minOverlapSlider.noUiSlider.on('change', minOverlapSliderValueChanged);
+minOverlapSlider.noUiSlider.on('change', minOverlapSliderValueChanged);
 {% endif %}
 </script>
 <script src="/static/moonboard/javascript/problem-results-partial-setup.js"></script>
