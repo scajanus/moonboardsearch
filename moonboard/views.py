@@ -70,6 +70,13 @@ def problemListView(request):
     min_grade = request.GET.get('min_grade', '5')
     max_grade = request.GET.get('max_grade', '8C')
     sorted_by = request.GET.get('sortedBy','')
+    min_overlap = request.GET.get('min_overlap')
+    defaultHoldsets = {'2016': ['A','B','school'], '2017':['A','B','C','wood','school'], '2019': ['A','B','wood','woodB','woodC','school'] }
+    holdsetsSelected = request.GET.getlist('holdsetsSelected[]')
+    if not holdsetsSelected:
+        holdsetsSelected = defaultHoldsets[set_year]
+    if not min_overlap:
+        min_overlap = len(holds)
     gradelist = ["5", "5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+", "8C"]
     filtered_gradelist =  []
     record=False
