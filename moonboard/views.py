@@ -11,6 +11,7 @@ from .holdmappinginclude import holdmapping
 import string
 import numpy as np
 from numpy.core.umath_tests import inner1d
+from django.views.decorators.cache import never_cache
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -36,10 +37,11 @@ def ModHausdorffDist(A,B):
     MHD = np.max(np.array([FHD, RHD]))
     return(MHD, FHD, RHD)
 
+@never_cache
 def helloView(request):
     return HttpResponse('Hello World!')
 
-
+@never_cache
 def homePageView(request):
     holds = request.GET.getlist('hold[]')
     set_year = request.GET.get('set_year', 2017)
@@ -58,6 +60,7 @@ def homePageView(request):
 
     return render(request, 'home.html')
 
+@never_cache
 def problemListView(request):
     set_year = request.GET.get('set_year', '2017')
     set_angle = request.GET.get('set_angle', '40')
@@ -166,6 +169,7 @@ def problemListView(request):
 
     return JsonResponse(data=data_dict, safe=False)
 
+@never_cache
 def problemView(request):
     # parameters: holds, grade, overlap, # of holds used
     holds = request.GET.getlist('hold')
@@ -182,6 +186,7 @@ def problemView(request):
 
     #return Response('Holds:' + request.GET.getlist('hold'))
 
+@never_cache
 def problemView(request):
 
     problem_id = request.GET['problemId']
@@ -192,6 +197,7 @@ def problemView(request):
         holdstr = holdstr + hold.position + ', '
     return HttpResponse('Problem fetched ' + problem.name + holdstr)
 
+@never_cache
 def problemAsJsonView(request):
 
     problem_id = request.GET['problemId']
