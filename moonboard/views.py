@@ -9,6 +9,7 @@ from datetime import datetime
 import logging
 from .holdmappinginclude import holdmapping
 
+
 logging.basicConfig(level=logging.DEBUG)
 
 def helloView(request):
