@@ -161,7 +161,7 @@ def filter_problems(by, problems):
             'New': {'field_name': 'dateinserted', 'reverse': True},
             'Method': {'field_name': 'screwons', 'reverse': False},
             'Rating': {'field_name': 'rating', 'reverse': True},
-            'Holds': {'field_name': 'numholds', 'reverse': False},
+            'Similar': {'field_name': 'newdistance', 'reverse': True},
             'Easy': {'field_name': 'gradenum', 'reverse': False},
             }
     return sorted(problems, key=lambda i: getattr(i, filter_options[by]['field_name']), reverse=filter_options[by]['reverse'])

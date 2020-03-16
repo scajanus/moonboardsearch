@@ -7,6 +7,9 @@ minTick = (typeof minTick === 'undefined') ? 1 : minTick
 maxTick = (typeof maxTick === 'undefined') ? 17 : maxTick
 min_overlap = (typeof min_overlap === 'undefined') ? 0 : min_overlap
 sortedBy =  null
+holds = (typeof holds === 'undefined') ? [] : holds
+notholds = (typeof notholds === 'undefined') ? [] : notholds
+
 if (typeof holdsetsSelected === 'undefined') {
     if (setYear == '2016') {
         holdsetsSelected = ['A','B','school']
@@ -17,7 +20,11 @@ if (typeof holdsetsSelected === 'undefined') {
     }
 }
 console.log(' - setYear = '+setYear)
+console.log(' - setAngle = '+setAngle)
 console.log(' - holdsetsSelected = '+holdsetsSelected)
+console.log(' - holds = '+holds)
+console.log(' - notholds = '+notholds)
+
 $('#btnA').removeClass('selected')
 $('#btnB').removeClass('selected')
 $('#btnC').removeClass('selected')

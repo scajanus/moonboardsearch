@@ -1,8 +1,4 @@
 {% load moonboard_extras %}
-<div style="margin: 3px 0 5px 0">
-  <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
-  <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
-</div>
 <script src="/static/moonboard/javascript/holdsetmapping.js"></script>
 <!-- Min Hold Slider -->
 {% if max_holds > 3 %}
@@ -143,6 +139,12 @@ Grade Filter    </h3>
     </button>
   </div>
 {% endfor %}
+<div style="margin: 5px 0 5px 0">
+  <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
+  {% if 'debug' in request.GET %}
+  <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
+  {% endif %}
+</div>
 {% endif %}
 <!--  Help -->
 <div class="filter-wrap" style="clear:both;  margin-top:50px">

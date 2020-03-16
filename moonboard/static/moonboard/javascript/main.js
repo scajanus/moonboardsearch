@@ -6,30 +6,10 @@ var hold_overlap_slider = document.getElementById("hold-overlap");
 const endpoint = '/problems'
 const delay_by_in_ms = 1000
 let scheduled_function = false
-sessionStorage.removeItem('hold')
 
 function filterRoutes(minOverlap){
   // TODO: Call getProblemList with current set of holds & setYear
-  var setYear = sessionStorage.getItem('setYear') || '2017';
-  var setAngle = sessionStorage.getItem('setAngle') || '40';
-  var minGrade = sessionStorage.getItem('minGrade') || '5+';
-  var maxGrade = sessionStorage.getItem('maxGrade') || '8B+';
-
-  holdsjson = sessionStorage.getItem('hold')
-
-  if (holdsjson) {
-    current_holds = JSON.parse(holdsjson)
-  } else {
-    current_holds = []
-  }
-  holdsjson = sessionStorage.getItem('nothold')
-
-  if (notholdsjson) {
-    current_notholds = JSON.parse(notholdsjson)
-  } else {
-    current_notholds = []
-  }
-  getProblemList(current_holds, current_notholds, setYear, setAngle, minOverlap, minGrade, maxGrade)
+  getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade)
 }
 
 function changeSetYear() {
@@ -37,20 +17,19 @@ function changeSetYear() {
   var holdsetsSelected = sessionStorage.getItem('holdsetsSelected')
   // If the checkbox is checked, display the output text
   if (document.getElementById('set2017').checked){
-    sessionStorage.setItem('setYear', '2017')
+    setYear = '2017'
     document.getElementById("setangle").style="display:inline";
     var arrayLength = holdsetsSelected.length;
     for (var i = 0; i < arrayLength; i++) {
         holdset = holdsetsSelected[i];
     }
   } else if (document.getElementById('set2019').checked) {
-    sessionStorage.setItem('setYear', '2019')
+    setYear = '2019'
     document.getElementById("setangle").style="display:inline";
   } else {
-    sessionStorage.setItem('setYear', '2016')
+    setYear = '2016'
     document.getElementById("setangle").style="display:none";
   }
-  setYear = sessionStorage.getItem('setYear')
   if (setYear == '2016') {
     holdsetsSelected = ['A','B','school']
   } else if (setYear == '2017') {
@@ -58,28 +37,21 @@ function changeSetYear() {
   } else if  (setYear == '2019') {
     holdsetsSelected = ['A','B','wood','woodB','woodC','school']
   }
-  sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
   $('#replaceable-name').html('Selected route')
   document.getElementById("replaceable-content").scrollTop;
   $('.result-board button').removeClass('blue-button red-button green-button');
   $('#search-board button').removeClass('blue-button red-button green-button');
 
-  sessionStorage.setItem('hold', JSON.stringify([]))
-  sessionStorage.setItem('nothold', JSON.stringify([]))
-  setYear = sessionStorage.getItem('setYear') || '2017'
-  setAngle = sessionStorage.getItem('setAngle') || '40'
-  sessionStorage.removeItem('min_overlap')
-  getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+  getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdsetSelected=holdsetsSelected)
 }
 
 function changeSetAngle() {
   var checkBox = document.getElementById("setAngleCheckbox");
   if (checkBox.checked == true){
-    sessionStorage.setItem('setAngle', 25)
+    setAngle = '25'
   } else {
-    sessionStorage.setItem('setAngle', 40)
+    setAngle = '40'
   }
-  setYear = sessionStorage.getItem('setYear')
   if (setYear == '2016') {
     holdsetsSelected = ['A','B','school']
   } else if (setYear == '2017') {
@@ -87,19 +59,16 @@ function changeSetAngle() {
   } else if  (setYear == '2019') {
     holdsetsSelected = ['A','B','wood','woodB','woodC','school']
   }
-  sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
 
   $('#replaceable-name').html('Selected route')
   document.getElementById("replaceable-content").scrollTop;
   $('.result-board button').removeClass('blue-button red-button green-button');
   $('#search-board button').removeClass('blue-button red-button green-button');
 
-  sessionStorage.setItem('hold', JSON.stringify([]))
-  sessionStorage.setItem('nothold', JSON.stringify([]))
-  setYear = sessionStorage.getItem('setYear') || '2017'
-  setAngle = sessionStorage.getItem('setAngle') || '40'
-  sessionStorage.removeItem('min_overlap')
-  getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+  holds = []
+  notholds = []
+  min_overlap = null
+  getProblemList(holds=holds, notholds=notholds, setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdsetSelected=holdsetsSelected)
 }
 
 let ajax_call = function (endpoint, request_parameters) {
@@ -137,19 +106,6 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     for (var hi = 0; hi < response['holds'].length; hi++) {
       problem_holds.push(response['holds'][hi][0])
     }
-    sessionStorage.setItem('current_problem_holds',JSON.stringify(problem_holds))
-    setYear = sessionStorage.getItem('setYear') || '2017';
-    var holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
-    if (holdsetsSelectedjson === null) {
-      if (setYear == '2016') {
-        holdsetsSelected = ['A','B','school']
-      } else if (setYear == '2017') {
-        holdsetsSelected = ['A','B','C','wood','school']
-      } else if  (setYear == '2019') {
-        holdsetsSelected = ['A','B','C','wood','school']
-      }
-      sessionStorage.setItem('holdsetsSelected', JSON.stringify(holdsetsSelected));
-    }
     $('#btnA').removeClass('selected')
     $('#btnB').removeClass('selected')
     $('#btnC').removeClass('selected')
@@ -157,7 +113,6 @@ let problem_ajax_call = function (endpoint, request_parameters) {
     $('#btnwoodB').removeClass('selected')
     $('#btnwoodC').removeClass('selected')
     $('#btnschool').removeClass('selected')
-    holdsetsSelected =  JSON.parse(holdsetsSelectedjson)
     if (holdsetsSelected.includes('A')) { $('#btnA').addClass('selected') }
     if (holdsetsSelected.includes('B')) { $('#btnB').addClass('selected') }
     if (holdsetsSelected.includes('C')) { $('#btnC').addClass('selected') }
@@ -188,49 +143,28 @@ let problem_ajax_call = function (endpoint, request_parameters) {
 function toggleButton(buttonId) {
     var classes = document.getElementById(buttonId).classList;
 
-    holdsjson = sessionStorage.getItem('hold')
-    notholdsjson = sessionStorage.getItem('nothold')
-
-    if (holdsjson) {
-      current_holds = JSON.parse(holdsjson)
-    } else {
-      current_holds = []
-    }
-    if (notholdsjson) {
-      current_notholds = JSON.parse(notholdsjson)
-    } else {
-      current_notholds = []
-    }
-    holdsetsSelectedjson = sessionStorage.getItem('holdsetsSelected')
-    if (holdsetsSelectedjson) {
-      current_holdsetsSelected = JSON.parse(holdsetsSelectedjson)
-    } else {
-      current_holdsetsSelected = []
-    }
 
     if(classes.length == 1) {
       //Currently off, turn blue
       classToAdd = "blue-button";
-      current_holds.push(buttonId)
+      holds.push(buttonId)
     }
     else if(classes.item(1) == "blue-button" || classes.item(1) == "red-button") {
       //Currently blue, turn off
       if  (classes.item(1) == "blue-button") {
         classToAdd  = "red-button"
-        current_holds.splice($.inArray(buttonId, current_holds), 1)
-        current_notholds.push(buttonId)
+        holds.splice($.inArray(buttonId, holds), 1)
+        notholds.push(buttonId)
       } else {
         classToAdd = ""
-        current_notholds.splice($.inArray(buttonId, current_holds), 1)
+        notholds.splice($.inArray(buttonId, holds), 1)
       }
     }
     document.getElementById(buttonId).classList = "led-button " + classToAdd;
-    sessionStorage.setItem('hold', JSON.stringify(current_holds))
-    sessionStorage.setItem('nothold', JSON.stringify(current_notholds))
-    setYear = sessionStorage.getItem('setYear') || '2017'
-    setAngle = sessionStorage.getItem('setAngle') || '40'
-    min_overlap = sessionStorage.setItem('min_overlap',current_holds.length)
-    getProblemList(holds=current_holds,  notholds=current_notholds, setYear, setAngle, min_overlap, '5+','8B+',3,20,'',current_holdsetsSelected)
+    if (min_overlap == 0) {
+        min_overlap = Math.max(3, holds.length)
+    }
+    getProblemList(holds=holds,  notholds=notholds, setYear, setAngle, min_overlap, '5+','8B+',3,20,'',holdsetsSelected)
 }
 
 function toggleProblem(problemId) {
