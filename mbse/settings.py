@@ -25,7 +25,7 @@ SECRET_KEY = 'vsrjw0@gdhp14l&mzg-=yv$3u0l&f_my^o7bn_5_*v4q_mhl^('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'moonboardsearchengine.herokuapp.com']
+ALLOWED_HOSTS = ['dev.scajanus.django.group', 'www.moonboard.rocks', 'moonboard.rocks', 'scajanus.django.group', '127.0.0.1', 'moonboardsearchengine.herokuapp.com']
 
 # Application definition
 
@@ -127,5 +127,26 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 import dj_database_url 
-prod_db  =  dj_database_url.config(conn_max_age=500)
+prod_db  =  dj_database_url.config()
 DATABASES['default'].update(prod_db)
+
+if DEBUG == False:
+    # log to file in production
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': '/home/scajanus/mbse/debug.log',
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'DEBUG',
+                'propagate': True,
+            },
+        },
+    }
