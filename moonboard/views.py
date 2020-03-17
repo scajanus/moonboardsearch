@@ -9,6 +9,7 @@ from datetime import datetime
 import logging
 from .holdmappinginclude import holdmapping
 
+
 logging.basicConfig(level=logging.DEBUG)
 
 def helloView(request):
@@ -47,7 +48,7 @@ def problemListView(request):
 
     min_grade = request.GET.get('min_grade', '5')
     max_grade = request.GET.get('max_grade', '8C')
-    sortedBy = request.GET.get('sortedBy','')
+    sorted_by = request.GET.get('sortedBy','')
     gradelist = ["5", "5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+", "8C"]
     filtered_gradelist =  []
     record=False
@@ -93,37 +94,41 @@ def problemListView(request):
 
             if not outsideCurrentHoldset:
                 nothold_count = problem.nothold_count
-                dateinserted_timestamp = float(problem.dateinserted[6:-2])/1000
                 problem.numholds = len(pholds)
+
+                dateinserted_timestamp = float(problem.dateinserted[6:-2])/1000
                 problem.datetimestamp = dateinserted_timestamp
                 problem.date = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
+
                 problem.gradenum = gradelist.index(problem.grade)
                 problem.screwons = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem.method)
                 filtered_problems.append(problem)
 
     else:
         filtered_problems=[]
-    if sortedBy == 'Repeats':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.repeats, reverse=True)
-    elif sortedBy == 'New':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.datetimestamp, reverse=True)
-    elif sortedBy == 'Method':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.screwons)
-    elif sortedBy == 'Rating':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.rating, reverse=True)
-    elif sortedBy == 'Holds':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.numholds, reverse=True)
-    elif sortedBy == 'Easy':
-        sorted_filtered_problems = sorted(filtered_problems, key = lambda i: i.gradenum)
-    else:
-        sorted_filtered_problems =  filtered_problems
+
+    if sorted_by != '':
+        filtered_problems = filter_problems(sorted_by, filtered_problems)
+
     min_for_min_overlap_slider = max(3,len(holds)-6)
     html = render_to_string(template_name="problem-results-partial.html",
-            context={"problems": sorted_filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sortedBy,  "set_year": set_year, "holdsetsSelected": holdsetsSelected}
+            context={"problems": filtered_problems, "min_overlap": min_overlap, "max_holds": len(holds),"min_for_min_overlap_slider": min_for_min_overlap_slider, "sortedBy":sorted_by,  "set_year": set_year, "holdsetsSelected": holdsetsSelected}
         )
     data_dict = {"html_from_view": html}
 
     return JsonResponse(data=data_dict, safe=False)
+
+def filter_problems(by, problems):
+    filter_options = {
+            'Repeats': {'field_name': 'repeats', 'reverse': True},
+            'New': {'field_name': 'dateinserted', 'reverse': True},
+            'Method': {'field_name': 'screwons', 'reverse': False},
+            'Rating': {'field_name': 'rating', 'reverse': True},
+            'Holds': {'field_name': 'numholds', 'reverse': False},
+            'Easy': {'field_name': 'gradenum', 'reverse': False},
+            }
+    return sorted(problems, key=lambda i: getattr(i, filter_options[by]['field_name']), reverse=filter_options[by]['reverse'])
+
 
 def problemView(request):
     # parameters: holds, grade, overlap, # of holds used
