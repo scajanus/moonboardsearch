@@ -133,7 +133,12 @@ let problem_ajax_call = function (endpoint, request_parameters) {
         backgroundcss.push("url(/static/moonboard/" + setYear + "/" +  holdset +  ".png)")
         blendcss.push('darken')
     }
-    backgroundcss.push('url(/static/moonboard/moonboard-background.png)')
+    if (response['method'].includes('crew')) {
+      backgroundcss.push('url(/static/moonboard/moonboard-background-screwons.png)')      
+
+    } else {
+      backgroundcss.push('url(/static/moonboard/moonboard-background.png)')
+    }
     blendcss.push('normal')
     $('#search-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
     $('#result-board').css('background-image', backgroundcss.join(',')).css('background-blend-mode', blendcss.join(','))
@@ -174,7 +179,6 @@ function toggleButton(buttonId) {
 }
 
 function toggleProblem(problemId) {
-  sessionStorage.setItem('current_problem',problemId)
 
   const request_parameters = {
     problemId: problemId,

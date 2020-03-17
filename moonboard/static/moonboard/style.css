@@ -368,3 +368,12 @@ element.style {
 .noUi-marker-horizontal.noUi-marker-large {
   height: 5px !important;
 }
+.noUi-marker-horizontal.noUi-marker-sub {
+	height:3px !important;
+}
+.noUi-value-sub  {
+  font-size: 14px !important;
+}
+.noUi-value-large {
+	font-size: 14px !important;
+}

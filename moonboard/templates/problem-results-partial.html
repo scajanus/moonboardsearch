@@ -1,5 +1,47 @@
 {% load moonboard_extras %}
 <script src="/static/moonboard/javascript/holdsetmapping.js"></script>
+<!-- Holdset Filter -->
+<div class="row section-header" style="clear:both;">
+  <div class="col-md-12">
+    <h3>
+      Filter Holdsets
+    </h3>
+  </div>
+</div>
+<div class="filter-wrap" style="font-family: arial, sans">
+<ul class="sort margin-wrapper">
+  <li>
+    <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} selected{% endif %}" value="A">A White</button>
+  </li>
+  <li>
+    <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} selected{% endif %}" value="B">B Black</button>
+  </li>
+  {% if set_year == '2017' or not set_year %}
+  <li>
+    <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} selected{% endif %}" value="C">C Red</button>
+  </li>
+  {% endif %}
+  {% if set_year == '2017' or set_year == '2019' or not set_year %}
+  <li>
+    <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} selected{% endif %}" value="wood">Wood</button>
+  </li>
+  {% endif %}
+  {% if set_year == '2019' %}
+  <li>
+    <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} selected{% endif %}" value="woodB">Wood B</button>
+  </li>
+  {% endif %}
+  {% if set_year == '2019' %}
+  <li>
+    <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} selected{% endif %}" value="woodC">Woods C</button>
+  </li>
+  {% endif %}
+  <li>
+    <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} selected{% endif %}" value="school">School</button>
+  </li>
+</ul>
+</div>
+
 <!-- Min Hold Slider -->
 {% if max_holds > 3 %}
 <div class="row section-header" style="clear:both; margin-bottom:5px;">
@@ -34,51 +76,12 @@ Grade Filter    </h3>
 <div class="grade-slider slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
  <div id="slider"></div>
 </div>
-<!-- Holdset Filter -->
-<div class="row section-header" style="clear:both;  margin-top:40px">
-  <div class="col-md-12">
-    <h3>
-      Filter Holdsets
-    </h3>
-  </div>
-</div>
-<div class="filter-wrap" style="font-family: arial, sans">
-<ul class="sort margin-wrapper">
-  <li>
-    <button id="btnA" class="holdsetBtn{% if "A" in holdsetsSelected %} selected{% endif %}" value="A">A White</button>
-  </li>
-  <li>
-    <button id="btnB" class="holdsetBtn{% if "B" in holdsetsSelected %} selected{% endif %}" value="B">B Black</button>
-  </li>
-  {% if set_year == '2017' %}
-  <li>
-    <button id="btnC" class="holdsetBtn{% if "C" in holdsetsSelected %} selected{% endif %}" value="C">C Red</button>
-  </li>
-  {% endif %}
-  {% if set_year == '2017' or set_year == '2019' %}
-  <li>
-    <button id="btnwood" class="holdsetBtn{% if "wood" in holdsetsSelected %} selected{% endif %}" value="wood">Wood</button>
-  </li>
-  {% endif %}
-  {% if set_year == '2019' %}
-  <li>
-    <button id="btnwoodB" class="holdsetBtn{% if "woodB" in holdsetsSelected %} selected{% endif %}" value="woodB">Wood B</button>
-  </li>
-  {% endif %}
-  {% if set_year == '2019' %}
-  <li>
-    <button id="btnwoodC" class="holdsetBtn{% if "woodC" in holdsetsSelected %} selected{% endif %}" value="woodC">Woods C</button>
-  </li>
-  {% endif %}
-  <li>
-    <button id="btnschool" class="holdsetBtn{% if "school" in holdsetsSelected %} selected{% endif %}" value="school">School</button>
-  </li>
-</ul>
-</div>
 {% endif %}
 
+
+
 {% if problems %}
-<div class="filter-wrap">
+<div class="filter-wrap" style=" margin-top:40px">
   <div class="row section-header">
     <div class="col-md-12">
       <h3>
@@ -157,13 +160,16 @@ Grade Filter    </h3>
     </button>
   </div>
 {% endfor %}
-{% endif %}
+
 <div style="margin: 5px 0 5px 0">
   <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
-  {% if 'debug' in request.GET %}
-  <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
-  {% endif %}
 </div>
+{% endif %}
+{% if 'debug' in request.GET %}
+<div style="margin: 5px 0 5px 0">
+  <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
+</div>
+{% endif %}
 <!--  Help -->
 <div class="filter-wrap" style="clear:both;  margin-top:50px">
   <p>To filter by one or more holds, click on the hold on the left side to select it (selections shown with blue circles). Once two or more holds are selected, this column will show the problems that  use those holds. </p>
