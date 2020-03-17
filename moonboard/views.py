@@ -17,22 +17,6 @@ def helloView(request):
 
 
 def homePageView(request):
-
-    holds = request.GET.getlist('hold[]')
-    set_year = request.GET.get('set_year', 2017)
-    if holds:
-        problems = None
-    else:
-        problems = None
-
-    if request.is_ajax():
-        html = render_to_string(
-            template_name="problem-results-partial.html",
-            context={"problems": problems, "max_holds": len(holds),"set_year": set_year}
-        )
-        data_dict = {"html_from_view": html}
-        return JsonResponse(data=data_dict, safe=False)
-
     return render(request, 'home.html')
 
 def problemListView(request):
