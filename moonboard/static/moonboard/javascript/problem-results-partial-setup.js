@@ -5,10 +5,13 @@ minGrade = (typeof minGrade === 'undefined') ? '5+' : minGrade
 maxGrade = (typeof maxGrade === 'undefined') ? '8B+' : maxGrade
 minTick = (typeof minTick === 'undefined') ? 1 : minTick
 maxTick = (typeof maxTick === 'undefined') ? 17 : maxTick
-min_overlap = (typeof min_overlap === 'undefined') ? 0 : min_overlap
-sortedBy =  null
+sortedBy = (typeof sortedBy === 'undefined') ? null : sortedBy
 holds = (typeof holds === 'undefined') ? [] : holds
 notholds = (typeof notholds === 'undefined') ? [] : notholds
+holdRangeMin = (typeof holdRangeMin === 'undefined') ? 4 : holdRangeMin
+holdRangeMax = (typeof holdRangeMax === 'undefined') ? 20 : holdRangeMax
+min_overlap = (typeof min_overlap === 'undefined') ? 0 : min_overlap
+min_overlap_from_slider = (typeof min_overlap_from_slider === 'undefined') ? null : min_overlap_from_slider
 
 if (typeof holdsetsSelected === 'undefined') {
     if (setYear == '2016') {
@@ -24,6 +27,9 @@ console.log(' - setAngle = '+setAngle)
 console.log(' - holdsetsSelected = '+holdsetsSelected)
 console.log(' - holds = '+holds)
 console.log(' - notholds = '+notholds)
+console.log(' - holdRangeMin = '+holdRangeMin)
+console.log(' - holdRangeMax = '+holdRangeMax)
+
 
 $('#btnA').removeClass('selected')
 $('#btnB').removeClass('selected')
@@ -63,6 +69,8 @@ $("#resetSearch").on("click", function () {
    holds = []
    notholds = []
    min_overlap = 0
+   min_overlap_from_slider = null
+
 
    if (setYear == '2016') {
       holdsetsSelected = ['A','B','school']
@@ -71,11 +79,10 @@ $("#resetSearch").on("click", function () {
    } else if  (setYear == '2019') {
       holdsetsSelected = ['A','B','wood','woodB','woodC','school']
    }
-   getProblemList(holds=holds, notholds=notholds, setYear, setAngle, null, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+   getProblemList(holds=holds, notholds=notholds, setYear, setAngle, null, '5+','8B+',holdRangeMin, holdRangeMax,'',holdssetSelected=holdsetsSelected)
 
 })
 
-//## got to here ##
 $("#resetAll").on("click", function () {
     console.log('Full Reset')
     $('#replaceable-name').html('Selected route')
@@ -85,6 +92,7 @@ $("#resetAll").on("click", function () {
     holds = []
     notholds = []
     min_overlap = 0
+    min_overlap_from_slider = null
     setYear = '2017'
     setAngle = '40'
     if (setYear == '2016') {
@@ -94,17 +102,19 @@ $("#resetAll").on("click", function () {
     } else if  (setYear == '2019') {
         holdsetsSelected = ['A','B','wood','woodB','woodC','school']
     }
-    getProblemList(holds=holds, notholds=notholds, setYear, setAngle, null, '5+','8B+',3,20,'',holdssetSelected=holdsetsSelected)
+    getProblemList(holds=holds, notholds=notholds, setYear, setAngle, null, '5+','8B+', holdRangeMin, holdRangeMax,'',holdssetSelected=holdsetsSelected)
 })
 
 holdsetups = JSON.parse('[{"Id":17,"Description":"MoonBoard Masters 2019","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":15,"Description":"MoonBoard Masters 2017","AllowClimbMethods":true,"MoonBoardConfigurations":[{"Id":1,"Description":"40° MoonBoard","LowGrade":"6A+","HighGrade":"8B+"},{"Id":2,"Description":"25° MoonBoard","LowGrade":"5+","HighGrade":"8B+"}]},{"Id":1,"Description":"MoonBoard 2016","AllowClimbMethods":false,"MoonBoardConfigurations":[]}]')
 ticks_labels = ["5","5+","6A","6A+","6B","6B+","6C","6C+","7A","7A+","7B","7B+","7C","7C+","8A","8A+","8B","8B+","8C"]
 
-var $sliderMin = $(".noUi-handle-lower")
-var $sliderMax = $(".noUi-handle-upper")
+
+//Grade Slider
+var $sliderMin = $(".grade-slider .noUi-handle-lower")
+var $sliderMax = $(".grade-slider .noUi-handle-upper")
 
 function sliderValueChanged(values, handle, unencoded, tap, positions) {
-    console.log('sliderValueChanged')
+    console.log('gradeSliderValueChanged')
     tMin = ticks_labels[parseInt(values[0])]
     tMax = ticks_labels[parseInt(values[1])]
 
@@ -114,11 +124,13 @@ function sliderValueChanged(values, handle, unencoded, tap, positions) {
         minTick = values[0]
         maxTick = values[1]
     }
-    if (min_overlap == 0) {
-        min_overlap = Math.max(3, holds.length)
+    if (min_overlap_from_slider == null) {
+        min_overlap = holds.length
+    } else {
+        min_overlap = min_overlap_from_slider
     }
-    console.log(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3, 20, sortedBy, holdsetsSelected)
-    getProblemList(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy, holdsetsSelected)
+    console.log(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
+    getProblemList(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
 }
 
 function sliderIsSliding(values, handle, unencoded, tap, positions) {
@@ -152,14 +164,6 @@ if  ($('#slider').length) {
   moonSlider.noUiSlider.on('change', sliderValueChanged)
 }
 
-function minOverlapSliderValueChanged(values, handle, unencoded, tap, positions) {
-    console.log('minOverlapSliderValueChanged')
-    min_overlap = parseInt(values[0])
-    console.log(holds,notholds, setYear, setAngle, min_overlap,minGrade,maxGrade,3,20, sortedBy, holdsetsSelected)
-    getProblemList(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3,20, sortedBy, holdsetsSelected)
-}
-
-
 
 function updateSliderTicks() {
     var $nodes = $("#slider .noUi-value-large")
@@ -173,6 +177,69 @@ function updateSliderTicks() {
 }
 
 updateSliderTicks()
+
+
+
+// holdRangeSlider
+holdRangeSliderMin = $("#holdRangeSlider .noUi-handle-lower")
+holdRangeSliderMax = $("#holdRangeSlider .noUi-handle-upper")
+
+function holdRangeSliderValueChanged(values, handle, unencoded, tap, positions) {
+    console.log('holdRangeSliderValueChanged')
+    holdRangeMin = parseInt(values[0])
+    holdRangeMax = parseInt(values[1])
+
+    if (min_overlap_from_slider == null) {
+        min_overlap = holds.length
+    } else {
+        min_overlap = min_overlap_from_slider
+    }
+    console.log(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
+    getProblemList(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
+}
+
+function holdRangeSliderIsSliding(values, handle, unencoded, tap, positions) {
+    holdRangeSliderMin = $("#holdRangeSlider .noUi-handle-lower")
+    holdRangeSliderMax = $("#holdRangeSlider .noUi-handle-upper")
+
+    if (holdRangeSliderMin.position().left === holdRangeSliderMax.position().left) {
+        if (handle == 0) {
+            holdRangeSliderMax.css("z-index", 4)
+        } else {
+            holdRangeSliderMax.css("z-index", 5)
+        }
+    }
+
+}
+
+if  ($('#holdRangeSlider').length) {
+  holdRangeSlider = document.getElementById('holdRangeSlider');
+  noUiSlider.create(holdRangeSlider, {
+     start: [holdRangeMin, holdRangeMax],
+     step: 1,
+     connect: true,
+     range: {
+         'min': [4],
+         'max': [14]
+     },
+     pips: {
+      mode: 'steps',
+      density: 100
+  }
+  });
+  holdRangeSlider.noUiSlider.on('change', holdRangeSliderValueChanged);
+  holdRangeSlider.noUiSlider.on('slide', holdRangeSliderIsSliding)
+}
+
+
+// minOverlapSlider
+
+function minOverlapSliderValueChanged(values, handle, unencoded, tap, positions) {
+    min_overlap_from_slider = parseInt(values[0])
+    min_overlap = min_overlap_from_slider
+    console.log(holds,notholds, setYear, setAngle, min_overlap,minGrade,maxGrade,holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
+    getProblemList(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
+}
 
 $("button.btnGrade").on("click", function () {
     var $button = $(this)
@@ -211,7 +278,6 @@ $(function () {
 }
 
 $("#usetheseholdstosearch").click(function () {
-    console.log('problem_holds in use these holds' + problem_holds)
     $('#replaceable-name').html('Selected route')
     document.getElementById("replaceable-content").scrollTop
     $('.result-board button').removeClass('blue-button red-button green-button')
@@ -220,7 +286,7 @@ $("#usetheseholdstosearch").click(function () {
         document.getElementById(problem_holds[hi]).classList = "led-button blue-button"
     }
     holds = problem_holds
-    getProblemList(problem_holds, notholds,  setYear, setAngle, problem_holds.length, minGrade, maxGrade, 3, 20, sortedBy, holdsetsSelected)
+    getProblemList(problem_holds, notholds,  setYear, setAngle, problem_holds.length, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
 })
 
 $(".holdsetBtn").click(function () {
@@ -249,11 +315,12 @@ $(".holdsetBtn").click(function () {
     })
     holds = filtered_holds
     notholds = filtered_notholds
-    console.log('min_overlap '+min_overlap+' holds.length '+holds.length)
-    if (min_overlap == 0) {
-        min_overlap = Math.max(3, holds.length)
+    if (min_overlap_from_slider == null) {
+        min_overlap = holds.length
+    } else {
+        min_overlap = min_overlap_from_slider
     }
-    getProblemList(holds, notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, 3, 20, sortedBy, holdsetsSelected)
+    getProblemList(holds, notholds,  setYear, setAngle, min_overlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
 })
 
 $(".sortBtn").click(function () {
@@ -265,11 +332,12 @@ $(".sortBtn").click(function () {
     var dsSort = []
     $("#sortedBy").text("Sorted by: " + sortedBy)
     sessionStorage.setItem('sortedBy', sortedBy)
-    console.log('min_overlap '+min_overlap+' holds.length '+holds.length)
-    if (min_overlap == 0) {
-        min_overlap = Math.max(3, holds.length)
+    if (min_overlap_from_slider == null) {
+        min_overlap = holds.length
+    } else {
+        min_overlap = min_overlap_from_slider
     }
-    getProblemList(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, 3, 20, sortedBy, holdsetsSelected)
+    getProblemList(holds, notholds, setYear, setAngle, min_overlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected)
 })
 })
 document.getElementById("replaceable-content").scrollTop = 0

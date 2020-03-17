@@ -69,13 +69,16 @@ def problemListView(request):
     notholds = request.GET.getlist('nothold[]')
     min_grade = request.GET.get('min_grade', '5')
     max_grade = request.GET.get('max_grade', '8C')
+    holdRangeMin = int(request.GET.get('holdRangeMin', 4))
+    holdRangeMax = int(request.GET.get('holdRangeMax', 20))
     sorted_by = request.GET.get('sortedBy','')
-    min_overlap = request.GET.get('min_overlap')
+    min_overlap = request.GET.get('min_overlap',0)
+
     defaultHoldsets = {'2016': ['A','B','school'], '2017':['A','B','C','wood','school'], '2019': ['A','B','wood','woodB','woodC','school'] }
     holdsetsSelected = request.GET.getlist('holdsetsSelected[]')
     if not holdsetsSelected:
         holdsetsSelected = defaultHoldsets[set_year]
-    if not min_overlap:
+    if not min_overlap or min_overlap == 0:
         min_overlap = len(holds)
     gradelist = ["5", "5+", "6A", "6A+", "6B", "6B+", "6C", "6C+", "7A", "7A+", "7B", "7B+", "7C", "7C+", "8A", "8A+", "8B", "8B+", "8C"]
     filtered_gradelist =  []
@@ -92,6 +95,15 @@ def problemListView(request):
         else:
             if record:
                 filtered_gradelist.append(grade)
+
+    logging.debug(('holds',holds))
+    logging.debug(('notholds',notholds))
+    logging.debug(('set_year',set_year))
+    logging.debug(('set_angle',set_angle))
+    logging.debug(('filtered_gradelist',filtered_gradelist))
+    logging.debug(('min_overlap',min_overlap))
+    logging.debug(('holdRangeMin',holdRangeMin))
+    logging.debug(('holdRangeMax',holdRangeMax))
 
     if len(holds)>0:
         problems = Problem.objects.prefetch_related('problemmove_set')\
@@ -112,30 +124,27 @@ def problemListView(request):
                     outsideCurrentHoldset = True
 
             if not outsideCurrentHoldset:
-                nothold_count = problem.nothold_count
-                problem.numholds = len(pholds)
+                if len(pholds)>=holdRangeMin and len(pholds)<=holdRangeMax:
+                    nothold_count = problem.nothold_count
+                    problem.numholds = len(pholds)
 
-                dateinserted_timestamp = float(problem.dateinserted[6:-2])/1000
-                problem.datetimestamp = dateinserted_timestamp
-                problem.date = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
+                    dateinserted_timestamp = float(problem.dateinserted[6:-2])/1000
+                    problem.datetimestamp = dateinserted_timestamp
+                    problem.date = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
 
-                problem.gradenum = gradelist.index(problem.grade)
-                problem.screwons = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem.method)
+                    problem.gradenum = gradelist.index(problem.grade)
+                    problem.screwons = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem.method)
 
-                search_holds = np.array([convertPositionToCoord(h) for h in holds])
-                found_problem_holds = np.array([convertPositionToCoord(h.position) for h in pholds])
-                logging.debug('search holds')
-                logging.debug(search_holds)
-                logging.debug('found_problem_holds')
-                logging.debug(found_problem_holds)
-                problem.distance, problem.fhd, problem.rhd = ModHausdorffDist(search_holds, found_problem_holds)
-                problem.hd = problem.distance*10
-                problem.fhd = problem.fhd*10
-                problem.rhd = problem.rhd*10
-                if problem.distance > max_difference:
-                    max_difference = problem.distance
+                    search_holds = np.array([convertPositionToCoord(h) for h in holds])
+                    found_problem_holds = np.array([convertPositionToCoord(h.position) for h in pholds])
+                    problem.distance, problem.fhd, problem.rhd = ModHausdorffDist(search_holds, found_problem_holds)
+                    problem.hd = problem.distance*10
+                    problem.fhd = problem.fhd*10
+                    problem.rhd = problem.rhd*10
+                    if problem.distance > max_difference:
+                        max_difference = problem.distance
 
-                filtered_problems.append(problem)
+                    filtered_problems.append(problem)
 
         for problem in filtered_problems:
             problem.distance = (100 - problem.distance).round()

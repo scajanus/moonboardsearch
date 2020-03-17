@@ -41,8 +41,11 @@ function changeSetYear() {
   document.getElementById("replaceable-content").scrollTop;
   $('.result-board button').removeClass('blue-button red-button green-button');
   $('#search-board button').removeClass('blue-button red-button green-button');
-
-  getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',3,20,'',holdsetSelected=holdsetsSelected)
+  holds = []
+  notholds = []
+  min_overlap = 0
+  min_overlap_from_slider = null
+  getProblemList(holds=[], notholds=[], setYear, setAngle, 0 , '5+','8B+',holdRangeMin, holdRangeMax,'',holdsetSelected=holdsetsSelected)
 }
 
 function changeSetAngle() {
@@ -67,8 +70,9 @@ function changeSetAngle() {
 
   holds = []
   notholds = []
-  min_overlap = null
-  getProblemList(holds=holds, notholds=notholds, setYear, setAngle, min_overlap , '5+','8B+',3,20,'',holdsetSelected=holdsetsSelected)
+  min_overlap = 0
+  min_overlap_from_slider = null
+  getProblemList(holds=holds, notholds=notholds, setYear, setAngle, min_overlap , '5+','8B+',holdRangeMin, holdRangeMax,'',holdsetSelected=holdsetsSelected)
 }
 
 let ajax_call = function (endpoint, request_parameters) {
@@ -161,10 +165,12 @@ function toggleButton(buttonId) {
       }
     }
     document.getElementById(buttonId).classList = "led-button " + classToAdd;
-    if (min_overlap == 0) {
-        min_overlap = Math.max(3, holds.length)
+    if (min_overlap_from_slider == null) {
+        min_overlap = holds.length
+    } else {
+        min_overlap = min_overlap_from_slider
     }
-    getProblemList(holds=holds,  notholds=notholds, setYear, setAngle, min_overlap, '5+','8B+',3,20,'',holdsetsSelected)
+    getProblemList(holds=holds,  notholds=notholds, setYear, setAngle, min_overlap, '5+','8B+',holdRangeMin, holdRangeMax,'',holdsetsSelected)
 }
 
 function toggleProblem(problemId) {
@@ -183,7 +189,7 @@ function toggleProblem(problemId) {
 
 }
 
-function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, minHolds, maxHolds, sortedBy, holdsetsSelected) {
+function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade, maxGrade, holdRangeMin, holdRangeMax, sortedBy, holdsetsSelected) {
   if(!setYear) {
     var setYear = sessionStorage.getItem('setYear') || '2017';
   }
@@ -198,8 +204,8 @@ function getProblemList(holds, notholds, setYear, setAngle, minOverlap, minGrade
     min_overlap: minOverlap,
     set_year: setYear,
     set_angle: setAngle,
-    min_holds: minHolds,
-    max_holds: maxHolds,
+    holdRangeMin: holdRangeMin,
+    holdRangeMax: holdRangeMax,
     sortedBy: sortedBy,
     holdsetsSelected: holdsetsSelected,
     'no-cache': new Date().getTime(),

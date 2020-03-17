@@ -2,8 +2,14 @@
 <script src="/static/moonboard/javascript/holdsetmapping.js"></script>
 <!-- Min Hold Slider -->
 {% if max_holds > 3 %}
-Minimum number of holds to match
-<div class="slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
+<div class="row section-header" style="clear:both; margin-bottom:5px;">
+  <div class="col-md-12">
+    <h3>
+Minimum number of holds to match    </h3>
+  </div>
+</div>
+
+<div class="minoverlap-slider slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
   <div id="minOverlapSlider"></div>
 </div>
 {% endif %}
@@ -12,10 +18,20 @@ Minimum number of holds to match
 <div class="row section-header" style="clear:both; margin-bottom:5px;">
   <div class="col-md-12">
     <h3>
+Hold Range Slider    </h3>
+  </div>
+</div>
+<div class="holdrange-slider slider-wrapper margin-wrapper" style="margin:10px 20px 50px 20px">
+  <div id="holdRangeSlider"></div>
+</div>
+
+<div class="row section-header" style="clear:both; margin-bottom:5px;">
+  <div class="col-md-12">
+    <h3>
 Grade Filter    </h3>
   </div>
 </div>
-<div class="slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
+<div class="grade-slider slider-wrapper margin-wrapper"  style="margin:0 20px 0 20px">
  <div id="slider"></div>
 </div>
 <!-- Holdset Filter -->
@@ -127,6 +143,7 @@ Grade Filter    </h3>
     {% endif %}
     ">{{problem.grade}}</span>
     </div>
+    <div style="width:49px">
     {% with empty_stars=3|subtract:problem.rating %}
     {% for i in ''|ljust:empty_stars %}
     <span class="far fa-star fa-xs"></span>
@@ -135,17 +152,18 @@ Grade Filter    </h3>
     {% for i in ''|ljust:problem.rating %}
     <span class="fas fa-star fa-xs"></span>
     {% endfor %}
+    </div>
     </span>
     </button>
   </div>
 {% endfor %}
+{% endif %}
 <div style="margin: 5px 0 5px 0">
   <a href="#" id="resetSearch" style="color: #44F;" >(reset)</a>
   {% if 'debug' in request.GET %}
   <a href="#" id="resetAll" style="color: #44F;" >(resetall)</a>
   {% endif %}
 </div>
-{% endif %}
 <!--  Help -->
 <div class="filter-wrap" style="clear:both;  margin-top:50px">
   <p>To filter by one or more holds, click on the hold on the left side to select it (selections shown with blue circles). Once two or more holds are selected, this column will show the problems that  use those holds. </p>
