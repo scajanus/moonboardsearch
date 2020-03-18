@@ -102,7 +102,7 @@ table.center {
 	border-radius: 1vw;
 	box-shadow: none;
 	border: 0px;
-	background: #55a05b21;
+	background: #55a05b11;
 }
 
 .nonclickable-led-button {
@@ -239,7 +239,7 @@ table.center {
 		border-radius: 3vw;
 		box-shadow: none;
 		border: 0px;
-		background: #55a05b21;
+		background: #55a05b11;
 	}
 	.nonclickable-led-button {
 		height: 5.5vw;
@@ -376,4 +376,7 @@ element.style {
 }
 .noUi-value-large {
 	font-size: 14px !important;
+}
+#resetSearch, #resetAll {
+	margin-left:3px;
 }

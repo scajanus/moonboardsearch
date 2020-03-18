@@ -134,7 +134,7 @@ let problem_ajax_call = function (endpoint, request_parameters) {
         blendcss.push('darken')
     }
     if (response['method'].includes('crew')) {
-      backgroundcss.push('url(/static/moonboard/moonboard-background-screwons.png)')      
+      backgroundcss.push('#FFFF00')
 
     } else {
       backgroundcss.push('url(/static/moonboard/moonboard-background.png)')
