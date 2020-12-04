@@ -2,10 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Count, Case, When
 
-from .models import Problem, ProblemMove
+from .models import Problem, Move
 from django.template.loader import render_to_string
 from pprint import pprint as pp
-from datetime import datetime
+import datetime
 import logging
 from .holdmappinginclude import holdmapping
 import string
@@ -13,6 +13,8 @@ import numpy as np
 from numpy.core.umath_tests import inner1d
 from django.views.decorators.cache import never_cache
 
+set_angle_lookup = {'40':1, '25':2, '0':0}
+set_year_lookup = {'2020':1,'2019':2,'2017':3,'2016':4}
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -96,6 +98,8 @@ def problemListView(request):
             if record:
                 filtered_gradelist.append(grade)
 
+    if set_year == '2016':
+        set_angle = '0'
     logging.debug(('holds',holds))
     logging.debug(('notholds',notholds))
     logging.debug(('set_year',set_year))
@@ -106,10 +110,10 @@ def problemListView(request):
     logging.debug(('holdRangeMax',holdRangeMax))
 
     if len(holds)>0:
-        problems = Problem.objects.prefetch_related('problemmove_set')\
-        .annotate(hold_count=Count(Case(When(problemmove__position__in=holds, then=1))), total_holds=Count('*'))\
-        .annotate(nothold_count=Count(Case(When(problemmove__position__in=notholds, then=1))), total_notholds=Count('*'))\
-        .filter(hold_count__gte=min_overlap, setyear=set_year, setangle=set_angle, grade__in=filtered_gradelist)
+        problems = Problem.objects.prefetch_related('move_set')\
+        .annotate(hold_count=Count(Case(When(move__description__in=holds, then=1))), total_holds=Count('*'))\
+        .annotate(nothold_count=Count(Case(When(move__description__in=notholds, then=1))), total_notholds=Count('*'))\
+        .filter(hold_count__gte=min_overlap, setupid=set_year_lookup[set_year], moonboardconfigurationid=set_angle_lookup[set_angle], grade__in=filtered_gradelist)
     else:
         problems = None
 
@@ -117,10 +121,11 @@ def problemListView(request):
     max_difference  = 0
     if problems:
         for problem in problems:
+            logging.debug(('problem',problem))
             outsideCurrentHoldset = False
-            pholds = problem.problemmove_set.all()
+            pholds = problem.move_set.all()
             for h in pholds:
-                if holdmapping[set_year][h.position][0] not in holdsetsSelected:
+                if holdmapping[set_year][h.description][0] not in holdsetsSelected:
                     outsideCurrentHoldset = True
 
             if not outsideCurrentHoldset:
@@ -128,15 +133,16 @@ def problemListView(request):
                     nothold_count = problem.nothold_count
                     problem.numholds = len(pholds)
 
-                    dateinserted_timestamp = float(problem.dateinserted[6:-2])/1000
+                    #dateinserted_timestamp = float(problem.dateinserted[6:-2])/1000
+                    dateinserted_timestamp = datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds = problem.dateinserted//10)
                     problem.datetimestamp = dateinserted_timestamp
-                    problem.date = datetime.utcfromtimestamp(dateinserted_timestamp).strftime('%b %Y')
+                    problem.date = dateinserted_timestamp.strftime('%b %Y')
 
                     problem.gradenum = gradelist.index(problem.grade)
                     problem.screwons = ['Feet follow hands + screw ons', 'Screw ons only', 'Footless + kickboard','Feet follow hands'].index(problem.method)
 
                     search_holds = np.array([convertPositionToCoord(h) for h in holds])
-                    found_problem_holds = np.array([convertPositionToCoord(h.position) for h in pholds])
+                    found_problem_holds = np.array([convertPositionToCoord(h.description) for h in pholds])
                     problem.distance, problem.fhd, problem.rhd = ModHausdorffDist(search_holds, found_problem_holds)
                     problem.hd = problem.distance*10
                     problem.fhd = problem.fhd*10
@@ -166,10 +172,11 @@ def problemListView(request):
 
 def filter_problems(by, problems):
     filter_options = {
+            'Benchmark': {'field_name': 'isbenchmark', 'reverse': True},
             'Repeats': {'field_name': 'repeats', 'reverse': True},
             'New': {'field_name': 'dateinserted', 'reverse': True},
             'Method': {'field_name': 'screwons', 'reverse': False},
-            'Rating': {'field_name': 'rating', 'reverse': True},
+            'Rating': {'field_name': 'userrating', 'reverse': True},
             'Similar': {'field_name': 'newdistance', 'reverse': True},
             'Easy': {'field_name': 'gradenum', 'reverse': False},
             }
@@ -183,8 +190,8 @@ def problemView(request):
     max_grade = request.GET['max_grade']
 
 
-    qs  = ProblemMove.objects.prefetch_related('problem_set')\
-        .filter(position__in=holds).distinct()\
+    qs  = Move.objects.prefetch_related('problem_set')\
+        .filter(description__in=holds).distinct()\
         .values('problem_id', 'problem__name').annotate(move_count=Count('*'))\
         .filter(move_count__gte=len(holds))
     ctx = {'problems': qs}
@@ -197,10 +204,10 @@ def problemView(request):
 
     problem_id = request.GET['problemId']
     problem = Problem.objects.get(id=problem_id)
-    holds = problem.problemmove_set.all()
+    holds = problem.move_set.all()
     holdstr = ''
     for hold in holds:
-        holdstr = holdstr + hold.position + ', '
+        holdstr = holdstr + hold.description + ', '
     return HttpResponse('Problem fetched ' + problem.name + holdstr)
 
 @never_cache
@@ -208,14 +215,15 @@ def problemAsJsonView(request):
 
     problem_id = request.GET['problemId']
     problem = Problem.objects.get(id=problem_id)
-    holds = problem.problemmove_set.values_list('position','isstart','isend')
+    holds = problem.move_set.values_list('description','isstart','isend')
 
     problem_dict = {
         'id': problem_id,
         'name': problem.name,
         'grade': problem.grade,
         'method': problem.method,
-        'setyear': problem.setyear,
+        'isbenchmark': problem.isbenchmark,
+        'setyear': problem.setupid,
         'holds': holds[::1]
         }
 

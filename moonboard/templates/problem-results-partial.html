@@ -108,6 +108,9 @@ Grade Filter    </h3>
     <li>
       <button class="sortBtn{% if sortedBy == "Method" %} selected{% endif %}" data-field="Method" data-dir="asc" value="Method">Method</button>
     </li>
+    <li>
+      <button class="sortBtn{% if sortedBy == "Benchmark" %} selected{% endif %}" data-field="Benchmark" data-dir="asc" value="Benchmark">Benchmark</button>
+    </li>
   </ul>
 </div>
 <!-- Problems Found -->
@@ -122,10 +125,11 @@ Grade Filter    </h3>
       {% elif problem.repeats <= 200 and problem.repeats > 30  %}
       badge-warning
       {% elif problem.repeats <= 30 %}
-      badge-danger
+      badge-secondary
       {% endif %}
-      ">{{problem.repeats}}</span>
+      ">{{problem.repeats}}</span>{% if problem.isbenchmark == 1 %} <span class="badge badge-primary badge-danger repeats benchmark">B</span>{% endif %}
     </div>
+
     <span class="dateinserted">{{problem.date}}</span>
     <span class="dateinserted">[{{problem.newdistance|floatformat:"0"}}% match]</span>
     <span class="howmany">{{ problem.hold_count}}/{{problem.total_holds}} holds</span>
@@ -146,12 +150,12 @@ Grade Filter    </h3>
     ">{{problem.grade}}</span>
     </div>
     <div style="width:49px">
-    {% with empty_stars=3|subtract:problem.rating %}
+    {% with empty_stars=3|subtract:problem.userrating %}
     {% for i in ''|ljust:empty_stars %}
     <span class="far fa-star fa-xs"></span>
     {% endfor %}
     {% endwith %}
-    {% for i in ''|ljust:problem.rating %}
+    {% for i in ''|ljust:problem.userrating %}
     <span class="fas fa-star fa-xs"></span>
     {% endfor %}
     </div>

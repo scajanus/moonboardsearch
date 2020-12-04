@@ -8,79 +8,160 @@
 from django.db import models
 
 
-class Holds(models.Model):
-     id = models.AutoField(primary_key=True, default="")
-     position = models.TextField(db_column='Position', blank=True, null=True)  # Field name made lowercase.
-     setup = models.TextField(db_column='Setup', blank=True, null=True)  # Field name made lowercase.
-     holdset = models.TextField(db_column='HoldSet', blank=True, null=True)  # Field name made lowercase.
-     hold = models.IntegerField(db_column='Hold', blank=True, null=True)  # Field name made lowercase.
-     orientation = models.TextField(db_column='Orientation', blank=True, null=True)  # Field name made lowercase.
-
-     class Meta:
-         managed = True
-#         db_table = 'holds'
-#         app_label = 'moonboard'
-
-
-class ProblemMove(models.Model):
-    id = models.AutoField(primary_key=True, default="")
-    problem = models.ForeignKey('Problem', models.DO_NOTHING, blank=True, null=True)
-    position = models.TextField(blank=True, null=True)
-    setup = models.TextField(blank=True, null=True)
-    setangle = models.IntegerField(blank=True, null=True)
-    isstart = models.IntegerField(blank=True, null=True)
-    isend = models.IntegerField(blank=True, null=True)
+class Grade(models.Model):
+    description = models.CharField(db_column='Description', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    active = models.IntegerField(db_column='Active', blank=True, null=True)  # Field name made lowercase.
+    vgrade = models.CharField(db_column='VGrade', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    order = models.IntegerField(db_column='Order', blank=True, null=True)  # Field name made lowercase.
+    assessmentonly = models.IntegerField(db_column='AssessmentOnly', blank=True, null=True)  # Field name made lowercase.
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    apiid = models.IntegerField(db_column='ApiId', blank=True, null=True)  # Field name made lowercase.
+    dateinserted = models.BigIntegerField(db_column='DateInserted', blank=True, null=True)  # Field name made lowercase.
+    dateupdated = models.BigIntegerField(db_column='DateUpdated', blank=True, null=True)  # Field name made lowercase.
+    datedeleted = models.BigIntegerField(db_column='DateDeleted', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = True
-        unique_together = ('problem', 'position',)
-        # db_table = 'problemMoves'
-        # app_label = 'moonboard'
+        managed = False
+        db_table = 'Grade'
 
 
-# class Problemmoves2016(models.Model):
-#     problem = models.IntegerField(db_column='Problem', blank=True, null=True)  # Field name made lowercase.
-#     position = models.TextField(db_column='Position', blank=True, null=True)  # Field name made lowercase.
-#     holdset = models.TextField(db_column='HoldSet', blank=True, null=True)  # Field name made lowercase.
-#     isstart = models.IntegerField(db_column='IsStart', blank=True, null=True)  # Field name made lowercase.
-#     isend = models.IntegerField(db_column='IsEnd', blank=True, null=True)  # Field name made lowercase.
+class Hold(models.Model):
+    number = models.CharField(db_column='Number', blank=True, null=True, max_length=10)  # Field name made lowercase.
+    holdtype = models.IntegerField(db_column='HoldType', blank=True, null=True)  # Field name made lowercase.
+    holdsetid = models.IntegerField(db_column='HoldsetId', blank=True, null=True)  # Field name made lowercase.
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    apiid = models.IntegerField(db_column='ApiId', blank=True, null=True)  # Field name made lowercase.
+    dateinserted = models.BigIntegerField(db_column='DateInserted', blank=True, null=True)  # Field name made lowercase.
+    dateupdated = models.BigIntegerField(db_column='DateUpdated', blank=True, null=True)  # Field name made lowercase.
+    datedeleted = models.BigIntegerField(db_column='DateDeleted', blank=True, null=True)  # Field name made lowercase.
 
-#     class Meta:
-#         managed = True
-#         db_table = 'problemMoves_2016'
-#         app_label = 'moonboard'
+    class Meta:
+        managed = False
+        db_table = 'Hold'
+
+
+class Holdset(models.Model):
+    description = models.CharField(db_column='Description', max_length=150, blank=True, null=True)  # Field name made lowercase.
+    color = models.CharField(db_column='Color', blank=True, null=True, max_length=255)  # Field name made lowercase.
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    apiid = models.IntegerField(db_column='ApiId', blank=True, null=True)  # Field name made lowercase.
+    dateinserted = models.BigIntegerField(db_column='DateInserted', blank=True, null=True)  # Field name made lowercase.
+    dateupdated = models.BigIntegerField(db_column='DateUpdated', blank=True, null=True)  # Field name made lowercase.
+    datedeleted = models.BigIntegerField(db_column='DateDeleted', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'HoldSet'
+
+
+class Holdsetup(models.Model):
+    description = models.CharField(db_column='Description', max_length=150)  # Field name made lowercase.
+    image = models.CharField(db_column='Image', max_length=50)  # Field name made lowercase.
+    holdlayoutid = models.IntegerField(db_column='HoldLayoutId', blank=True, null=True)  # Field name made lowercase.
+    allowclimbmethods = models.IntegerField(db_column='AllowClimbMethods', blank=True, null=True)  # Field name made lowercase.
+    ismini = models.IntegerField(db_column='IsMini', blank=True, null=True)  # Field name made lowercase.
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    apiid = models.IntegerField(db_column='ApiId', blank=True, null=True)  # Field name made lowercase.
+    dateinserted = models.BigIntegerField(db_column='DateInserted', blank=True, null=True)  # Field name made lowercase.
+    dateupdated = models.BigIntegerField(db_column='DateUpdated', blank=True, null=True)  # Field name made lowercase.
+    datedeleted = models.BigIntegerField(db_column='DateDeleted', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'HoldSetup'
+
+
+class Holdsettoholdsetup(models.Model):
+    holdsetupid = models.IntegerField(db_column='HoldSetupId')  # Field name made lowercase.
+    holdsetid = models.IntegerField(db_column='HoldSetId')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'HoldsetToHoldSetup'
+
+
+
+class Moonboardconfiguration(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    description = models.CharField(db_column='Description', max_length=150, blank=True, null=True)  # Field name made lowercase.
+    lowgrade = models.CharField(db_column='LowGrade', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    highgrade = models.CharField(db_column='HighGrade', max_length=3, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'MoonBoardConfiguration'
+
+
+class Moonboardconfigurationholdsetups(models.Model):
+    moonboardconfigurationid = models.IntegerField(db_column='MoonBoardConfigurationId', blank=True, null=True)  # Field name made lowercase.
+    holdsetupid = models.IntegerField(db_column='HoldSetupId', blank=True, null=True)  # Field name made lowercase.
+    lastproblemid = models.IntegerField(db_column='LastProblemId', blank=True, null=True)  # Field name made lowercase.
+    problemlastinserted = models.CharField(db_column='ProblemLastInserted', blank=True, null=True, max_length=255)  # Field name made lowercase.
+    problemlastupdated = models.CharField(db_column='ProblemLastUpdated', blank=True, null=True, max_length=255)  # Field name made lowercase.
+    problemlastdeleted = models.CharField(db_column='ProblemLastDeleted', blank=True, null=True, max_length=255)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'MoonBoardConfigurationHoldSetups'
+
+
+class Move(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    problem = models.ForeignKey('Problem', models.DO_NOTHING, blank=True, null=True)
+    description = models.CharField(db_column='Description', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    isstart = models.IntegerField(db_column='IsStart')  # Field name made lowercase.
+    isend = models.IntegerField(db_column='IsEnd')  # Field name made lowercase.
+    active = models.IntegerField(db_column='Active', blank=True, null=True)  # Field name made lowercase.
+    order = models.IntegerField(db_column='Order')  # Field name made lowercase.
+    apiid = models.IntegerField(db_column='ApiId', blank=True, null=True)  # Field name made lowercase.
+    dateinserted = models.BigIntegerField(db_column='DateInserted', blank=True, null=True)  # Field name made lowercase.
+    dateupdated = models.BigIntegerField(db_column='DateUpdated', blank=True, null=True)  # Field name made lowercase.
+    datedeleted = models.BigIntegerField(db_column='DateDeleted', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'Move'
+
 
 
 class Problem(models.Model):
-    id = models.IntegerField(primary_key=True, blank=True, null=False)  # Field name made lowercase.
-    name = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    grade = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    benchmark = models.IntegerField(blank=True, null=True)  # Field name made lowercase.
-    assessmentproblem = models.IntegerField(blank=True, null=True)  # Field name made lowercase.
-    method = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    firstname = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    lastname = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    setyear = models.IntegerField(blank=False, null=False)
-    dateinserted = models.TextField(blank=True, null=True) 
-    holdsetup = models.TextField(blank=True, null=True) 
-    ismaster = models.IntegerField(blank=False, null=True)
-    nameforurl = models.TextField(blank=True, null=True)
-    rating = models.TextField(blank=False, null=True)
-    repeats = models.IntegerField(blank=False, null=True)
-    setangle = models.IntegerField(blank=False, null=False)
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    name = models.CharField(db_column='Name', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    setupid = models.IntegerField(db_column='SetupId')  # Field name made lowercase.
+    moonboardconfigurationid = models.IntegerField(db_column='MoonBoardConfigurationId', blank=True, null=True)  # Field name made lowercase.
+    grade = models.CharField(db_column='Grade', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    usergrade = models.CharField(db_column='UserGrade', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    setby = models.CharField(db_column='Setby', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    setbyid = models.CharField(db_column='SetbyId', max_length=128, blank=True, null=True)  # Field name made lowercase.
+    holdsets = models.CharField(db_column='Holdsets', max_length=35, blank=True, null=True)  # Field name made lowercase.
+    firstascent = models.CharField(db_column='FirstAscent', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    comment = models.CharField(db_column='Comment', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    method = models.CharField(db_column='Method', max_length=35, blank=True, null=True)  # Field name made lowercase.
+    userrating = models.IntegerField(db_column='UserRating', blank=True, null=True)  # Field name made lowercase.
+    active = models.IntegerField(db_column='Active', blank=True, null=True)  # Field name made lowercase.
+    hasbetavideo = models.IntegerField(db_column='HasBetaVideo', blank=True, null=True)  # Field name made lowercase.
+    repeats = models.IntegerField(db_column='Repeats', blank=True, null=True)  # Field name made lowercase.
+    moonid = models.IntegerField(db_column='MoonId', blank=True, null=True)  # Field name made lowercase.
+    isbenchmark = models.IntegerField(db_column='IsBenchmark', blank=True, null=True)  # Field name made lowercase.
+    ismaster = models.IntegerField(db_column='IsMaster', blank=True, null=True)  # Field name made lowercase.
+    upgraded = models.IntegerField(db_column='Upgraded', blank=True, null=True)  # Field name made lowercase.
+    downgraded = models.IntegerField(db_column='Downgraded', blank=True, null=True)  # Field name made lowercase.
+    apiid = models.IntegerField(db_column='ApiId', blank=True, null=True)  # Field name made lowercase.
+    dateinserted = models.BigIntegerField(db_column='DateInserted', blank=True, null=True)  # Field name made lowercase.
+    dateupdated = models.BigIntegerField(db_column='DateUpdated', blank=True, null=True)  # Field name made lowercase.
+    datedeleted = models.BigIntegerField(db_column='DateDeleted', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = True
-        # db_table = 'problems'
-        # app_label = 'moonboard'
+        managed = False
+        db_table = 'Problem'
 
 
-class Setter(models.Model):
-    firstname = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    lastname = models.TextField(blank=True, null=True)  # Field name made lowercase.
+
+class Problemtoholdset(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    holdsetid = models.IntegerField(db_column='HoldsetId', blank=True, null=True)  # Field name made lowercase.
+    problemid = models.IntegerField(db_column='ProblemId', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = True
-        unique_together = ('firstname', 'lastname')
-        # db_table = 'setter'
-        # app_label = 'moonboard'
+        managed = False
+        db_table = 'ProblemToHoldSet'

@@ -380,3 +380,9 @@ element.style {
 #resetSearch, #resetAll {
 	margin-left:3px;
 }
+.badge-info {
+background-color: #FFA500;
+text-align:left;
+font-size:50%;
+vertical-align: super;
+}
