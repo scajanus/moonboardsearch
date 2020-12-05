@@ -102,6 +102,7 @@ table.center {
 	border-radius: 1vw;
 	box-shadow: none;
 	border: 0px;
+        padding: 0;
 	background: #55a05b11;
 }
 
@@ -111,6 +112,7 @@ table.center {
 	border-radius: 1vw;
 	box-shadow: none;
 	border: 0px;
+        padding: 0;
 	background: transparent;
 }
 
@@ -233,22 +235,6 @@ table.center {
 		width: 9.9vw;
 	}
 
-	.led-button {
-		height: 5.5vw;
-		width: 5.5vw;
-		border-radius: 3vw;
-		box-shadow: none;
-		border: 0px;
-		background: #55a05b11;
-	}
-	.nonclickable-led-button {
-		height: 5.5vw;
-		width: 5.5vw;
-		border-radius: 3vw;
-		box-shadow: none;
-		border: 0px;
-		background: transparent;
-	}
 
 	.red-button {
 		border: 3px solid #ff0000;
