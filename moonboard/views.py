@@ -125,7 +125,7 @@ def problemListView(request):
             outsideCurrentHoldset = False
             pholds = problem.move_set.all()
             for h in pholds:
-                if holdmapping[set_year][h.description][0] not in holdsetsSelected:
+                if h.description in holdmapping[set_year] and holdmapping[set_year][h.description][0] not in holdsetsSelected:
                     outsideCurrentHoldset = True
 
             if not outsideCurrentHoldset:
