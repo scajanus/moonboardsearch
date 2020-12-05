@@ -176,6 +176,7 @@ function toggleButton(buttonId) {
         min_overlap = min_overlap_from_slider
     }
     getProblemList(holds=holds,  notholds=notholds, setYear, setAngle, min_overlap, '5+','8B+',holdRangeMin, holdRangeMax,'',holdsetsSelected)
+    document.getElementById(buttonId).blur()
 }
 
 function toggleProblem(problemId) {
